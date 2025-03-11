@@ -1,12 +1,17 @@
 ﻿// TBI.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
+#include "global.h"
+
+#include "CCore.h"
+
 #include "framework.h"
 #include "TBI.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
+HWND g_hWnd;
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
@@ -22,8 +27,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
+    if (AllocConsole()) {
+        // 표준 입출력 스트림을 콘솔에 연결
+        FILE* fp;
+        freopen_s(&fp, "CONOUT$", "w", stdout);
+        freopen_s(&fp, "CONIN$", "r", stdin);
+
+        // 콘솔에 메시지 출력
+        std::cout << "Hello, Console Window!" << std::endl;
+    }
+    srand((UINT)time(NULL));
 
     // TODO: 여기에 코드를 입력합니다.
 
@@ -38,6 +51,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    //CCore 초기화
+   //이게 메인 윈도우 입니다. 이게 해상도입니다. 
+    if (FAILED(CCore::GetInstance()->init(g_hWnd, POINT{ 960, 540 }))) {
+        MessageBox(nullptr, L"Core 객체 초기화 실패", L"ERROR", MB_OK);
+        return FALSE;
+    }
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TBI));
 
     MSG msg;
@@ -45,10 +65,29 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 기본 메시지 루프입니다:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+        //무한 반복 -> 메시지가 없으면 if문 바깥으로 무시. 
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            //메시지를 처리하기 전에, 
+
+            if (WM_QUIT == msg.message) {
+                break;
+            }
+
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        //메시지가 발생하지 않는 대부분의 시간. 
+        else {
+            //디자인 패턴(설계 유형)
+            //싱글톤 패턴
+
+
+            //게임 속에서 렌더링이라는 건, 매 순간순간 전부 다 삭제 후, 전부 그리기. 
+            CCore::GetInstance()->progress();
         }
     }
 
@@ -76,7 +115,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TBI));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_TBI);
+    //wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_TBI);
+    wcex.lpszMenuName = nullptr;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -97,16 +137,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
+   if (!g_hWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   ShowWindow(g_hWnd, nCmdShow);
+   UpdateWindow(g_hWnd);
 
    return TRUE;
 }

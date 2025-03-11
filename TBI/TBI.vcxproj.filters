@@ -1,37 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{5d68dc46-9cfe-4a2d-a0a0-4246061bc3e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default">
+      <UniqueIdentifier>{55a45f7d-a71d-4b2a-bd88-c07aebdc7b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01. Header">
+      <UniqueIdentifier>{ef197011-6f2a-40b9-8a15-54de33a16fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\02. Core">
+      <UniqueIdentifier>{3d3aaf77-8364-4393-8645-7ec4356e3745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon">
+      <UniqueIdentifier>{35741d70-7262-4333-bebb-b6ca36a97417}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\PathMgr">
+      <UniqueIdentifier>{d0998856-c937-4a8c-86b4-d9ac6ea4c884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\TimeMgr">
+      <UniqueIdentifier>{eabcc3b0-dd6d-42c5-851c-1be1705c9220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\FileMgr">
+      <UniqueIdentifier>{5e9961f7-6d71-4745-85a3-5e8f0da4c330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\KeyMgr">
+      <UniqueIdentifier>{85cf465a-d2f7-4966-8299-5573dae5304e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="global.h">
+      <Filter>Engine\01. Header</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="CCore.h">
+      <Filter>Engine\02. Core</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Default</Filter>
     </ClInclude>
     <ClInclude Include="TBI.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Default</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="TBI.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+    <ClInclude Include="define.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CPathMgr.h">
+      <Filter>Engine\03. SingleTon\PathMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeMgr.h">
+      <Filter>Engine\03. SingleTon\TimeMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CKeyMgr.h">
+      <Filter>Engine\03. SingleTon\KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -45,5 +80,20 @@
     <Image Include="TBI.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TBI.cpp" />
+    <ClCompile Include="CCore.cpp">
+      <Filter>Engine\02. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathMgr.cpp">
+      <Filter>Engine\03. SingleTon\PathMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeMgr.cpp">
+      <Filter>Engine\03. SingleTon\TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyMgr.cpp">
+      <Filter>Engine\03. SingleTon\KeyMgr</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
