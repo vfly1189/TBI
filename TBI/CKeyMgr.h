@@ -61,9 +61,9 @@ struct tKeyInfo {
 	KEY_STATE		eState;			//키의 상태값. 
 	bool			bPrevPush;		//이전에 이 키가 눌렸는지 안 눌렸는지
 };
-class CkeyMgr
+class CKeyMgr
 {
-	SINGLE(CkeyMgr);
+	SINGLE(CKeyMgr);
 
 private:
 	//벡터의 INDEX값이, 곧 KEY값. 

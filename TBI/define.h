@@ -29,17 +29,19 @@
 
 #define CLONE(type) type* Clone() {return new type(*this);}
 
-#define KEY_CHECK(key, state) CkeyMgr::GetInstance()->GetKeyState(key) == state
+#define KEY_CHECK(key, state) CKeyMgr::GetInstance()->GetKeyState(key) == state
 
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
 #define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)
 #define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
-#define MOUSE_POS CkeyMgr::GetInstance()->GetMousePos()
+#define MOUSE_POS CKeyMgr::GetInstance()->GetMousePos()
 
 #define PI 3.1415926535f
 
 #define CHARACTER_CNT 51
+
+#define TILE_SIZE 64.f
 
 
 enum class GROUP_TYPE {

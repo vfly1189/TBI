@@ -49,15 +49,15 @@ int g_arrVK[(int)KEY::LAST] = {
 	//LAST,
 };
 
-CkeyMgr::CkeyMgr() {
+CKeyMgr::CKeyMgr() {
 
 }
 
-CkeyMgr::~CkeyMgr() {
+CKeyMgr::~CKeyMgr() {
 
 }
 
-void CkeyMgr::init()
+void CKeyMgr::init()
 {
 
 	for (int keyIDX = 0; keyIDX < (int)KEY::LAST; keyIDX++) {
@@ -73,7 +73,7 @@ void CkeyMgr::init()
 //TAB상태였던 애는 바로 떼진 AWAY로 가야함 -> NONE
 //HOLD였던 애는 AWAY로 갔다가 -> NONE
 
-void CkeyMgr::update() {
+void CKeyMgr::update() {
 
 	//윈도우 포커싱 알아내기 
 	HWND hMainWnd = CCore::GetInstance()->GetMainHwnd();

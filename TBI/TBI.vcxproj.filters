@@ -32,6 +32,30 @@
     <Filter Include="Engine\03. SingleTon\KeyMgr">
       <UniqueIdentifier>{85cf465a-d2f7-4966-8299-5573dae5304e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. SingleTon\Camera">
+      <UniqueIdentifier>{f526b436-20d0-4d06-a1a1-965e27f0fcc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\FontMgr">
+      <UniqueIdentifier>{430906b0-f1cb-4056-940b-49b653ccadc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\Direct2DMgr">
+      <UniqueIdentifier>{7a28b41a-99c6-4c7c-bc96-d4375d019eeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\SceneMgr">
+      <UniqueIdentifier>{68225614-21e4-4f62-849b-85934a9de61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Scene">
+      <UniqueIdentifier>{c15742b5-9a50-44d8-a31d-d3859c04f351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object">
+      <UniqueIdentifier>{95db7c79-d767-4608-97fc-cc978595f666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Scene\CScene_Test">
+      <UniqueIdentifier>{911326e5-8a60-44f3-920e-80e86b1186a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Player">
+      <UniqueIdentifier>{d6da9b63-67fa-4bc9-9651-4f1c1ccb4b70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -67,6 +91,30 @@
     <ClInclude Include="CKeyMgr.h">
       <Filter>Engine\03. SingleTon\KeyMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>Engine\03. SingleTon\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct2DMgr.h">
+      <Filter>Engine\03. SingleTon\Direct2DMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneMgr.h">
+      <Filter>Engine\03. SingleTon\SceneMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Engine\04. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>Engine\05. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="func.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Test.h">
+      <Filter>Engine\04. Scene\CScene_Test</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>Engine\05. Object\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -94,6 +142,30 @@
     </ClCompile>
     <ClCompile Include="CKeyMgr.cpp">
       <Filter>Engine\03. SingleTon\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>Engine\03. SingleTon\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct2DMgr.cpp">
+      <Filter>Engine\03. SingleTon\Direct2DMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneMgr.cpp">
+      <Filter>Engine\03. SingleTon\SceneMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Engine\04. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>Engine\05. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="func.cpp">
+      <Filter>Engine\01. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Test.cpp">
+      <Filter>Engine\04. Scene\CScene_Test</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>Engine\05. Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

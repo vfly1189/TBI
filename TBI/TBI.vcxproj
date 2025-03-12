@@ -145,12 +145,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CKeyMgr.h" />
+    <ClInclude Include="CObject.h" />
     <ClInclude Include="CPathMgr.h" />
+    <ClInclude Include="CPlayer.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneMgr.h" />
+    <ClInclude Include="CScene_Test.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="Direct2DMgr.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="func.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="struct.h" />
@@ -158,10 +166,18 @@
     <ClInclude Include="TBI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
+    <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
+    <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneMgr.cpp" />
+    <ClCompile Include="CScene_Test.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
+    <ClCompile Include="Direct2DMgr.cpp" />
+    <ClCompile Include="func.cpp" />
     <ClCompile Include="TBI.cpp" />
   </ItemGroup>
   <ItemGroup>

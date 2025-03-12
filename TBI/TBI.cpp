@@ -63,7 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (true)
     {
         //무한 반복 -> 메시지가 없으면 if문 바깥으로 무시. 
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
