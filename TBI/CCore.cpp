@@ -3,11 +3,14 @@
 #include "Resource.h"
 
 #include "CPathMgr.h"
+#include "CSoundMgr.h"
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "Direct2DMgr.h"
 #include "CCamera.h"
 #include "CSceneMgr.h"
+#include "CFileMgr.h"
+#include "CFontMgr.h"
 
 CCore::CCore()
 	: m_hWnd(0)
@@ -35,8 +38,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CPathMgr::GetInstance()->init();
 	CTimeMgr::GetInstance()->init();
 	CKeyMgr::GetInstance()->init();
+	CSoundMgr::GetInstance()->init();
 	CCamera::GetInstance()->init();
 	Direct2DMgr::GetInstance()->init(m_hWnd);
+	CFileMgr::GetInstance()->init(CPathMgr::GetInstance()->GetContentPath());
 	CSceneMgr::GetInstance()->init();
 	//////////////////////////Manager initialize//////////////////////////////
 
@@ -50,7 +55,8 @@ void CCore::progress()
 	// ============
 	CTimeMgr::GetInstance()->update();
 	CKeyMgr::GetInstance()->update();
-	CCamera::GetInstance()->update();
+	CCamera::GetInstance()->update();	
+	CSoundMgr::GetInstance()->update();
 
 
 	CSceneMgr::GetInstance()->update();

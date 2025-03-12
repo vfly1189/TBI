@@ -75,8 +75,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Output\bin\</OutDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
-    <IncludePath>C:\Users\c\source\repos\TBI\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\c\source\repos\TBI\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)inc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Output\bin\</OutDir>
@@ -135,6 +135,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <MinFilesInUnityFile>10</MinFilesInUnityFile>
+      <AdditionalIncludeDirectories>C:\Users\c\source\repos\TBI\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,11 +143,14 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\c\source\repos\TBI\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CFileMgr.h" />
+    <ClInclude Include="CFontMgr.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -154,6 +158,8 @@
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScene_Test.h" />
+    <ClInclude Include="CSoundMgr.h" />
+    <ClInclude Include="CTextUI.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Direct2DMgr.h" />
@@ -168,6 +174,8 @@
   <ItemGroup>
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CFileMgr.cpp" />
+    <ClCompile Include="CFontMgr.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
@@ -175,6 +183,8 @@
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScene_Test.cpp" />
+    <ClCompile Include="CSoundMgr.cpp" />
+    <ClCompile Include="CTextUI.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="Direct2DMgr.cpp" />
     <ClCompile Include="func.cpp" />

@@ -43,7 +43,7 @@ void CCamera::update()
 	}
 	//화면 중앙좌표와 카메라 LootAt 좌표간의 차이 값. 
 	CalDiff();
-	printf("%.2f , %.2f\n", m_vLookAt.x, m_vLookAt.y);
+	//printf("%.2f , %.2f\n", m_vLookAt.x, m_vLookAt.y);
 }
 
 void CCamera::CalDiff()

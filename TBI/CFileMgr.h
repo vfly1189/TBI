@@ -13,3 +13,4 @@ public:
 	void init(const wstring& folderPath);
 };
 
+

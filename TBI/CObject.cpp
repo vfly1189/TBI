@@ -4,6 +4,7 @@
 #include "Direct2DMgr.h"
 #include "CPathMgr.h"
 
+#include "CTextUI.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -31,7 +32,6 @@ CObject::CObject(const CObject& _origin)
 CObject::~CObject() {
 
 }
-
 
 void CObject::update()
 {
@@ -70,5 +70,19 @@ void CObject::render(ID2D1HwndRenderTarget* _pRender)
 
 void CObject::component_render(ID2D1HwndRenderTarget* _pRender)
 {
-	
+	if (m_pTextUI != nullptr)
+		m_pTextUI->render(_pRender);
+}
+
+
+void CObject::SetUIText(const std::wstring& text)
+{
+	if (!m_pTextUI) CreateTextUI();
+	m_pTextUI->SetText(text);
+}
+
+void CObject::CreateTextUI()
+{
+	m_pTextUI = new CTextUI;
+	m_pTextUI->m_pOwner = this;
 }

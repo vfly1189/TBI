@@ -56,6 +56,15 @@
     <Filter Include="Engine\05. Object\Player">
       <UniqueIdentifier>{d6da9b63-67fa-4bc9-9651-4f1c1ccb4b70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. SingleTon\SoundMgr">
+      <UniqueIdentifier>{10caadfd-1fb5-40be-a567-d90acc50bd26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component">
+      <UniqueIdentifier>{cc946351-59d9-4e0b-9b99-ea5037ffe6b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\TextUI">
+      <UniqueIdentifier>{15a08de5-a879-4776-9249-4ad0bf3d2344}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -115,6 +124,18 @@
     <ClInclude Include="CPlayer.h">
       <Filter>Engine\05. Object\Player</Filter>
     </ClInclude>
+    <ClInclude Include="CSoundMgr.h">
+      <Filter>Engine\03. SingleTon\SoundMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CFileMgr.h">
+      <Filter>Engine\03. SingleTon\FileMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CTextUI.h">
+      <Filter>Engine\06. Component\TextUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CFontMgr.h">
+      <Filter>Engine\03. SingleTon\FontMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -166,6 +187,18 @@
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">
       <Filter>Engine\05. Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CSoundMgr.cpp">
+      <Filter>Engine\03. SingleTon\SoundMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CFileMgr.cpp">
+      <Filter>Engine\03. SingleTon\FileMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CTextUI.cpp">
+      <Filter>Engine\06. Component\TextUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CFontMgr.cpp">
+      <Filter>Engine\03. SingleTon\FontMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

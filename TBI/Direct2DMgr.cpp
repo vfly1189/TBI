@@ -303,7 +303,6 @@ void Direct2DMgr::Cleanup() {
     CoUninitialize();
 }
 
-
 HRESULT Direct2DMgr::StoreBitmapsFromFolder(const wstring& folderPath, const wstring& tag)
 {
     wstring header = CPathMgr::GetInstance()->GetContentPath();
