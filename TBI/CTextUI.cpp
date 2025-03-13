@@ -4,9 +4,12 @@
 #include "CObject.h"
 
 #include "CCamera.h"
+#include "Direct2DMgr.h"
 #include "CFontMgr.h"
 
 CTextUI::CTextUI()
+	: m_colorText(D2D1::ColorF::Black)
+	, m_colorOutline(D2D1::ColorF::White)
 {
 	
 }
@@ -20,24 +23,25 @@ void CTextUI::render(ID2D1HwndRenderTarget* _pRender)
 {
 	if (!m_pOwner || m_strText.empty()) return;
 
-	Vec2 vPos = CCamera::GetInstance()->GetRenderPos(m_pOwner->GetPos());
+	auto d2dManager = Direct2DMgr::GetInstance();
 
-	D2D1_RECT_F rect = D2D1::RectF(
-		vPos.x - 100.f, vPos.y - 50.f,
-		vPos.x + 100.f, vPos.y + 50.f);
+	Vec2 vPos = CCamera::GetInstance()->GetRenderPos(m_pOwner->GetFinalPos());
 
+	
 	ID2D1SolidColorBrush* brush = nullptr;
 	HRESULT hr = _pRender->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &brush);
 
 	if (SUCCEEDED(hr))
 	{
-		_pRender->DrawText(
-			m_strText.c_str(),
-			static_cast<UINT32>(m_strText.length()),
-			CFontMgr::GetInstance()->GetTextFormat(),
-			&rect,
-			brush);
-
+		d2dManager->RenderTextWithOutline(
+			m_strText,
+			D2D1::RectF(vPos.x + m_vOffsetLT.x, vPos.y + m_vOffsetLT.y, vPos.x + m_vOffsetRB.x, vPos.y + m_vOffsetRB.y),
+			m_fFontSize,
+			m_colorText,
+			m_colorOutline,
+			m_fOutlineThickness,
+			m_iHorizontal
+		);
 		brush->Release();
 	}
 }

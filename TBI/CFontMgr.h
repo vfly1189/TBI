@@ -1,6 +1,4 @@
 #pragma once
-#include <dwrite.h>
-#include <string>
 
 class CFontMgr
 {
@@ -11,9 +9,12 @@ private:
     IDWriteTextFormat* m_pTextFormat; // 텍스트 포맷
 
 public:
-
     HRESULT LoadSystemFont(const std::wstring& fontFamilyName, float fontSize);
-    IDWriteTextFormat* GetTextFormat() { return m_pTextFormat; }
+    IDWriteTextFormat* GetTextFormat(const std::wstring& fontFamilyName, float fontSize);
+
+public:
+    void init();
+
 
 public:
     CFontMgr(const CFontMgr&) = delete;

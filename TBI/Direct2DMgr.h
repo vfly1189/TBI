@@ -36,17 +36,26 @@ public:
 	vector<ID2D1Bitmap*> GetSplitBitmaps(const wstring& tag);
 
 public:
-	void RenderAllBitmaps(const std::vector<std::pair<D2D1_RECT_F, std::wstring>>& bitmapsToRender);
-	void RenderBitmap(const D2D1_RECT_F& destRect, const wstring& tag);
+	HRESULT StoreBitmapsFromFolder(const std::wstring& folderPath, const std::wstring& tag);
 
 public:
-	HRESULT StoreBitmapsFromFolder(const std::wstring& folderPath, const std::wstring& tag);
+	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag,
+		const D2D1_POINT_2F& leftTop, const D2D1_POINT_2F& rightBottom);
 
 public:
 	void Cleanup();
 
 public:
-	
+	void RenderTextWithOutline(
+		const std::wstring& text,
+		const D2D1_RECT_F& layoutRect,
+		float fontSize,
+		const D2D1_COLOR_F& textColor,
+		const D2D1_COLOR_F& outlineColor,
+		float outlineThickness,
+		int horizontal);
+
+
 private:
 	HRESULT LoadBitmap(const wstring& filePath, ID2D1Bitmap** ppBitmap);
 	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag);

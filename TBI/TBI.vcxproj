@@ -144,13 +144,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\c\source\repos\TBI\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAnimation.h" />
+    <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CFileMgr.h" />
     <ClInclude Include="CFontMgr.h" />
+    <ClInclude Include="CImage.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -159,23 +163,30 @@
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScene_Test.h" />
     <ClInclude Include="CSoundMgr.h" />
+    <ClInclude Include="CSpriteUI.h" />
     <ClInclude Include="CTextUI.h" />
     <ClInclude Include="CTimeMgr.h" />
+    <ClInclude Include="CUI.h" />
+    <ClInclude Include="CUIMgr.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Direct2DMgr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="func.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SelectGDI.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TBI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAnimation.cpp" />
+    <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CFileMgr.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
+    <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
@@ -184,10 +195,14 @@
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScene_Test.cpp" />
     <ClCompile Include="CSoundMgr.cpp" />
+    <ClCompile Include="CSpriteUI.cpp" />
     <ClCompile Include="CTextUI.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
+    <ClCompile Include="CUI.cpp" />
+    <ClCompile Include="CUIMgr.cpp" />
     <ClCompile Include="Direct2DMgr.cpp" />
     <ClCompile Include="func.cpp" />
+    <ClCompile Include="SelectGDI.cpp" />
     <ClCompile Include="TBI.cpp" />
   </ItemGroup>
   <ItemGroup>

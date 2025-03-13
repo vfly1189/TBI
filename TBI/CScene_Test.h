@@ -9,7 +9,11 @@ public:
 
 public:
     virtual void update();
+    virtual void finalupdate();
     virtual void render(ID2D1HwndRenderTarget* _pRender);
+
+public:
+    void CreateMain(Direct2DMgr* _pD2DMgr, Vec2 _vResolution);
 
 public:
     CScene_Test();

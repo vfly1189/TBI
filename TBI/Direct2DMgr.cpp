@@ -1,6 +1,7 @@
 #include "global.h"
 #include "Direct2DMgr.h"
 #include "CPathMgr.h"
+#include "CFontMgr.h"
 
 Direct2DMgr::Direct2DMgr()
 {
@@ -106,32 +107,8 @@ vector<ID2D1Bitmap*> Direct2DMgr::GetSplitBitmaps(const wstring& tag) {
     return {}; // 없음
 }
 
-void Direct2DMgr::RenderBitmap(const D2D1_RECT_F& destRect, const std::wstring& baseTag) {
-    if (!pRenderTarget) return;
 
-    // 태그가 baseTag로 시작하는 비트맵만 렌더링
-    auto searched_bitmap = GetStoredBitmap(baseTag);
 
-    if (nullptr == searched_bitmap) {
-        assert(nullptr);
-    }
-    pRenderTarget->DrawBitmap(searched_bitmap, destRect);
-}
-
-void Direct2DMgr::RenderAllBitmaps(const std::vector<std::pair<D2D1_RECT_F, std::wstring>>& bitmapsToRender) {
-    if (!pRenderTarget) return;
-
-    // 전달받은 모든 비트맵을 순회하며 렌더링
-    for (const auto& bitmapInfo : bitmapsToRender) {
-        const D2D1_RECT_F& destRect = bitmapInfo.first;
-        const std::wstring& tag = bitmapInfo.second;
-
-        ID2D1Bitmap* bitmap = GetStoredBitmap(tag);
-        if (bitmap) {
-            pRenderTarget->DrawBitmap(bitmap, destRect);
-        }
-    }
-}
 
 HRESULT Direct2DMgr::LoadBitmap(const std::wstring& filePath, ID2D1Bitmap** ppBitmap) {
 
@@ -264,6 +241,69 @@ HRESULT Direct2DMgr::SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag) {
     return S_OK;
 }
 
+HRESULT Direct2DMgr::SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag,
+    const D2D1_POINT_2F& leftTop, const D2D1_POINT_2F& rightBottom)
+{
+    if (!bitmap || !pRenderTarget) return E_FAIL;
+
+    // 입력 값 유효성 검사
+    D2D1_SIZE_F bitmapSize = bitmap->GetSize();
+    if (leftTop.x >= rightBottom.x || leftTop.y >= rightBottom.y ||
+        rightBottom.x > bitmapSize.width || rightBottom.y > bitmapSize.height)
+    {
+        MessageBox(nullptr, L"잘못된 영역 좌표 입력!", L"오류", MB_OK);
+        return E_INVALIDARG;
+    }
+
+    // 추출 영역 계산
+    const float width = rightBottom.x - leftTop.x;
+    const float height = rightBottom.y - leftTop.y;
+
+   
+    // 호환 렌더 타겟 생성
+    ID2D1BitmapRenderTarget* compatibleRenderTarget = nullptr;
+    HRESULT hr = pRenderTarget->CreateCompatibleRenderTarget(
+        D2D1::SizeF(width, height),
+        &compatibleRenderTarget
+    );
+
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"호환 렌더 타겟 생성 실패!", L"오류", MB_OK);
+        return hr;
+    }
+
+    // 원본에서 특정 영역 추출
+    compatibleRenderTarget->BeginDraw();
+    compatibleRenderTarget->DrawBitmap(
+        bitmap,
+        D2D1::RectF(0, 0, width, height),  // 대상 영역(전체 채움)
+        1.0f,
+        D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+        D2D1::RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y)  // 원본 영역
+    );
+
+    hr = compatibleRenderTarget->EndDraw();
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"비트맵 추출 실패!", L"오류", MB_OK);
+        compatibleRenderTarget->Release();
+        return hr;
+    }
+
+    // 결과 비트맵 저장
+    ID2D1Bitmap* subBitmap = nullptr;
+    hr = compatibleRenderTarget->GetBitmap(&subBitmap);
+    compatibleRenderTarget->Release();
+
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"비트맵 가져오기 실패!", L"오류", MB_OK);
+        return hr;
+    }
+
+    
+    bitmapMap[tag] = subBitmap;
+    return S_OK;
+}
+
 HRESULT Direct2DMgr::StoreCreateMap(ID2D1Bitmap* bitmap, const wstring& tag)
 {
     // 이미 로드된 비트맵이 있다면 그 맵 삭제.
@@ -320,4 +360,79 @@ HRESULT Direct2DMgr::StoreBitmapsFromFolder(const wstring& folderPath, const wst
     return S_OK;
 }
 
+void Direct2DMgr::RenderTextWithOutline(
+    const std::wstring& text,
+    const D2D1_RECT_F& layoutRect,
+    float fontSize,
+    const D2D1_COLOR_F& textColor,
+    const D2D1_COLOR_F& outlineColor,
+    float outlineThickness,
+    int horizontal)
+{
+    if (!pRenderTarget) return;
+
+    IDWriteTextFormat* pTextFormat = CFontMgr::GetInstance()->GetTextFormat(L"HY견명조", fontSize);
+
+    // 텍스트 정렬 설정
+    if (horizontal == 0)
+        pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); // 가로 가운데 정렬
+    else if(horizontal == 1)
+        pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING); // 가로 왼쪽 정렬
+    else if(horizontal == 2)
+        pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING); // 가로 우측 정렬
+
+    pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); // 세로 가운데 정렬
+
+    // 외곽선 브러시 생성
+    ID2D1SolidColorBrush* pOutlineBrush = nullptr;
+    HRESULT hr = pRenderTarget->CreateSolidColorBrush(outlineColor, &pOutlineBrush);
+    if (FAILED(hr)) {
+        pTextFormat->Release();
+        return;
+    }
+
+    // 텍스트 브러시 생성
+    ID2D1SolidColorBrush* pTextBrush = nullptr;
+    hr = pRenderTarget->CreateSolidColorBrush(textColor, &pTextBrush);
+    if (FAILED(hr)) {
+        pOutlineBrush->Release();
+        pTextFormat->Release();
+        return;
+    }
+
+    // 외곽선 렌더링 (텍스트를 약간씩 이동시키며 그리기)
+    for (float dx = -outlineThickness; dx <= outlineThickness; dx += outlineThickness) {
+        for (float dy = -outlineThickness; dy <= outlineThickness; dy += outlineThickness) {
+            if (dx == 0 && dy == 0) continue; // 중심점은 건너뜀
+
+            D2D1_RECT_F outlineRect = layoutRect;
+            outlineRect.left += dx;
+            outlineRect.top += dy;
+            outlineRect.right += dx;
+            outlineRect.bottom += dy;
+
+            pRenderTarget->DrawText(
+                text.c_str(),
+                static_cast<UINT32>(text.length()),
+                pTextFormat,
+                &outlineRect,
+                pOutlineBrush
+            );
+        }
+    }
+
+    // 본문 텍스트 렌더링
+    pRenderTarget->DrawText(
+        text.c_str(),
+        static_cast<UINT32>(text.length()),
+        pTextFormat,
+        &layoutRect,
+        pTextBrush
+    );
+
+    //리소스 해제
+    pOutlineBrush->Release();
+    pTextBrush->Release();
+    pTextFormat->Release();
+}
 

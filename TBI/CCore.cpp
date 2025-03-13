@@ -8,6 +8,7 @@
 #include "CKeyMgr.h"
 #include "Direct2DMgr.h"
 #include "CCamera.h"
+#include "CUIMgr.h"
 #include "CSceneMgr.h"
 #include "CFileMgr.h"
 #include "CFontMgr.h"
@@ -43,6 +44,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	Direct2DMgr::GetInstance()->init(m_hWnd);
 	CFileMgr::GetInstance()->init(CPathMgr::GetInstance()->GetContentPath());
 	CSceneMgr::GetInstance()->init();
+	CFontMgr::GetInstance()->init();
 	//////////////////////////Manager initialize//////////////////////////////
 
 	return S_OK;
@@ -60,6 +62,8 @@ void CCore::progress()
 
 
 	CSceneMgr::GetInstance()->update();
+	//UI 이벤트 체크
+	CUIMgr::GetInstance()->update();
 
 	ID2D1HwndRenderTarget* pRenderTarget = Direct2DMgr::GetInstance()->GetRenderTarget();
 	//한 프레임당 그림 그리기 시작. 
@@ -90,5 +94,18 @@ void CCore::Clear()
 {
 	//Direct2D방식
 	ID2D1HwndRenderTarget* pRenderTarget = Direct2DMgr::GetInstance()->GetRenderTarget();
-	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
+	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+}
+
+
+void CCore::CreateBrushPen()
+{
+	// Hollow Brush
+	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
+
+	//R,G,B Pen
+	m_arrPen[(UINT)PEN_TYPE::RED] = (HPEN)CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+	m_arrPen[(UINT)PEN_TYPE::GREEN] = (HPEN)CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	m_arrPen[(UINT)PEN_TYPE::BLUE] = (HPEN)CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 }

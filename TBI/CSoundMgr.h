@@ -16,6 +16,7 @@ struct SoundInfo {
 	FMOD::Sound* m_pSound = nullptr;
 	FMOD::Channel* m_pChannel = nullptr;
 	bool			isBGM = false;
+	bool isLoop = false;
 };
 
 class CSoundMgr

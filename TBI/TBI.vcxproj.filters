@@ -65,6 +65,33 @@
     <Filter Include="Engine\06. Component\TextUI">
       <UniqueIdentifier>{15a08de5-a879-4776-9249-4ad0bf3d2344}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Object\UI">
+      <UniqueIdentifier>{4ee5a877-7065-4369-b504-c0c2e7288454}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module">
+      <UniqueIdentifier>{f33747c1-aaa5-4068-b6a0-68179c9853bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\SelectGDI">
+      <UniqueIdentifier>{c59d1334-4c1c-4e5c-bfc3-1bed05761d00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\UI\CBtnUI">
+      <UniqueIdentifier>{c42beeba-7dfe-482b-acf2-524aa63fb8c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\UI\CSpriteUI">
+      <UniqueIdentifier>{95c1124c-5236-411c-bda2-5a672ae4e95b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\Image">
+      <UniqueIdentifier>{01efa6d7-2b6c-455e-82f4-08fb34b09f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\UIMgr">
+      <UniqueIdentifier>{9098addf-6010-4ad1-baa9-10965c51456b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\Animator">
+      <UniqueIdentifier>{1c2a3705-713d-417b-8eaa-d5cf56356e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\Animator\Animation">
+      <UniqueIdentifier>{04f17d12-dab5-487d-b655-64294117eab0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -136,6 +163,25 @@
     <ClInclude Include="CFontMgr.h">
       <Filter>Engine\03. SingleTon\FontMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>Engine\05. Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectGDI.h">
+      <Filter>Engine\07. Module\SelectGDI</Filter>
+    </ClInclude>
+    <ClInclude Include="CSpriteUI.h">
+      <Filter>Engine\05. Object\UI\CSpriteUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CImage.h">
+      <Filter>Engine\06. Component\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIMgr.h" />
+    <ClInclude Include="CAnimator.h">
+      <Filter>Engine\06. Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>Engine\06. Component\Animator\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -199,6 +245,25 @@
     </ClCompile>
     <ClCompile Include="CFontMgr.cpp">
       <Filter>Engine\03. SingleTon\FontMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>Engine\05. Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectGDI.cpp">
+      <Filter>Engine\07. Module\SelectGDI</Filter>
+    </ClCompile>
+    <ClCompile Include="CSpriteUI.cpp">
+      <Filter>Engine\05. Object\UI\CSpriteUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CImage.cpp">
+      <Filter>Engine\06. Component\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIMgr.cpp" />
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>Engine\06. Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>Engine\06. Component\Animator\Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

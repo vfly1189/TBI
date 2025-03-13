@@ -32,6 +32,8 @@ private:
 	float				m_fSpeed;			//타겟을 따라가는 속도. 
 	float				m_fAccTime;			//누적 시간. 
 
+	float m_fScale;
+
 	list<tCamEffect>	m_listCamEffect;
 
 public:

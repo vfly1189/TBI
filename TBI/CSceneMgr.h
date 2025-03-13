@@ -20,8 +20,6 @@ public:
 	void init();
 
 	void update();
-	void render(HDC _dc);
-	void render(Gdiplus::Graphics* _pDGraphics);
 	void render(ID2D1HwndRenderTarget* _pRender);
 
 	bool IsWaveScene() {

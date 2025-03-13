@@ -122,3 +122,17 @@ enum class ITEM_TYPE
 	CHARACTER,
 	END,
 };
+
+
+enum class BRUSH_TYPE {
+	HOLLOW,
+	BLACK,
+	END,
+};
+
+enum class PEN_TYPE {
+	RED,
+	GREEN,
+	BLUE,
+	END,
+};

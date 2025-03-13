@@ -92,6 +92,7 @@ void CSoundMgr::AddSound(wstring _keyName, wstring _fileName, bool _bgm, bool _l
 
 	SoundInfo* info = new SoundInfo;
 	info->isBGM = _bgm;
+	info->isLoop = _loop;
 
 	wstring strFilePath = CPathMgr::GetInstance()->GetContentPath();
 	strFilePath += _fileName;
@@ -101,16 +102,22 @@ void CSoundMgr::AddSound(wstring _keyName, wstring _fileName, bool _bgm, bool _l
 
 	if (_bgm) {
 		//BGM일때.
-		ret = m_pSystem->createStream(strFilePathNarrow.c_str(), FMOD_LOOP_NORMAL, nullptr, &info->m_pSound);
+
+		if (_loop)
+		{
+			ret = m_pSystem->createStream(strFilePathNarrow.c_str(), FMOD_LOOP_NORMAL | FMOD_CREATECOMPRESSEDSAMPLE, nullptr, &info->m_pSound);
+		}
+		else
+			ret = m_pSystem->createStream(strFilePathNarrow.c_str(), FMOD_DEFAULT | FMOD_CREATECOMPRESSEDSAMPLE, nullptr, &info->m_pSound);
 	}
 	else {
 		//BGM이 아닌 SFX일때. 
 
 		if (_loop) {
-			ret = m_pSystem->createSound(strFilePathNarrow.c_str(), FMOD_LOOP_NORMAL, nullptr, &info->m_pSound);
+			ret = m_pSystem->createSound(strFilePathNarrow.c_str(), FMOD_LOOP_NORMAL | FMOD_CREATECOMPRESSEDSAMPLE, nullptr, &info->m_pSound);
 		}
 		else {
-			ret = m_pSystem->createSound(strFilePathNarrow.c_str(), FMOD_DEFAULT, nullptr, &info->m_pSound);
+			ret = m_pSystem->createSound(strFilePathNarrow.c_str(), FMOD_DEFAULT | FMOD_CREATECOMPRESSEDSAMPLE, nullptr, &info->m_pSound);
 		}
 	}
 
@@ -136,6 +143,11 @@ void CSoundMgr::Play(wstring _keyName, float _volume)
 		m_pSystem->playSound(soundIter->second->m_pSound, m_pSFXChannelGroup, false, &soundIter->second->m_pChannel);
 
 		soundIter->second->m_pChannel->setVolume(_volume);
+
+		// [추가] 루프 설정
+		if (soundIter->second->isLoop) {
+			soundIter->second->m_pChannel->setLoopCount(-1); // 무한 루프
+		}
 	}
 
 }

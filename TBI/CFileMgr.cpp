@@ -80,13 +80,13 @@ void CFileMgr::ProcessFile(const std::wstring& filePath)
 
         wprintf(L"Loaded PNG: %s\n", tag.c_str());
     }
-    else if (extension == L"mp3" || extension == L"wav")
+    else if (extension == L"mp3" || extension == L"wav" || extension == L"ogg")
     {
         // MP3 또는 WAV 파일 처리
         wstring key = GetFileNameWithoutExtension(fileName);
 
-        if (L"main_title_bgm" == key) {
-            CSoundMgr::GetInstance()->AddSound(key, relativePath.c_str(), true, false);
+        if (L"genesis_retake_light_loop" == key) {
+            CSoundMgr::GetInstance()->AddSound(key, relativePath.c_str(), true, true);
             wprintf(L"BGM: %s\n", key.c_str());
         }
         else {
