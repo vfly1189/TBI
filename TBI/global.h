@@ -68,6 +68,7 @@ using namespace Gdiplus;
 #include "define.h"
 #include "struct.h"
 #include "func.h"
+#include "cursorpos.h"
 
 std::random_device rd;
 std::mt19937 rng(rd());

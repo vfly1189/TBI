@@ -23,6 +23,8 @@ void CAnimation::Create(ID2D1Bitmap* _bitmap
 
 	tAnimFrm frm = {};
 	for (UINT frameIDX = 0; frameIDX < _iFrameCount; frameIDX++) {
+
+		
 		frm.fDuration = _fDuration;
 		frm.vLT = _vLT + _vStep * (float)frameIDX;
 		frm.vSlice = _vSliceSize;
@@ -72,15 +74,13 @@ void CAnimation::render(ID2D1HwndRenderTarget* _pRender)
 	CObject* pObj = m_pAnimator->GetObj();
 	Vec2 vPos = m_vFinalPos;
 
-	printf("%.f , %.f \n", m_vOffSet.x, m_vOffSet.y);
-
 	Vec2 vScale = pObj->GetScale();
 	
 	Vec2 vWaveScale = pObj->GetRenderScale();
 	Vec2 vFinalScale = vWaveScale / vScale;
 
 	vPos += m_vecFrm[m_iCurFrm].vOffset;			// Object Position에 Offset만큼 추가 이동 위치. 
-	//vPos = CCamera::GetInstance()->GetRenderPos(vPos);
+	vPos = CCamera::GetInstance()->GetRenderPos(vPos);
 
 	// 목적지 사각형 계산
 	float destLeft = vPos.x - (m_vecFrm[m_iCurFrm].vSlice.x / 2.f) * vFinalScale.x;

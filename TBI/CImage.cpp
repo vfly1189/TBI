@@ -60,7 +60,8 @@ void CImage::render(ID2D1HwndRenderTarget* _renderTarget)
 	
 	//임시적으로 GROUP_TYPE이 UI거나 DEFAULT인 경우에만 RenderPos 적용 x -> 화면상에서 고정된 위치
 	// -> MAIN화면의 뒷배경, START화면의 HP,XP,재화 표시 UI, (캐릭선택,무기선택)씬
-	if (m_pOwner->GetObjType() == GROUP_TYPE::UI || m_pOwner->GetObjType() == GROUP_TYPE::DEFAULT)
+	if (m_pOwner->GetObjType() == GROUP_TYPE::UI || m_pOwner->GetObjType() == GROUP_TYPE::DEFAULT
+		|| m_pOwner->GetObjType() == GROUP_TYPE::EFFECT)
 	{
 		//vPos = CCamera::GetInstance()->GetRenderPos(vPos);
 	}

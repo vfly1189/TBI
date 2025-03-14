@@ -94,6 +94,7 @@ void CSpriteUI::render(ID2D1HwndRenderTarget* _pRender)
         if (m_bCamAffected) {
             vPos = CCamera::GetInstance()->GetRenderPos(vPos);
         }
+        vPos = CCamera::GetInstance()->GetRenderPos(vPos);
 
         // vPos와 vScale은 이미 계산된 좌표와 스케일 값입니다.
         D2D1_RECT_F rect = D2D1::RectF(

@@ -75,6 +75,11 @@ void CScene_Test::CreateMain(Direct2DMgr* _pD2DMgr, Vec2 _vResolution)
 	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"logo"), L"logoShadow",
 		D2D1::Point2F(0.f, 160.f), D2D1::Point2F(480.f, 320.f));
 
+	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"fly"), L"main_fly",
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(96.f, 160.f));
+
+	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"fly"), L"main_fly_shadow",
+		D2D1::Point2F(96.f, 0.f), D2D1::Point2F(192.f, 160.f));
 
 	///////////////////////뒷 배경/////////////////////////
 	CSpriteUI* MainPanel = new CSpriteUI;
@@ -86,6 +91,7 @@ void CScene_Test::CreateMain(Direct2DMgr* _pD2DMgr, Vec2 _vResolution)
 	AddObject(MainPanel, GROUP_TYPE::DEFAULT);
 	///////////////////////뒷 배경/////////////////////////
 
+	
 	////////////////////////가운데 캐릭터//////////////////////////////
 	CSpriteUI* test = MainPanel->AddChild<CSpriteUI>(Vec2(-10.f, 60.f));
 	test->SetObjType(GROUP_TYPE::DEFAULT);
@@ -126,23 +132,61 @@ void CScene_Test::CreateMain(Direct2DMgr* _pD2DMgr, Vec2 _vResolution)
 	AddObject(MainLogoText, GROUP_TYPE::DEFAULT);
 	///////////////////////메인 로고 텍스트/////////////////////////
 
+	
+	////////////////////////파리////////////////////////////////////
+	CSpriteUI* MainFly = MainPanel->AddChild<CSpriteUI>(Vec2(300.f, 0.f));
+	MainFly->SetObjType(GROUP_TYPE::DEFAULT);
+	MainFly->SetName(L"main_fly");
+	MainFly->CreateAnimator();
+
+	MainFly->GetAnimator()->CreateAnimation(L"main_fly", _pD2DMgr->GetStoredBitmap(L"main_fly")
+		, Vec2(0.f, 0.f), Vec2(96.f, 80.f), Vec2(0.f, 80.f), 0.1f, 2);
+	MainFly->GetAnimator()->Play(L"main_fly", true);
+
+	MainFly->SetScale(Vec2(96.f, 80.f) * 2);
+	MainFly->SetRenderScale(MainFly->GetScale() * 2.f);
+	AddObject(MainFly, GROUP_TYPE::DEFAULT);
+	////////////////////////파리////////////////////////////////////
+
+	////////////////////////파리 그림자////////////////////////////////////
+	CSpriteUI* MainFlyShadow = MainFly->AddChild<CSpriteUI>(Vec2(0.f, 25.f));
+	MainFlyShadow->SetObjType(GROUP_TYPE::DEFAULT);
+	MainFlyShadow->SetName(L"main_fly_shadow");
+	MainFlyShadow->CreateAnimator();
+
+	MainFlyShadow->GetAnimator()->CreateAnimation(L"main_fly_shadow", _pD2DMgr->GetStoredBitmap(L"main_fly_shadow")
+		, Vec2(0.f, 0.f), Vec2(96.f, 80.f), Vec2(0.f, 80.f), 0.1f, 2);
+	MainFlyShadow->GetAnimator()->Play(L"main_fly_shadow", true);
+
+	MainFlyShadow->SetScale(Vec2(96.f, 80.f) * 2);
+	MainFlyShadow->SetRenderScale(MainFlyShadow->GetScale() * 2.f);
+	AddObject(MainFlyShadow, GROUP_TYPE::DEFAULT);
+	////////////////////////파리 그림자////////////////////////////////////
+
+
+
+
+
+
+
+
+
 	///////////////////////화면 overlay/////////////////////////
 	CSpriteUI* MainMenuOverlay = MainPanel->AddChild<CSpriteUI>(Vec2(0.f, 0.f));
-	MainMenuOverlay->SetObjType(GROUP_TYPE::DEFAULT);
+	MainMenuOverlay->SetObjType(GROUP_TYPE::EFFECT);
 	MainMenuOverlay->SetName(L"main_menuoverlay");
 	MainMenuOverlay->AddImage(_pD2DMgr->GetStoredBitmap(L"menuoverlay"));
-	MainMenuOverlay->SetPos(_vResolution / 2.f);
 	MainMenuOverlay->SetScale(_vResolution);
-	AddObject(MainMenuOverlay, GROUP_TYPE::DEFAULT);
+	AddObject(MainMenuOverlay, GROUP_TYPE::EFFECT);
 	///////////////////////화면 overlay/////////////////////////
 
+	
 	///////////////////////화면 overlay 그림자/////////////////////////
-	CSpriteUI* MainMenuShadow = MainPanel->AddChild<CSpriteUI>(Vec2(0.f, 0.f));
-	MainMenuShadow->SetObjType(GROUP_TYPE::DEFAULT);
+	CSpriteUI* MainMenuShadow = MainPanel->AddChild<CSpriteUI>(Vec2(-200.f, 200.f));
+	MainMenuShadow->SetObjType(GROUP_TYPE::EFFECT);
 	MainMenuShadow->SetName(L"main_menushadow");
 	MainMenuShadow->AddImage(_pD2DMgr->GetStoredBitmap(L"menushadow"));
-	MainMenuShadow->SetPos(_vResolution / 2.f);
 	MainMenuShadow->SetScale(_vResolution);
-	AddObject(MainMenuShadow, GROUP_TYPE::DEFAULT);
+	AddObject(MainMenuShadow, GROUP_TYPE::EFFECT);
 	///////////////////////화면 overlay 그림자/////////////////////////
 }

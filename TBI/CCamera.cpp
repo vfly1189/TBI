@@ -8,7 +8,7 @@
 
 
 CCamera::CCamera()
-	: m_fTime(0.5f)
+	: m_fTime(0.4f)
 	, m_fSpeed(0.f)
 	, m_fAccTime(0.5f)
 	, m_fScale(2.f)
@@ -34,7 +34,7 @@ void CCamera::update()
 	// 이동 속도 조정 (줌 배율 반영)
 	const float BASE_SPEED = 500.f;
 	const float MOVE_SPEED = BASE_SPEED / m_fScale;
-
+	/*
 	if (KEY_HOLD(KEY::UP)) {
 		m_vLookAt.y -= 500.f * fDT;
 	}
@@ -47,7 +47,7 @@ void CCamera::update()
 	if (KEY_HOLD(KEY::LEFT)) {
 		m_vLookAt.x -= 500.f * fDT;
 	}
-
+	*/
 	//m_vLookAt.x = max(m_vMinBounds.x, min(m_vLookAt.x, m_vMaxBounds.x));
 	//m_vLookAt.y = max(m_vMinBounds.y, min(m_vLookAt.y, m_vMaxBounds.y));
 

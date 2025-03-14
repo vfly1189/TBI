@@ -92,6 +92,9 @@
     <Filter Include="Engine\06. Component\Animator\Animation">
       <UniqueIdentifier>{04f17d12-dab5-487d-b655-64294117eab0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Scene\CScene_Main">
+      <UniqueIdentifier>{fbda60b2-e909-47c5-b2f5-1b0f1cddda6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -175,12 +178,20 @@
     <ClInclude Include="CImage.h">
       <Filter>Engine\06. Component\Image</Filter>
     </ClInclude>
-    <ClInclude Include="CUIMgr.h" />
     <ClInclude Include="CAnimator.h">
       <Filter>Engine\06. Component\Animator</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation.h">
       <Filter>Engine\06. Component\Animator\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Main.h">
+      <Filter>Engine\04. Scene\CScene_Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIMgr.h">
+      <Filter>Engine\03. SingleTon\UIMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="cursorpos.h">
+      <Filter>Engine\01. Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -258,12 +269,17 @@
     <ClCompile Include="CImage.cpp">
       <Filter>Engine\06. Component\Image</Filter>
     </ClCompile>
-    <ClCompile Include="CUIMgr.cpp" />
     <ClCompile Include="CAnimator.cpp">
       <Filter>Engine\06. Component\Animator</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
       <Filter>Engine\06. Component\Animator\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Main.cpp">
+      <Filter>Engine\04. Scene\CScene_Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIMgr.cpp">
+      <Filter>Engine\03. SingleTon\UIMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

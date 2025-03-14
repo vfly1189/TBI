@@ -2,6 +2,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 
+#include "CScene_Main.h"
 #include "CScene_Test.h"
 
 CSceneMgr::CSceneMgr()
@@ -32,9 +33,13 @@ void CSceneMgr::init()
 	m_arrScene[(UINT)SCENE_TYPE::TEST]->SetName(L"CScene_Test");
 	m_arrScene[(UINT)SCENE_TYPE::TEST]->SetSceneType(SCENE_TYPE::TEST);
 	
+	m_arrScene[(UINT)SCENE_TYPE::MAIN] = new CScene_Main;
+	m_arrScene[(UINT)SCENE_TYPE::MAIN]->SetName(L"CScene_Main");
+	m_arrScene[(UINT)SCENE_TYPE::MAIN]->SetSceneType(SCENE_TYPE::MAIN);
+
 
 	//ÇöÀç ¾À ¼³Á¤
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TEST];
+	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::MAIN];
 
 	m_pCurScene->Enter();
 

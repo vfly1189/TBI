@@ -65,8 +65,6 @@ CAnimation* CAnimator::FindAnimation(const wstring& _strName)
 
 void CAnimator::Play(const wstring& _animName, bool _bRepeat)
 {
-	printf("hi");
-
 	m_pCurAnim = FindAnimation(_animName);
 
 	m_bRepeat = _bRepeat;
