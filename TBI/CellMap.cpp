@@ -3,7 +3,9 @@
 
 #include "MapMgr.h"
 #include "Direct2DMgr.h"
+#include "CPlayerMgr.h"
 
+#include "CPlayer.h"
 #include "CCollectiblesItem.h"
 #include "CWall.h"
 #include "CDoor.h"
@@ -208,11 +210,108 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 
 		m_vecObjects.push_back(newItem);
 	}
+	else if (m_eRoomType == ROOM_INFO::START)
+	{
+		CreateControlExplain();
+	}
 }
 
 CellMap::~CellMap()
 {
 
+}
+
+void CellMap::CreateControlExplain()
+{
+	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
+	CPlayer* player = CPlayerMgr::GetInstance()->GetPlayer();
+	int characterIdx = player->GetCharactIdx();
+
+
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls"), L"control",
+		D2D1::Point2F(0.f, 97.f * characterIdx), D2D1::Point2F(325.f, 97.f * (characterIdx + 1)));
+
+	//w
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_w",
+		D2D1::Point2F(96.f, 16.f), D2D1::Point2F(96.f + 16.f, 16.f + 16.f));
+	//a
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_a",
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(0.f + 16.f, 0.f + 16.f));
+	//s
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_s",
+		D2D1::Point2F(32.f, 16.f), D2D1::Point2F(32.f + 16.f, 16.f + 16.f));
+	//d
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_d",
+		D2D1::Point2F(48.f, 0.f), D2D1::Point2F(48.f + 16.f, 0.f + 16.f));
+	//e
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_e",
+		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(64.f + 16.f, 0.f + 16.f));
+	//space
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_space",
+		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(0.f + 32.f, 48.f + 16.f));
+
+
+	CSpriteUI* controlExplain = cellMap->AddChild<CSpriteUI>(Vec2(0.f, -20.f));
+	controlExplain->SetScale(Vec2(325.f, 97.f) * 2.f);
+	controlExplain->AddImage(pD2DMgr->GetStoredBitmap(L"control"));
+
+	CSpriteUI* controlButtonW = cellMap->AddChild<CSpriteUI>(Vec2(-280.f, 50.f));
+	controlButtonW->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonW->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_w"));
+
+	CSpriteUI* controlButtonA = cellMap->AddChild<CSpriteUI>(Vec2(-255.f, 50.f));
+	controlButtonA->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonA->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_a"));
+
+	CSpriteUI* controlButtonS = cellMap->AddChild<CSpriteUI>(Vec2(-230.f, 50.f));
+	controlButtonS->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonS->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_s"));
+
+	CSpriteUI* controlButtonD = cellMap->AddChild<CSpriteUI>(Vec2(-205.f, 50.f));
+	controlButtonD->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonD->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_d"));
+
+
+
+
+	//위 화살표
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_up_arrow",
+		D2D1::Point2F(128.f, 64.f), D2D1::Point2F(128.f + 16.f, 64.f + 16.f));
+	//아래 화살표
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_down_arrow",
+		D2D1::Point2F(112.f, 64.f), D2D1::Point2F(112.f + 16.f, 64.f + 16.f));
+	//오른쪽 화살표
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_right_arrow",
+		D2D1::Point2F(80.f, 64.f), D2D1::Point2F(80.f + 16.f, 64.f + 16.f));
+	//아래 화살표
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"controls_buttons"), L"control_button_left_arrow",
+		D2D1::Point2F(96.f, 64.f), D2D1::Point2F(96.f + 16.f, 64.f + 16.f));
+
+
+	CSpriteUI* controlButtonUpArrow = cellMap->AddChild<CSpriteUI>(Vec2(-115.f, 50.f));
+	controlButtonUpArrow->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonUpArrow->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_up_arrow"));
+
+	CSpriteUI* controlButtonLeftArrow = cellMap->AddChild<CSpriteUI>(Vec2(-90.f, 50.f));
+	controlButtonLeftArrow->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonLeftArrow->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_left_arrow"));
+
+	CSpriteUI* controlButtonDownArrow = cellMap->AddChild<CSpriteUI>(Vec2(-65.f, 50.f));
+	controlButtonDownArrow->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonDownArrow->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_down_arrow"));
+
+	CSpriteUI* controlButtonRightArrow = cellMap->AddChild<CSpriteUI>(Vec2(-40.f, 50.f));
+	controlButtonRightArrow->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonRightArrow->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_right_arrow"));
+
+
+	CSpriteUI* controlButtonE = cellMap->AddChild<CSpriteUI>(Vec2(90.f, 50.f));
+	controlButtonE->SetScale(Vec2(16.f, 16.f) * 2.f);
+	controlButtonE->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_e"));
+
+	CSpriteUI* controlButtonSpace = cellMap->AddChild<CSpriteUI>(Vec2(260.f, 50.f));
+	controlButtonSpace->SetScale(Vec2(32.f, 16.f) * 2.f);
+	controlButtonSpace->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_space"));
 }
 
 void CellMap::update()

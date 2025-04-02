@@ -13,7 +13,7 @@ typedef struct _Item
 	int							m_iNumber;					//아이템 번호
 	COLLECTIBLES_ITEM_TYPE		m_eItemType;				//아이템 타입 ( 액티브 , 패시브 )
 
-	int							m_iAddMaxHp;				//+최대 hp
+	float						m_fAddMaxHp;				//+최대 hp
 
 	float						m_fAddAttackDmg;			//+공격력
 	float						m_fAddAttackDmgCoef;		//+공격력 배수

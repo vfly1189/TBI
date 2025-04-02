@@ -81,10 +81,6 @@ void CSpriteUI::update()
         GetAnimator()->update();
 
     CUI::update();
-
-
-    if (GetName().compare(L"TESTITEM") == 0)
-        printf("°´Ã¼ À§Ä¡ : %f %f\n", GetPos().x, GetPos().y);
 }
 
 void CSpriteUI::render(ID2D1HwndRenderTarget* _pRender)

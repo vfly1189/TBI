@@ -55,6 +55,7 @@ private:
 
 private:
     wstring                 m_sCharacter;
+    int                     m_iCharacterIdx;
 
 private:
     float                   m_fAccTimeTear;
@@ -74,9 +75,11 @@ public:
     PlayerStat& GetPlayerStat() { return m_stPlayerStat; }
     void SetCharacterName(wstring _characterName) { m_sCharacter = _characterName; }
     wstring GetCharacterName() { return m_sCharacter; }
+    void SetCharacterIdx(int _idx) { m_iCharacterIdx = _idx; }
+    int GetCharactIdx() { return m_iCharacterIdx; }
 
-    void AddCurHp(int _iCurHp) { m_stPlayerStat.m_iCurHp += _iCurHp; }
-    void AddMaxHp(int _iMaxHp) { m_stPlayerStat.m_iMaxHp += _iMaxHp; }
+    void AddCurHp(float _fCurHp) { m_stPlayerStat.m_fCurHp += _fCurHp; }
+    void AddMaxHp(float _fMaxHp) { m_stPlayerStat.m_fMaxHp += _fMaxHp; }
 
     void AddAttackDmg(float _fAttackDmg) { m_stPlayerStat.m_fAttackDmg += _fAttackDmg; }
     void AddAttackDmgCoef(float _fAttackDmgCoef) { m_stPlayerStat.m_fAttackDmgCoef += _fAttackDmgCoef; }

@@ -3,8 +3,8 @@
 
 typedef struct _PlayerStat
 {
-	int			m_iCurHp;				//현재 hp
-	int			m_iMaxHp;				//최대 hp
+	float		m_fCurHp;				//현재 hp
+	float		m_fMaxHp;				//최대 hp
 
 	float		m_fAttackDmg;			//공격력
 	float		m_fAttackDmgCoef;		//공격력 배수
@@ -23,7 +23,7 @@ typedef struct _CharacterInfo
 }CharacterInfo;
 
 PlayerStat isaac_stat = {
-	3, 3,
+	5.5, 8,
 	5.f, 1.f, 0.5f,
 	500.f,
 	300.f

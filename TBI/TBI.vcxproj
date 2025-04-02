@@ -166,6 +166,7 @@
     <ClInclude Include="CItemMgr.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CObject.h" />
+    <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathMgr.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CPlayerMgr.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="CItemMgr.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CPlayerMgr.cpp" />

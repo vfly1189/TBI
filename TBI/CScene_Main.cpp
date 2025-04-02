@@ -87,6 +87,7 @@ void CScene_Main::update()
 			float maxVelocity = vecCharacterInfo[m_iCurCharacterIndex].m_stat.m_fMoveSpd;
 			player->GetRigidBody()->SetMaxVelocity(Vec2(maxVelocity, maxVelocity));
 			player->SetCharacterName(vecCharacterInfo[m_iCurCharacterIndex].m_characterName);
+			player->SetCharacterIdx(m_iCurCharacterIndex);
 
 			CPlayerMgr::GetInstance()->SettingImageAndAnimations(m_iCurCharacterIndex);
 
@@ -101,7 +102,7 @@ void CScene_Main::update()
 
 		float fDelta;
 
-		if (m_fAccTime < 4.f) fDelta = 1.f;
+		if (m_fAccTime < 1.f) fDelta = 1.f;
 		else fDelta = -1.f;
 
 		m_fFadeAlpha += (1.f / m_fFadeDuration) * fDelta * fDT;
@@ -114,7 +115,7 @@ void CScene_Main::update()
 		child->GetAnimator()->FindAnimation(L"loadImage")->SetAlpha(m_fFadeAlpha);
 
 		printf("시간 :%f\n", m_fAccTime);
-		if (m_fAccTime > 4.f)
+		if (m_fAccTime > 1.f)
 		{
 			printf("씬 전환\n");
 			ChangeScene(SCENE_TYPE::FIGHT);

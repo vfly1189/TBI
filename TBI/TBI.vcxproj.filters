@@ -140,6 +140,9 @@
     <Filter Include="Engine\05. Object\Item\CCollectiblesItem">
       <UniqueIdentifier>{f8cedb7e-52cb-4e66-a911-caddd3d0dbde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Object\UI\CPanelUI">
+      <UniqueIdentifier>{ce46f675-7286-459b-99fc-1567ce8ee73b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -289,6 +292,9 @@
     <ClInclude Include="CCollectiblesItem.h">
       <Filter>Engine\05. Object\Item\CCollectiblesItem</Filter>
     </ClInclude>
+    <ClInclude Include="CPanelUI.h">
+      <Filter>Engine\05. Object\UI\CPanelUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -418,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="CCollectiblesItem.cpp">
       <Filter>Engine\05. Object\Item\CCollectiblesItem</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanelUI.cpp">
+      <Filter>Engine\05. Object\UI\CPanelUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

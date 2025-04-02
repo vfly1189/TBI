@@ -25,8 +25,8 @@ void CTextUI::render(ID2D1HwndRenderTarget* _pRender)
 
 	auto d2dManager = Direct2DMgr::GetInstance();
 
-	Vec2 vPos = CCamera::GetInstance()->GetRenderPos(m_pOwner->GetFinalPos());
-
+	//Vec2 vPos = CCamera::GetInstance()->GetRenderPos(m_pOwner->GetFinalPos());
+	Vec2 vPos = m_pOwner->GetFinalPos();
 	
 	ID2D1SolidColorBrush* brush = nullptr;
 	HRESULT hr = _pRender->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &brush);

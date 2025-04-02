@@ -67,7 +67,6 @@ public:
     virtual void OnCollision(CCollider* _pOther);
     virtual void OnCollisionEnter(CCollider* _pOther);
     virtual void OnCollisionExit(CCollider* _pOther);
-
 public:
     CSpriteUI();
     virtual ~CSpriteUI();

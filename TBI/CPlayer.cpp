@@ -64,7 +64,7 @@ void CPlayer::ObtainItem(Item _obtainItem)
 {
     printf("아이템 번호 : %d", _obtainItem.m_iNumber);
 
-    m_stPlayerStat.m_iMaxHp += _obtainItem.m_iAddMaxHp;
+    m_stPlayerStat.m_fMaxHp += _obtainItem.m_fAddMaxHp;
     m_stPlayerStat.m_fAttackDmg += _obtainItem.m_fAddAttackDmg;
     m_stPlayerStat.m_fAttackDmgCoef += _obtainItem.m_fAddAttackDmgCoef;
     m_stPlayerStat.m_fAttackRange += _obtainItem.m_fAddAttackRange;
@@ -124,7 +124,17 @@ void CPlayer::update()
 
     update_arrowKey();
 
-    if (KEY_TAP(KEY::L))
+    if (KEY_TAP(KEY::Y))
+    {
+        m_stPlayerStat.m_fCurHp -= 0.5f;
+    }
+
+    if (KEY_TAP(KEY::U))
+    {
+        m_stPlayerStat.m_fAttackDmg += 0.1f;
+    }
+
+    if (KEY_TAP(KEY::I))
     {
         m_stPlayerStat.m_fAttackSpd -= 0.1f;
         if (m_stPlayerStat.m_fAttackSpd <= 0.1f)
@@ -134,10 +144,20 @@ void CPlayer::update()
         }
     }
 
+    if (KEY_TAP(KEY::O))
+    {
+        m_stPlayerStat.m_fMoveSpd += 10.f;
+    }
+
+    if (KEY_TAP(KEY::P))
+    {
+        m_stPlayerStat.m_fAttackRange += 10.f;
+    }
+
     if (KEY_TAP(KEY::K))
     {
-        printf("현재 hp : %d\n", m_stPlayerStat.m_iCurHp);
-        printf("최대 hp : %d\n", m_stPlayerStat.m_iMaxHp);
+        printf("현재 hp : %f\n", m_stPlayerStat.m_fCurHp);
+        printf("최대 hp : %f\n", m_stPlayerStat.m_fMaxHp);
 
         printf("현재 공격력 : %f\n", m_stPlayerStat.m_fAttackDmg);
         printf("현재 공격력 계수 : %f\n", m_stPlayerStat.m_fAttackDmgCoef);

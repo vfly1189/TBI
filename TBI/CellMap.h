@@ -41,6 +41,10 @@ public:
 	void render(ID2D1HwndRenderTarget* _pRender);
 
 public:
+	void CreateControlExplain();
+
+
+public:
 	CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM_INFO _eRoomType);
 	~CellMap();
 };

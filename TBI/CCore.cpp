@@ -52,10 +52,11 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	
 	CFontMgr::GetInstance()->init();
 	CItemMgr::GetInstance()->init();
-	MapMgr::GetInstance()->init();
+	
 	CPlayerMgr::GetInstance()->init();
+	MapMgr::GetInstance()->init();
 	CSceneMgr::GetInstance()->init();
-	CItemMgr::GetInstance()->init();
+	CItemMgr::GetInstance()->init();;
 	//////////////////////////Manager initialize//////////////////////////////
 
 	return S_OK;
