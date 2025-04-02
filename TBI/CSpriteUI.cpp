@@ -81,6 +81,10 @@ void CSpriteUI::update()
         GetAnimator()->update();
 
     CUI::update();
+
+
+    if (GetName().compare(L"TESTITEM") == 0)
+        printf("°´Ã¼ À§Ä¡ : %f %f\n", GetPos().x, GetPos().y);
 }
 
 void CSpriteUI::render(ID2D1HwndRenderTarget* _pRender)
@@ -149,11 +153,28 @@ void CSpriteUI::render(ID2D1HwndRenderTarget* _pRender)
             pOutlineBrush->Release();
         }
     }
+
     component_render(_pRender);
+    render_child(_pRender);
 }
 
 void CSpriteUI::MouseLbtnClicked()
 {
     if (GetParent())
         GetParent()->MouseLbtnClicked();
+}
+
+void CSpriteUI::OnCollision(CCollider* _pOther)
+{
+
+}
+
+void CSpriteUI::OnCollisionEnter(CCollider* _pOther)
+{
+    
+}
+
+void CSpriteUI::OnCollisionExit(CCollider* _pOther)
+{
+
 }

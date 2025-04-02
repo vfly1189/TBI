@@ -35,6 +35,7 @@ public:
 	ID2D1Bitmap* GetStoredBitmap(const wstring& tag);
 	vector<ID2D1Bitmap*> GetSplitBitmaps(const wstring& tag);
 
+
 public:
 	HRESULT StoreBitmapsFromFolder(const std::wstring& folderPath, const std::wstring& tag);
 

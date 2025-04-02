@@ -60,6 +60,9 @@ public:
 	void DeleteAll();
 
 public:
+	static bool GetPause() { return isPause; }
+
+public:
 	CScene();
 
 	//소멸자의 가상함수 해줘야함. 씬 매니저가 모든 Scene을 부모 포인터로 관리함.

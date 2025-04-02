@@ -11,7 +11,12 @@
 #include "CUIMgr.h"
 #include "CSceneMgr.h"
 #include "CFileMgr.h"
+#include "CEventMgr.h"
 #include "CFontMgr.h"
+#include "CCollisionMgr.h"
+#include "CPlayerMgr.h"
+#include "MapMgr.h"
+#include "CItemMgr.h"
 
 CCore::CCore()
 	: m_hWnd(0)
@@ -40,11 +45,17 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CTimeMgr::GetInstance()->init();
 	CKeyMgr::GetInstance()->init();
 	CSoundMgr::GetInstance()->init();
-	CCamera::GetInstance()->init();
+	
 	Direct2DMgr::GetInstance()->init(m_hWnd);
-	CFileMgr::GetInstance()->init(CPathMgr::GetInstance()->GetContentPath());
-	CSceneMgr::GetInstance()->init();
+	
+	CFileMgr::GetInstance()->init(CPathMgr::GetInstance()->GetContentPath());CCamera::GetInstance()->init();
+	
 	CFontMgr::GetInstance()->init();
+	CItemMgr::GetInstance()->init();
+	MapMgr::GetInstance()->init();
+	CPlayerMgr::GetInstance()->init();
+	CSceneMgr::GetInstance()->init();
+	CItemMgr::GetInstance()->init();
 	//////////////////////////Manager initialize//////////////////////////////
 
 	return S_OK;
@@ -63,6 +74,9 @@ void CCore::progress()
 
 	CSceneMgr::GetInstance()->update();
 	//UI 이벤트 체크
+	// 충돌 체크. 
+	CCollisionMgr::GetInstance()->update();
+
 	CUIMgr::GetInstance()->update();
 
 	ID2D1HwndRenderTarget* pRenderTarget = Direct2DMgr::GetInstance()->GetRenderTarget();
@@ -81,6 +95,7 @@ void CCore::progress()
 
 	CTimeMgr::GetInstance()->render();
 
+	CEventMgr::GetInstance()->update();
 }
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
@@ -94,7 +109,7 @@ void CCore::Clear()
 {
 	//Direct2D방식
 	ID2D1HwndRenderTarget* pRenderTarget = Direct2DMgr::GetInstance()->GetRenderTarget();
-	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+	pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Black));
 }
 
 

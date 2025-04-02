@@ -95,6 +95,51 @@
     <Filter Include="Engine\04. Scene\CScene_Main">
       <UniqueIdentifier>{fbda60b2-e909-47c5-b2f5-1b0f1cddda6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. SingleTon\EventMgr">
+      <UniqueIdentifier>{aa7024e1-5863-41f5-9f83-0b1b9e97ed13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\08. Factory">
+      <UniqueIdentifier>{13d37df5-b00e-48b3-ad0f-92a772e7a573}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\MapMgr">
+      <UniqueIdentifier>{e663bc7e-d9cd-48dd-8356-404fd9790a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\PlayerMgr">
+      <UniqueIdentifier>{aa329346-2a7a-4b4a-935a-d86ed3082650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\Collider">
+      <UniqueIdentifier>{e1a02504-c4a1-420f-b734-653afa7f64c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Wall">
+      <UniqueIdentifier>{1263378f-64f9-4d21-bd21-c2d2531732c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\CollisionMgr">
+      <UniqueIdentifier>{9f5f9fa0-8b47-4267-a3c7-8e7ae3127000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\MapMgr\CellMap">
+      <UniqueIdentifier>{8b2b3c81-b668-4436-a920-5181dc027382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Scene\CScene_Fight">
+      <UniqueIdentifier>{5c009d4a-5593-4d0a-b23a-77e60eeb5d66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Door">
+      <UniqueIdentifier>{e05dd8f8-7073-4aa8-bb01-4cfe96b203cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06. Component\RigidBody">
+      <UniqueIdentifier>{5176f8ab-c0e5-43ab-9771-5562d1efc6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Tear">
+      <UniqueIdentifier>{d1051498-5c85-49dd-8996-6feafd47558b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\ItemMgr">
+      <UniqueIdentifier>{b70ec88a-a880-4781-b41b-879e4ca5cc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Item">
+      <UniqueIdentifier>{af20e9a4-9164-49c8-a0fe-d2f0096d9fe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Item\CCollectiblesItem">
+      <UniqueIdentifier>{f8cedb7e-52cb-4e66-a911-caddd3d0dbde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -190,8 +235,59 @@
     <ClInclude Include="CUIMgr.h">
       <Filter>Engine\03. SingleTon\UIMgr</Filter>
     </ClInclude>
-    <ClInclude Include="cursorpos.h">
+    <ClInclude Include="header_pos.h">
       <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="names_string.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CEventMgr.h">
+      <Filter>Engine\03. SingleTon\EventMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MapMgr.h">
+      <Filter>Engine\03. SingleTon\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerMgr.h">
+      <Filter>Engine\03. SingleTon\PlayerMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>Engine\06. Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CWall.h">
+      <Filter>Engine\05. Object\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionMgr.h">
+      <Filter>Engine\03. SingleTon\CollisionMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CellMap.h">
+      <Filter>Engine\03. SingleTon\MapMgr\CellMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Fight.h">
+      <Filter>Engine\04. Scene\CScene_Fight</Filter>
+    </ClInclude>
+    <ClInclude Include="CDoor.h">
+      <Filter>Engine\05. Object\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="CTear.h">
+      <Filter>Engine\05. Object\Tear</Filter>
+    </ClInclude>
+    <ClInclude Include="CRigidBody.h">
+      <Filter>Engine\06. Component\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="character_stats.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CItemMgr.h">
+      <Filter>Engine\03. SingleTon\ItemMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CItem.h">
+      <Filter>Engine\05. Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="item_info.h">
+      <Filter>Engine\01. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollectiblesItem.h">
+      <Filter>Engine\05. Object\Item\CCollectiblesItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +376,48 @@
     </ClCompile>
     <ClCompile Include="CUIMgr.cpp">
       <Filter>Engine\03. SingleTon\UIMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CEventMgr.cpp">
+      <Filter>Engine\03. SingleTon\EventMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MapMgr.cpp">
+      <Filter>Engine\03. SingleTon\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerMgr.cpp">
+      <Filter>Engine\03. SingleTon\PlayerMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>Engine\06. Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CWall.cpp">
+      <Filter>Engine\05. Object\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionMgr.cpp">
+      <Filter>Engine\03. SingleTon\CollisionMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CellMap.cpp">
+      <Filter>Engine\03. SingleTon\MapMgr\CellMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Fight.cpp">
+      <Filter>Engine\04. Scene\CScene_Fight</Filter>
+    </ClCompile>
+    <ClCompile Include="CDoor.cpp">
+      <Filter>Engine\05. Object\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="CTear.cpp">
+      <Filter>Engine\05. Object\Tear</Filter>
+    </ClCompile>
+    <ClCompile Include="CRigidBody.cpp">
+      <Filter>Engine\06. Component\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CItemMgr.cpp">
+      <Filter>Engine\03. SingleTon\ItemMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CItem.cpp">
+      <Filter>Engine\05. Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollectiblesItem.cpp">
+      <Filter>Engine\05. Object\Item\CCollectiblesItem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

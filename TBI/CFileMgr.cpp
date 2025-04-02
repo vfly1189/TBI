@@ -53,6 +53,18 @@ void CFileMgr::SearchFolder(const wstring& folderPath)
             std::wstring fileName = findData.cFileName;
             std::wstring filePath = folderPath + L"\\" + fileName;
 
+            ///아이템 이름들 추출//
+            wstring curFolderName = GetLastFolderName(folderPath);
+            if (curFolderName.compare(L"collectibles") == 0)
+            {
+                wstring tag = GetFileNameWithoutExtension(fileName);
+                wstring itemName = GetLastFileName(tag);
+
+                items_tags.push_back(itemName);
+            }
+            ///아이템 이름들 추출//
+
+
             // 파일 처리
             ProcessFile(filePath);
         }
@@ -107,4 +119,32 @@ wstring CFileMgr::GetFileNameWithoutExtension(const wstring& fileName)
         return fileName.substr(0, dotPos); // 확장자를 제외한 파일 이름 반환
     }
     return fileName; // 확장자가 없는 경우 그대로 반환
+}
+
+wstring CFileMgr::GetLastFolderName(const std::wstring& path) 
+{
+    // 경로에서 마지막 '\' 위치를 찾음
+    size_t lastBackslash = path.find_last_of(L"\\");
+
+    if (lastBackslash == std::wstring::npos) {
+        // '\'가 없는 경우 전체 문자열을 반환 (경로가 하나의 폴더 이름일 때)
+        return path;
+    }
+
+    // 마지막 '\' 이후의 문자열을 반환
+    return path.substr(lastBackslash + 1);
+}
+
+wstring CFileMgr::GetLastFileName(const std::wstring& path)
+{
+    // 경로에서 마지막 '\' 위치를 찾음
+    size_t lastBackslash = path.find_last_of(L"_");
+
+    if (lastBackslash == std::wstring::npos) {
+        // '\'가 없는 경우 전체 문자열을 반환 (경로가 하나의 폴더 이름일 때)
+        return path;
+    }
+
+    // 마지막 '\' 이후의 문자열을 반환
+    return path.substr(lastBackslash + 1);
 }

@@ -1,20 +1,16 @@
 #pragma once
 
-enum class CAM_EFFECT {
-	FADE_IN,
-	FADE_OUT,
-	NONE,
-};
-
-struct tCamEffect {
-	CAM_EFFECT	eEffect;			//카메라 효과
-	float		fDuration;		    //효과 최대 진행 시간.
-	float		fCurTime;			// 카메라 효과 현재 진행된 시간. 
-};
 
 class CCamera
 {
 	SINGLE(CCamera)
+
+private:
+	// 페이드 효과 관련 추가 멤버
+	FADE_STATE m_eFadeState;
+	float m_fFadeAlpha;
+	float m_fFadeDuration;
+	ID2D1Bitmap* m_pFadeBitmap; // Direct2D 비트맵 포인터
 
 private:
 	//그릴때만 현재 카메라의 좌표에 따라서 계산해서 찍힌다.
@@ -34,7 +30,8 @@ private:
 
 	float m_fScale;
 
-	list<tCamEffect>	m_listCamEffect;
+	bool m_flag;
+	
 
 public:
 	void SetLookAt(Vec2 _vLook) {
@@ -58,5 +55,6 @@ public:
 
 private:
 	void CalDiff();
+
 };
 

@@ -43,12 +43,24 @@
 
 #define TILE_SIZE 64.f
 
+typedef pair<int, int> pii;
+int dx4[4] = { 0, 1, 0 , -1 };
+int dy4[4] = { -1,0,1,0 };
+
 
 enum class GROUP_TYPE {
 	DEFAULT,
+	
+	
 	IMAGE,
+	DOOR,
 	UI,
+	TEAR,
 	EFFECT,
+	ITEM,
+	PLAYER,
+	WALL,
+	TEST,
 	END = 32,
 };
 
@@ -56,6 +68,7 @@ enum class SCENE_TYPE {
 	MAIN,
 	TOOL,
 	START,
+	FIGHT,
 	SELECT_CHARACTER,
 	SELECT_WEAPON,
 	SHOP,
@@ -75,10 +88,6 @@ enum class EVENT_TYPE {
 	CREATE_OBJECT,
 	DELETE_OBJECT,
 	SCENE_CHANGE,
-	CHANGE_AI_STATE,
-
-
-
 
 	END,
 };
@@ -108,14 +117,6 @@ enum class UI_TYPE
 	END,
 };
 
-enum class ITEM_TYPE
-{
-	WEAPON,
-	PASSIVE,
-	CHARACTER,
-	END,
-};
-
 
 enum class BRUSH_TYPE {
 	HOLLOW,
@@ -129,3 +130,21 @@ enum class PEN_TYPE {
 	BLUE,
 	END,
 };
+
+// 페이드 상태 열거형
+enum class FADE_STATE {
+	NONE,
+	FADE_IN,
+	FADE_OUT
+};
+
+enum class ROOM_INFO
+{
+	EMPTY,
+	START,
+	NORMAL,
+	SHOP,
+	TREASURE,
+	BOSS,
+};
+

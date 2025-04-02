@@ -2,18 +2,25 @@
 
 #include "CObject.h"
 #include "CPlayer.h"
+#include "CWall.h"
 
 #include "CUI.h"
 #include "CSpriteUI.h"
 
 #include "CAnimation.h"
 #include "CAnimator.h"
+#include "CCollider.h"
 #include "CImage.h"
 
 #include "CCore.h"
 #include "CSoundMgr.h"
+#include "CCamera.h"
 #include "CFontMgr.h"
+#include "MapMgr.h"
 #include "Direct2DMgr.h"
+#include "CCollisionMgr.h"
+#include "CKeyMgr.h"
+#include "CPlayerMgr.h"
 
 #include "CScene_Test.h"
 
@@ -29,16 +36,54 @@ CScene_Test::~CScene_Test()
 
 void CScene_Test::Enter()
 {
-	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
+	printf("SCENE_TEST\n");
+	pD2DMgr = Direct2DMgr::GetInstance();
 	Vec2 vResolution = CCore::GetInstance()->GetResolution();
 
-	CreateMain(pD2DMgr, vResolution);
+	MapMgr::GetInstance()->MapGenerate();
+	MapMgr::GetInstance()->ShowMap();
 
+
+
+	
+	//CreateMain(vResolution);
+/*
+	MapMgr::GetInstance()->MapGenerate();
+	MapMgr::GetInstance()->ShowMap();
+	
+	CPlayer* player = CPlayerMgr::GetInstance()->GetPlayer();
+	player->SetPos(Vec2(0.f, 0.f));
+	player->SetName(L"Player");
+	player->SetObjType(GROUP_TYPE::PLAYER);
+	player->SetScale(Vec2(32.f,32.f));
+	player->SetRenderScale(player->GetScale() * 2.f);
+	AddObject(player, GROUP_TYPE::PLAYER);
+	//player->AddImage(pD2DMgr->GetStoredBitmap(L"01_basement"));
+	//player->GetAnimator()->Play(L"left_walking", true);
+	
+	
+	CreateDoor(vResolution);
+
+	//CreateWall(vResolution);
+	/*
+	///////////////////////뒷 배경/////////////////////////
+	CSpriteUI* MainPanel = new CSpriteUI;
+	MainPanel->SetObjType(GROUP_TYPE::IMAGE);
+	MainPanel->SetName(L"player_animation_sprite");
+	MainPanel->AddImage(pD2DMgr->GetStoredBitmap(L"test"));
+	MainPanel->SetPos(Vec2(0.f, 0.f));
+	MainPanel->SetScale(Vec2(32.f,32.f));
+	AddObject(MainPanel, GROUP_TYPE::IMAGE);
+	///////////////////////뒷 배경/////////////////////////
+	*/
+
+	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::WALL);
 	wstring mainTitleBGMKey = L"genesis_retake_light_loop";
 	//처음 시작했을 때, BGM틀기. 
 	if (!CSoundMgr::GetInstance()->IsPlaySound(mainTitleBGMKey)) {
 		CSoundMgr::GetInstance()->Play(mainTitleBGMKey, 0.2f);
 	}
+	start();
 }
 
 void CScene_Test::Exit()
@@ -49,144 +94,133 @@ void CScene_Test::Exit()
 void CScene_Test::update()
 {
 	CScene::update();
+	MapMgr::GetInstance()->update();
+	//CPlayerMgr::GetInstance()->GetPlayer()->update();
+	if (KEY_TAP(KEY::ENTER))
+	{
+		MapMgr::GetInstance()->MapGenerate();
+		MapMgr::GetInstance()->ShowMap();
+	}
 }
 
 void CScene_Test::finalupdate()
 {
+
 	CScene::finalupdate();
+	MapMgr::GetInstance()->finalupdate();
+	//CPlayerMgr::GetInstance()->GetPlayer()->finalupdate();
 }
 
 void CScene_Test::render(ID2D1HwndRenderTarget* _pRender)
 {
 	CScene::render(_pRender);
+	MapMgr::GetInstance()->render(_pRender);
+	//CPlayerMgr::GetInstance()->GetPlayer()->render(_pRender);
 }
 
-void CScene_Test::CreateMain(Direct2DMgr* _pD2DMgr, Vec2 _vResolution)
+
+void CScene_Test::CreateMain(Vec2 _vResolution)
 {
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"titlemenu_2"), L"main_background",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(480.f, 270.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"01_basement"), L"basement1",
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(234.f, 156.f));
 
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"titlemenu_2"), L"main_character",
-		D2D1::Point2F(0.f, 405.f), D2D1::Point2F(480.f, 540.f));
-
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"logo"), L"logoText",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(480.f, 160.f));
-
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"logo"), L"logoShadow",
-		D2D1::Point2F(0.f, 160.f), D2D1::Point2F(480.f, 320.f));
-
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"fly"), L"main_fly",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(96.f, 160.f));
-
-	_pD2DMgr->SplitBitmap(_pD2DMgr->GetStoredBitmap(L"fly"), L"main_fly_shadow",
-		D2D1::Point2F(96.f, 0.f), D2D1::Point2F(192.f, 160.f));
-
-	///////////////////////뒷 배경/////////////////////////
-	CSpriteUI* MainPanel = new CSpriteUI;
-	MainPanel->SetObjType(GROUP_TYPE::DEFAULT);
-	MainPanel->SetName(L"main_background");
-	MainPanel->AddImage(_pD2DMgr->GetStoredBitmap(L"main_background"));
-	MainPanel->SetPos(_vResolution / 2.f);
-	MainPanel->SetScale(_vResolution);
-	AddObject(MainPanel, GROUP_TYPE::DEFAULT);
-	///////////////////////뒷 배경/////////////////////////
-
+	ID2D1Bitmap* originalBitmap = pD2DMgr->GetStoredBitmap(L"basement1");
 	
-	////////////////////////가운데 캐릭터//////////////////////////////
-	CSpriteUI* test = MainPanel->AddChild<CSpriteUI>(Vec2(-10.f, 60.f));
-	test->SetObjType(GROUP_TYPE::DEFAULT);
-	test->CreateAnimator();
+	ID2D1Bitmap* xFlip = FlipBitamp(originalBitmap, true, false);
+	ID2D1Bitmap* yFlip = FlipBitamp(originalBitmap, false, true);
+	ID2D1Bitmap * xyFlip = FlipBitamp(originalBitmap, true, true);
 
-	//test->SetBackGround(true);
-	//test->SetBackGroundColor(ColorNormalize(255, 255, 255), ColorNormalize(255, 255, 255), ColorNormalize(255, 255, 255), ColorNormalize(255, 255, 255));
+	vector<ID2D1Bitmap*> bitmaps;
+	bitmaps.push_back(originalBitmap);
+	bitmaps.push_back(xFlip);
+	bitmaps.push_back(yFlip);
+	bitmaps.push_back(xyFlip);
 
-	test->GetAnimator()->CreateAnimation(L"main_character_logo", _pD2DMgr->GetStoredBitmap(L"main_character")
-		, Vec2(0.f, 0.f), Vec2(160.f, 135.f), Vec2(160.f, 0.f), 0.4f, 2);
-	test->GetAnimator()->Play(L"main_character_logo", true);
+	ID2D1Bitmap* combinedBitmap = CombineBitmaps2X2(bitmaps);
 
-	test->SetName(L"main_character");
-	test->SetScale(Vec2(160.f, 135.f) * 2.f);
-	test->SetRenderScale(test->GetRenderScale() * 2.f);
-	AddObject(test, GROUP_TYPE::DEFAULT);
-	////////////////////////가운데 캐릭터//////////////////////////////
+	CSpriteUI* test = new CSpriteUI;
+	test->SetObjType(GROUP_TYPE::IMAGE);
+	test->SetScale(Vec2(442.f, 286.f) * 2.f);
+	test->SetPos(Vec2(0.f, 0.f));
+	test->AddImage(combinedBitmap);
+	AddObject(test, GROUP_TYPE::IMAGE);
+}
+
+void CScene_Test::CreateDoor(Vec2 _vResolution)
+{
+	//북쪽문 : 0,-215
+	//동쪽문 : 350, -15
+
+	//49 , 33
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door",
+		D2D1::Point2F(9.f, 10.f), D2D1::Point2F(9.f + 49.f , 10.f + 33.f));
+
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_open",
+		D2D1::Point2F(65.f, 0.f), D2D1::Point2F(130.f, 51.f));
 
 
-	///////////////////////메인 로고 그림자/////////////////////////
-	CSpriteUI* MainLogoShadow = MainPanel->AddChild<CSpriteUI>(Vec2(0.f, -115.f));
-	MainLogoShadow->SetMovement(5.f, 5.f);
-	MainLogoShadow->SetObjType(GROUP_TYPE::DEFAULT);
-	MainLogoShadow->SetName(L"main_logo");
-	MainLogoShadow->AddImage(_pD2DMgr->GetStoredBitmap(L"logoShadow"));
-	//MainLogoShadow->SetPos(_vResolution / 2.f);
-	MainLogoShadow->SetScale(Vec2(480.f, 160.f) * 2);
-	AddObject(MainLogoShadow, GROUP_TYPE::DEFAULT);
-	///////////////////////메인 로고 그림자/////////////////////////
+	//65x51
+	CSpriteUI* doorUp = new CSpriteUI;
+	doorUp->CreateCollider();
+	doorUp->GetCollider()->SetScale(Vec2(22.f, 24.f) * 2.f);
+	doorUp->GetCollider()->SetOffsetPos(Vec2(0.f, -20.f));
+	doorUp->SetObjType(GROUP_TYPE::IMAGE);
+	doorUp->SetPos(Vec2(0.f, -214.f));
+	doorUp->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door"));
+	doorUp->SetScale(Vec2(49.f, 33.f) * 2.f);
+	AddObject(doorUp, GROUP_TYPE::IMAGE);
+
+	//65x51
+	CSpriteUI* doorRight = new CSpriteUI;
+	doorRight->CreateCollider();
+	doorRight->GetCollider()->SetScale(Vec2(22.f, 24.f) * 2.f);
+	doorRight->GetCollider()->SetOffsetPos(Vec2(15.f, 0.f));
+
+	doorRight->SetObjType(GROUP_TYPE::IMAGE);
+	doorRight->SetPos(Vec2(358.f, 0.f));
+	doorRight->SetScale(Vec2(49.f,33.f) * 2.f);
+	doorRight->SetRotation(90.f);
+	doorRight->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door"));
+	AddObject(doorRight, GROUP_TYPE::IMAGE);
 	
-	///////////////////////메인 로고 텍스트/////////////////////////
-	CSpriteUI* MainLogoText = MainLogoShadow->AddChild<CSpriteUI>(Vec2(0.f, 0.f));
-	MainLogoText->SetObjType(GROUP_TYPE::DEFAULT);
-	MainLogoText->SetName(L"main_logo");
-	MainLogoText->AddImage(_pD2DMgr->GetStoredBitmap(L"logoText"));
-	//MainLogoText->SetPos(_vResolution / 2.f);
-	MainLogoText->SetScale(Vec2(480.f, 160.f) * 2);
-	AddObject(MainLogoText, GROUP_TYPE::DEFAULT);
-	///////////////////////메인 로고 텍스트/////////////////////////
+	//65x51
+	CSpriteUI* doorDown = new CSpriteUI;
+	doorDown->CreateCollider();
+	doorDown->GetCollider()->SetScale(Vec2(22.f, 24.f) * 2.f);
+	doorDown->GetCollider()->SetOffsetPos(Vec2(0.f, 20.f));
 
-	
-	////////////////////////파리////////////////////////////////////
-	CSpriteUI* MainFly = MainPanel->AddChild<CSpriteUI>(Vec2(300.f, 0.f));
-	MainFly->SetObjType(GROUP_TYPE::DEFAULT);
-	MainFly->SetName(L"main_fly");
-	MainFly->CreateAnimator();
+	doorDown->SetObjType(GROUP_TYPE::IMAGE);
+	doorDown->SetPos(Vec2(0.f, 214.f));
+	doorDown->SetScale(Vec2(49.f, 33.f) * 2.f);
+	doorDown->SetRotation(180.f);
+	doorDown->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door"));
+	AddObject(doorDown, GROUP_TYPE::IMAGE);
 
-	MainFly->GetAnimator()->CreateAnimation(L"main_fly", _pD2DMgr->GetStoredBitmap(L"main_fly")
-		, Vec2(0.f, 0.f), Vec2(96.f, 80.f), Vec2(0.f, 80.f), 0.1f, 2);
-	MainFly->GetAnimator()->Play(L"main_fly", true);
+	//65x51
+	CSpriteUI* doorLeft = new CSpriteUI;
+	doorLeft->CreateCollider();
+	doorLeft->GetCollider()->SetScale(Vec2(22.f, 24.f) * 2.f);
+	doorLeft->GetCollider()->SetOffsetPos(Vec2(-15.f, 0.f));
 
-	MainFly->SetScale(Vec2(96.f, 80.f) * 2);
-	MainFly->SetRenderScale(MainFly->GetScale() * 2.f);
-	AddObject(MainFly, GROUP_TYPE::DEFAULT);
-	////////////////////////파리////////////////////////////////////
+	doorLeft->SetObjType(GROUP_TYPE::IMAGE);
+	doorLeft->SetPos(Vec2(-358.f, 0.f));
+	doorLeft->SetScale(Vec2(49.f, 33.f) * 2.f);
+	doorLeft->SetRotation(270.f);
+	doorLeft->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door"));
+	AddObject(doorLeft, GROUP_TYPE::IMAGE);
 
-	////////////////////////파리 그림자////////////////////////////////////
-	CSpriteUI* MainFlyShadow = MainFly->AddChild<CSpriteUI>(Vec2(0.f, 25.f));
-	MainFlyShadow->SetObjType(GROUP_TYPE::DEFAULT);
-	MainFlyShadow->SetName(L"main_fly_shadow");
-	MainFlyShadow->CreateAnimator();
+	/*
+	//65x51
+	CSpriteUI* door_open = door->AddChild<CSpriteUI>(Vec2(2.f,0.f));
+	door_open->SetObjType(GROUP_TYPE::IMAGE);
+	door_open->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door_open"));
+	door_open->SetScale(Vec2(65.f, 51.f) * 2.f);*/
+}
 
-	MainFlyShadow->GetAnimator()->CreateAnimation(L"main_fly_shadow", _pD2DMgr->GetStoredBitmap(L"main_fly_shadow")
-		, Vec2(0.f, 0.f), Vec2(96.f, 80.f), Vec2(0.f, 80.f), 0.1f, 2);
-	MainFlyShadow->GetAnimator()->Play(L"main_fly_shadow", true);
-
-	MainFlyShadow->SetScale(Vec2(96.f, 80.f) * 2);
-	MainFlyShadow->SetRenderScale(MainFlyShadow->GetScale() * 2.f);
-	AddObject(MainFlyShadow, GROUP_TYPE::DEFAULT);
-	////////////////////////파리 그림자////////////////////////////////////
-
-
-
-
-
-
-
-
-
-	///////////////////////화면 overlay/////////////////////////
-	CSpriteUI* MainMenuOverlay = MainPanel->AddChild<CSpriteUI>(Vec2(0.f, 0.f));
-	MainMenuOverlay->SetObjType(GROUP_TYPE::EFFECT);
-	MainMenuOverlay->SetName(L"main_menuoverlay");
-	MainMenuOverlay->AddImage(_pD2DMgr->GetStoredBitmap(L"menuoverlay"));
-	MainMenuOverlay->SetScale(_vResolution);
-	AddObject(MainMenuOverlay, GROUP_TYPE::EFFECT);
-	///////////////////////화면 overlay/////////////////////////
-
-	
-	///////////////////////화면 overlay 그림자/////////////////////////
-	CSpriteUI* MainMenuShadow = MainPanel->AddChild<CSpriteUI>(Vec2(-200.f, 200.f));
-	MainMenuShadow->SetObjType(GROUP_TYPE::EFFECT);
-	MainMenuShadow->SetName(L"main_menushadow");
-	MainMenuShadow->AddImage(_pD2DMgr->GetStoredBitmap(L"menushadow"));
-	MainMenuShadow->SetScale(_vResolution);
-	AddObject(MainMenuShadow, GROUP_TYPE::EFFECT);
-	///////////////////////화면 overlay 그림자/////////////////////////
+void CScene_Test::CreateWall(Vec2 _vResolution)
+{
+	CWall* upWall_01 = new CWall;
+	upWall_01->SetScale(Vec2(288.f, 57.f));
+	upWall_01->SetPos(Vec2(-190.f, -240.f));
+	AddObject(upWall_01, GROUP_TYPE::WALL);
 }

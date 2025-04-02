@@ -144,37 +144,54 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\c\source\repos\TBI\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CCollectiblesItem.h" />
+    <ClInclude Include="CCollider.h" />
+    <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CDoor.h" />
+    <ClInclude Include="CellMap.h" />
+    <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CFileMgr.h" />
     <ClInclude Include="CFontMgr.h" />
+    <ClInclude Include="character_stats.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CItem.h" />
+    <ClInclude Include="CItemMgr.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPathMgr.h" />
     <ClInclude Include="CPlayer.h" />
+    <ClInclude Include="CPlayerMgr.h" />
+    <ClInclude Include="CRigidBody.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneMgr.h" />
+    <ClInclude Include="CScene_Fight.h" />
     <ClInclude Include="CScene_Main.h" />
     <ClInclude Include="CScene_Test.h" />
     <ClInclude Include="CSoundMgr.h" />
     <ClInclude Include="CSpriteUI.h" />
+    <ClInclude Include="CTear.h" />
     <ClInclude Include="CTextUI.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CUIMgr.h" />
-    <ClInclude Include="cursorpos.h" />
+    <ClInclude Include="CWall.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Direct2DMgr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="func.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="header_pos.h" />
+    <ClInclude Include="item_info.h" />
+    <ClInclude Include="MapMgr.h" />
+    <ClInclude Include="names_string.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SelectGDI.h" />
     <ClInclude Include="struct.h" />
@@ -185,26 +202,40 @@
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CCollectiblesItem.cpp" />
+    <ClCompile Include="CCollider.cpp" />
+    <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CDoor.cpp" />
+    <ClCompile Include="CellMap.cpp" />
+    <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CFileMgr.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CItem.cpp" />
+    <ClCompile Include="CItemMgr.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CPlayerMgr.cpp" />
+    <ClCompile Include="CRigidBody.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
+    <ClCompile Include="CScene_Fight.cpp" />
     <ClCompile Include="CScene_Main.cpp" />
     <ClCompile Include="CScene_Test.cpp" />
     <ClCompile Include="CSoundMgr.cpp" />
     <ClCompile Include="CSpriteUI.cpp" />
+    <ClCompile Include="CTear.cpp" />
     <ClCompile Include="CTextUI.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CUIMgr.cpp" />
+    <ClCompile Include="CWall.cpp" />
     <ClCompile Include="Direct2DMgr.cpp" />
     <ClCompile Include="func.cpp" />
+    <ClCompile Include="MapMgr.cpp" />
     <ClCompile Include="SelectGDI.cpp" />
     <ClCompile Include="TBI.cpp" />
   </ItemGroup>

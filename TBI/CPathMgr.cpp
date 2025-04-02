@@ -28,7 +28,7 @@ void CPathMgr::init()
 		}
 	}
 	//  + bin\\content\\ 경로 붙여주기
-	wcscat_s(m_szContentPath, 255, L"\\bin\\content\\");
+	wcscat_s(m_szContentPath, 255, L"\\bin\\content");
 	//상대 경로 설정 완료.
 	//SetWindowText(CCore::GetInstance()->GetMainHwnd(), m_szContentPath);
 }

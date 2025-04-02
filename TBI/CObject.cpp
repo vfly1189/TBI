@@ -8,7 +8,9 @@
 #include "CTextUI.h"
 #include "CAnimation.h"
 #include "CAnimator.h"
+#include "CCollider.h"
 #include "CImage.h"
+#include "CRigidBody.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -70,6 +72,9 @@ void CObject::finalupdate()
 			m_pImages[i]->finalupdate();
 		}
 	}
+	if (m_pCollider) m_pCollider->finalupdate();
+
+	if (m_pRigidBody) m_pRigidBody->finalupdate();
 }
 
 void CObject::render(ID2D1HwndRenderTarget* _pRender)
@@ -100,8 +105,11 @@ void CObject::render(ID2D1HwndRenderTarget* _pRender)
 
 void CObject::component_render(ID2D1HwndRenderTarget* _pRender)
 {
+
 	if (m_pAnimator != nullptr)
+	{
 		m_pAnimator->render(_pRender);
+	}
 
 	if (m_pTextUI != nullptr)
 		m_pTextUI->render(_pRender);
@@ -113,6 +121,9 @@ void CObject::component_render(ID2D1HwndRenderTarget* _pRender)
 			m_pImages[i]->render(_pRender);
 		}
 	}
+
+	if (m_pCollider != nullptr)
+		m_pCollider->render(_pRender);
 }
 
 
@@ -161,3 +172,17 @@ void CObject::CreateAnimator()
 	m_pAnimator = new CAnimator;
 	m_pAnimator->m_pOwner = this;
 }
+
+void CObject::CreateCollider()
+{
+	m_pCollider = new CCollider;
+	m_pCollider->m_pOwner = this;
+}
+
+void CObject::CreateRigidBody()
+{
+	m_pRigidBody = new CRigidBody;
+	m_pRigidBody->m_pOwner = this;
+}
+
+

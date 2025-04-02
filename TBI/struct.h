@@ -113,3 +113,4 @@ public:
 		, y((float)_pt.y)
 	{}
 };
+

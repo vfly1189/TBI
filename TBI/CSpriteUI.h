@@ -1,5 +1,8 @@
 #pragma once
 #include "CUI.h"
+
+class CCollider;
+
 class CSpriteUI
     : public CUI
 {
@@ -55,11 +58,15 @@ public:
 public:
     void update();
     void finalupdate();
-
     virtual void render(ID2D1HwndRenderTarget* _pRender);
 
 public:
     virtual void MouseLbtnClicked();    //Å¬¸¯. 
+
+public:
+    virtual void OnCollision(CCollider* _pOther);
+    virtual void OnCollisionEnter(CCollider* _pOther);
+    virtual void OnCollisionExit(CCollider* _pOther);
 
 public:
     CSpriteUI();

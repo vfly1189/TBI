@@ -10,11 +10,16 @@
 #pragma comment(lib, "Dwrite.lib")
 #include <wincodec.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 #include <wrl.h>
 using namespace Microsoft::WRL;
+using namespace std;
+
+#include <array>
+using std::array;
 
 #include <vector>
 using std::vector;
@@ -33,6 +38,9 @@ using std::make_pair;
 
 #include <unordered_map>
 using std::unordered_map;
+
+#include <queue>
+using std::queue;
 
 #include <string>
 #include <string_view>
@@ -68,7 +76,11 @@ using namespace Gdiplus;
 #include "define.h"
 #include "struct.h"
 #include "func.h"
-#include "cursorpos.h"
+#include "header_pos.h"
+#include "names_string.h"
+#include "character_stats.h"
+#include "item_info.h"
 
 std::random_device rd;
 std::mt19937 rng(rd());
+

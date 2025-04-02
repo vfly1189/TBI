@@ -110,6 +110,7 @@ vector<ID2D1Bitmap*> Direct2DMgr::GetSplitBitmaps(const wstring& tag) {
 
 
 
+
 HRESULT Direct2DMgr::LoadBitmap(const std::wstring& filePath, ID2D1Bitmap** ppBitmap) {
 
     // 파일 존재 여부 확인

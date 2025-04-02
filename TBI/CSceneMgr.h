@@ -33,4 +33,6 @@ public:
 
 private:
 	void ChangeScene(SCENE_TYPE _eNext);
+
+	friend class CEventMgr;
 };

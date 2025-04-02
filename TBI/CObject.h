@@ -5,6 +5,8 @@
 class CTextUI;
 class CImage;
 class CAnimator;
+class CCollider;
+class CRigidBody;
 
 class CObject
 {
@@ -18,12 +20,24 @@ private:
 	Vec2			m_vRenderScale;
 
 	//컴포넌트
-	CAnimator*		m_pAnimator;
-	CTextUI*		m_pTextUI;
+	CAnimator* m_pAnimator;
+	CTextUI* m_pTextUI;
 	vector<CImage*> m_pImages;
+	CCollider* m_pCollider;
+	CRigidBody* m_pRigidBody;
 
 	bool			m_bAlive;			//자기 자신이 활성화 or 비활성화. (삭제 전용)
 	bool			m_bEnable;			//일시적인 활성화 or 비활성화. 
+
+private:
+	float m_fRotation;
+
+public:
+	void SetRotation(float _rotation) { m_fRotation = _rotation; }
+	float GetRotation() { return m_fRotation; }
+
+
+
 
 public:
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
@@ -36,7 +50,6 @@ public:
 	void SetRenderScale(Vec2 _vScale) { m_vRenderScale = _vScale; }
 	
 public:
-
 	GROUP_TYPE GetObjType() { return m_ObjType; }
 	Vec2 GetPos() { return m_vPos; }
 
@@ -81,12 +94,28 @@ public:
 	vector<CImage*>& GetImages() { return m_pImages; }
 	size_t GetImageCount() { return m_pImages.size(); }
 	void AddImage(ID2D1Bitmap* _bitmap);
-
+	void DeleteImages() { m_pImages.clear(); }
+	
 public:
 	void CreateAnimator();
 	CAnimator* GetAnimator() { return m_pAnimator; }
 
+public:
+	void CreateCollider();
+	CCollider* GetCollider() { return m_pCollider; }
+
+public:
+	void CreateRigidBody();
+	CRigidBody* GetRigidBody() { return m_pRigidBody; }
+
+public:
+	virtual void OnCollision(CCollider* _pOther) {};
+	virtual void OnCollisionEnter(CCollider* _pOther) {};
+	virtual void OnCollisionExit(CCollider* _pOther) {};
+
+
 private:
 	void SetDead() { m_bAlive = false; }
 
+	friend class CEventMgr;
 };

@@ -79,7 +79,7 @@ public:
     virtual void MouseLbtnDown();       //¥≠∑»¿ª ∂ß.
     virtual void MouseLbtnUp();         //∂º¡≥¿ª ∂ß.
     virtual void MouseLbtnClicked();    //≈¨∏Ø. 
-    void MouseOnCheck();
+    void         MouseOnCheck();
 
     virtual CUI* Clone() = 0;
 

@@ -47,8 +47,10 @@ void CScene::start()
 
 void CScene::update()
 {
-	for (UINT typeIDX = 0; typeIDX < (UINT)GROUP_TYPE::END; typeIDX++) {
-		for (size_t objIDX = 0; objIDX < m_arrObj[typeIDX].size(); objIDX++) {
+	for (UINT typeIDX = 0; typeIDX < (UINT)GROUP_TYPE::END; typeIDX++) 
+	{
+		for (size_t objIDX = 0; objIDX < m_arrObj[typeIDX].size(); objIDX++) 
+		{
 			if (!m_arrObj[typeIDX][objIDX]->IsDead()) {
 				m_arrObj[typeIDX][objIDX]->update();
 			}
@@ -59,9 +61,10 @@ void CScene::update()
 //충돌체가 플레이어 따라가게 함, 충돌 처리. 
 void CScene::finalupdate()
 {
-	for (UINT typeIDX = 0; typeIDX < (UINT)GROUP_TYPE::END; typeIDX++) {
-		for (size_t objIDX = 0; objIDX < m_arrObj[typeIDX].size(); objIDX++) {
-
+	for (UINT typeIDX = 0; typeIDX < (UINT)GROUP_TYPE::END; typeIDX++) 
+	{
+		for (size_t objIDX = 0; objIDX < m_arrObj[typeIDX].size(); objIDX++) 
+		{
 			//Final Update는 돌려줌. 내부적으로 Component들의 마무리 단계 업데이트(충돌처리나, 참조관계등)
 			m_arrObj[typeIDX][objIDX]->finalupdate();
 		}
@@ -94,9 +97,15 @@ void CScene::DeleteGroup(GROUP_TYPE _eGroup)
 }
 
 void CScene::DeleteAll()
-{
+ {
 	for (UINT GroupIdx = 0; GroupIdx < (UINT)GROUP_TYPE::END; GroupIdx++) {
-	
+		
+		if (GroupIdx == (UINT)GROUP_TYPE::PLAYER)
+		{
+			m_arrObj[GroupIdx].clear();
+			continue;
+		}
+
 		DeleteGroup((GROUP_TYPE)GroupIdx);
 	}
 }
