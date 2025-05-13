@@ -4,32 +4,52 @@
 #include "MapMgr.h"
 #include "Direct2DMgr.h"
 #include "CPlayerMgr.h"
+#include "CSoundMgr.h"
 
 #include "CPlayer.h"
 #include "CCollectiblesItem.h"
 #include "CWall.h"
 #include "CDoor.h"
+#include "CRock.h"
+
+#include "CFly_Mon.h"
+#include "CHorf_Mon.h"
+#include "CBaby_Plum.h"
+
 #include "CSpriteUI.h"
 
 #include "CCollider.h"
 #include "CRigidBody.h"
 
+#include "CMonFactory.h"
+
 Vec2 doorPosVec[4] = {
-	Vec2(0.f,-215.f),
-	Vec2(365.f, 0.f),
-	Vec2(0.f, 215.f),
-	Vec2(-365.f, 0.f),
+	Vec2(0.f,-235.f),
+	Vec2(395.f, 0.f),
+	Vec2(0.f, 235.f),
+	Vec2(-395.f, 0.f),
 };
 	
 CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM_INFO _eRoomType)
 	: m_bIsClear(false)
+	, m_iMobCount(0)
 {
+	printf("ÁøÂ¥ÁÂÇ¥ : %f %f\n", _vRealPos.x, _vRealPos.y);
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 	m_vecDoorExist.resize(4);
 
+	if (_eRoomType == ROOM_INFO::NORMAL)
+	{
+		m_vecEntitiesPos.resize(7);
+		for (int i = 0; i < m_vecEntitiesPos.size(); i++)
+			m_vecEntitiesPos[i].resize(13);
+		MapMgr::GetInstance()->SetEntities(m_vecEntitiesPos);
+	}
+
 	cellMap = new CSpriteUI;
-	cellMap->SetObjType(GROUP_TYPE::IMAGE);
-	cellMap->SetScale(Vec2(442.f, 286.f) * 2.f);
+	cellMap->SetObjType(GROUP_TYPE::TILE);
+	cellMap->SetScale(Vec2(234.f, 156.f) * 4.f);
+	//cellMap->SetScale(Vec2(442.f, 286.f) * 2.f);
 	cellMap->SetPos(_vRealPos);
 	m_vMapPos = _vRealPos;
 	m_vGridMapPos = _vGridPos;
@@ -55,31 +75,35 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 		CDoor* door = new CDoor;
 		m_vecObjects.push_back(door);
 		door->SetObjType(GROUP_TYPE::DOOR);
+		door->SetClose();
+		door->SetOwner(this);
 		door->SetDoorDir(i);
+		door->SetClose();
 		door->CreateCollider();
 		door->SetPos(doorPosVec[i] + _vRealPos);
-		door->GetCollider()->SetScale(Vec2(22.f, 10.f) * 2.f);
+		//door->GetCollider()->SetScale(Vec2(22.f, 10.f) * 2.f);
 
+		
 		if (i == 0)
 		{
-			door->GetCollider()->SetOffsetPos(Vec2(0.f, -40.f));
+			door->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 			door->GetCollider()->SetScale(Vec2(22.f, 10.f) * 2.f);
 		}
 		else if (i == 1)
 		{
-			door->GetCollider()->SetOffsetPos(Vec2(30.f, 0.f));
+			door->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 			door->GetCollider()->SetScale(Vec2(10.f, 24.f) * 2.f);
 		}
 			
 		else if (i == 2)
 		{
-			door->GetCollider()->SetOffsetPos(Vec2(0.f, 40.f));
+			door->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 			door->GetCollider()->SetScale(Vec2(22.f, 10.f) * 2.f);
 		}
 			
 		else if (i == 3) 
 		{
-			door->GetCollider()->SetOffsetPos(Vec2(-30.f, 0.f));
+			door->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 			door->GetCollider()->SetScale(Vec2(10.f, 24.f) * 2.f);
 		}
 			
@@ -91,18 +115,30 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 		
 		if (gridMap[ny][nx] == (UINT)ROOM_INFO::BOSS || m_eRoomType == ROOM_INFO::BOSS)
 		{
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"bossroom_door_close_left"));
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"bossroom_door_close_right"));
 			door->AddImage(pD2DMgr->GetStoredBitmap(L"bossroom_door"));
-			door->SetScale(Vec2(65.f, 49.f) * 2.f);
+
+			door->SetRoomType(ROOM_INFO::BOSS);
+			door->SetScale(Vec2(64.f, 48.f) * 2.f);
 		}
 		else if (gridMap[ny][nx] == (UINT)ROOM_INFO::TREASURE || m_eRoomType == ROOM_INFO::TREASURE)
 		{
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"treasureroom_door_close_left"));
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"treasureroom_door_close_right"));
 			door->AddImage(pD2DMgr->GetStoredBitmap(L"treasureroom_door"));
-			door->SetScale(Vec2(65.f, 49.f) * 2.f);
+			
+			door->SetRoomType(ROOM_INFO::TREASURE);
+			door->SetScale(Vec2(64.f, 48.f) * 2.f);
 		}
 		else if (gridMap[ny][nx] == (UINT)ROOM_INFO::NORMAL || gridMap[ny][nx] == (UINT)ROOM_INFO::START)
 		{
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door_close_left"));
+			door->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door_close_right"));
 			door->AddImage(pD2DMgr->GetStoredBitmap(L"normal_door"));
-			door->SetScale(Vec2(49.f, 33.f) * 2.f);
+			
+			door->SetRoomType(ROOM_INFO::NORMAL);
+			door->SetScale(Vec2(64.f, 48.f) * 2.f);
 		}
 	}
 
@@ -113,6 +149,8 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 		{
 			CWall* wall = new CWall;
 			wall->SetObjType(GROUP_TYPE::WALL);
+			wall->SetWallPos(i);
+			wall->SetName(L"WALL");
 			m_vecObjects.push_back(wall);
 		
 			if (i == 0)
@@ -123,19 +161,19 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 			
 			else if (i == 1)
 			{	
-				wall->SetPos(_vRealPos + Vec2(350.f, 0.f));
+				wall->SetPos(_vRealPos + Vec2(375.f, 0.f));
 				wall->SetScale(Vec2(20.f, 400.f));
 			}
 
 			else if (i == 2)
 			{
-				wall->SetPos(_vRealPos + Vec2(0.f, 200.f));
+				wall->SetPos(_vRealPos + Vec2(0.f, 225.f));
 				wall->SetScale(Vec2(700.f, 20.f));
 			}
 
 			else if (i == 3)
 			{	
-				wall->SetPos(_vRealPos + Vec2(-350.f, 0.f));
+				wall->SetPos(_vRealPos + Vec2(-375.f, 0.f));
 				wall->SetScale(Vec2(20.f, 400.f));
 			}
 		}
@@ -145,8 +183,10 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 		{
 			CWall* wall_1 = new CWall;
 			wall_1->SetObjType(GROUP_TYPE::WALL);
+			wall_1->SetWallPos(i);
 			CWall* wall_2 = new CWall;
 			wall_2->SetObjType(GROUP_TYPE::WALL);
+			wall_2->SetWallPos(i);
 			m_vecObjects.push_back(wall_1);
 			m_vecObjects.push_back(wall_2);
 
@@ -161,28 +201,28 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 
 			else if (i == 1)
 			{
-				wall_1->SetPos(_vRealPos + Vec2(350.f, 120.f));
+				wall_1->SetPos(_vRealPos + Vec2(375.f, 120.f));
 				wall_1->SetScale(Vec2(20.f, 180.f));
 
-				wall_2->SetPos(_vRealPos + Vec2(350.f, -120.f));
+				wall_2->SetPos(_vRealPos + Vec2(375.f, -120.f));
 				wall_2->SetScale(Vec2(20.f, 180.f));
 			}
 
 			else if (i == 2)
 			{
-				wall_1->SetPos(_vRealPos + Vec2(-185.f, 200.f));
+				wall_1->SetPos(_vRealPos + Vec2(-185.f, 225.f));
 				wall_1->SetScale(Vec2(320.f, 20.f));
 
-				wall_2->SetPos(_vRealPos + Vec2(185.f, 200.f));
+				wall_2->SetPos(_vRealPos + Vec2(185.f, 225.f));
 				wall_2->SetScale(Vec2(320.f, 20.f));
 			}
 
 			else if (i == 3)
 			{
-				wall_1->SetPos(_vRealPos + Vec2(-350.f, 120.f));
+				wall_1->SetPos(_vRealPos + Vec2(-375.f, 120.f));
 				wall_1->SetScale(Vec2(20.f, 180.f));
 
-				wall_2->SetPos(_vRealPos + Vec2(-350.f, -120.f));
+				wall_2->SetPos(_vRealPos + Vec2(-375.f, -120.f));
 				wall_2->SetScale(Vec2(20.f, 180.f));
 			}
 		}
@@ -214,11 +254,19 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 	{
 		CreateControlExplain();
 	}
+	else if (m_eRoomType == ROOM_INFO::NORMAL)
+	{
+		CreateEntities();
+	}
+	else if (m_eRoomType == ROOM_INFO::BOSS)
+	{
+		CreateBoss(_vRealPos);
+	}
 }
 
 CellMap::~CellMap()
 {
-
+	printf("¸Ê »èÁ¦\n");
 }
 
 void CellMap::CreateControlExplain()
@@ -314,23 +362,100 @@ void CellMap::CreateControlExplain()
 	controlButtonSpace->AddImage(pD2DMgr->GetStoredBitmap(L"control_button_space"));
 }
 
+void CellMap::CreateEntities()
+{
+	for (size_t i = 0; i < 7; i++)
+	{
+		for (size_t j = 0; j < 13; j++)
+		{
+			if (m_vecEntitiesPos[i][j] == (UINT)ENTITY_TYPE::ROCK)
+			{
+				CRock* rock = new CRock;
+				rock->SetName(L"Rock");
+				rock->AddImage(Direct2DMgr::GetInstance()->GetStoredBitmap(L"rock"));
+				rock->SetScale(Vec2(54.f, 61.f));
+				rock->SetObjType(GROUP_TYPE::ENTITY);
+				rock->SetPos(m_vMapPos + Vec2(-480.f, -270.f) + Vec2(150.f + 54.f * j,90.f + 61.f * i));
+				rock->GetCollider()->SetOffsetPos(Vec2(0.f, -5.f));
+				rock->GetCollider()->SetScale(Vec2(54.f, 61.f));
+
+				m_vecObjects.push_back(rock);
+			}
+			else if (m_vecEntitiesPos[i][j] == (UINT)ENTITY_TYPE::FLY)
+			{
+				CFly_Mon* fly = (CFly_Mon*)CMonFactory::CreateMonster(MON_TYPE::FLY, m_vMapPos + Vec2(-480.f, -270.f) + Vec2(150.f + 54.f * j, 90.f + 61.f * i), m_vGridMapPos, 1);
+				fly->SetOwner(this);
+				m_iMobCount++;
+				m_iFlyCount++;
+				//printf("ÆÄ¸® ÁÂÇ¥ : %f %f\n", fly->GetPos().x, fly->GetPos().y);
+				m_vecObjects.push_back(fly);
+			}
+			else if (m_vecEntitiesPos[i][j] == (UINT)ENTITY_TYPE::HORF)
+			{
+				CHorf_Mon* horf = (CHorf_Mon*)CMonFactory::CreateMonster(MON_TYPE::HORF, m_vMapPos + Vec2(-480.f, -270.f) + Vec2(150.f + 54.f * j, 90.f + 61.f * i), m_vGridMapPos, 1);
+				horf->SetOwner(this);
+				m_iMobCount++;
+				m_vecObjects.push_back(horf);
+			}
+		}
+	}
+}
+
+void CellMap::CreateBoss(Vec2 _vSpawnPos)
+{
+	CBaby_Plum* babyplum = (CBaby_Plum*)CMonFactory::CreateMonster(MON_TYPE::BABY_PLUM, _vSpawnPos, m_vGridMapPos, 0);
+	babyplum->SetOwner(this);
+	MapMgr::GetInstance()->SetBoss(babyplum);
+
+	m_iMobCount++;
+
+	m_vecObjects.push_back(babyplum);
+}
+
 void CellMap::update()
 {
-	cellMap->update();
-	for (size_t i = 0; i < m_vecDoors.size(); i++)
-		m_vecDoors[i]->update();
+	if (m_iFlyCount > 0)
+	{
+		if (!m_bFlySoundIsPlayed)
+		{
+			printf("ÆÄ¸®¼Ò¸®Àç»ý\n");
+			CSoundMgr::GetInstance()->Play(L"insect swarm");
+			m_bFlySoundIsPlayed = true;
+		}
+	}
+	else
+	{
+		if (m_bFlySoundIsPlayed)
+		{
+			printf("ÆÄ¸®¼Ò¸®²ô±â\n");
+			CSoundMgr::GetInstance()->Stop(L"insect swarm");
+			m_bFlySoundIsPlayed = false;
+		}
+	}
+
+	if (m_iMobCount <= 0)
+	{
+		if (!m_bIsClear)
+		{
+			m_bIsClear = true;
+			CSoundMgr::GetInstance()->Play(L"door heavy open", 0.5f);
+		}
+	}
+
+	//¹æ¹®ÇÑÀûÀÌ ¾ø´Âµ¥ ÇöÀçÁÂÇ¥¶û ¸ÊÁÂÇ¥°¡ °°´Ù¸é Ã¼Å©
+	Vec2 vCurPos = MapMgr::GetInstance()->GetCurPos();
+	if (!m_bIsChecked && (vCurPos.x == m_vGridMapPos.x && vCurPos.y == m_vGridMapPos.y))
+	{
+		m_bIsChecked = true;
+	}
 }
 
 void CellMap::finalupdate()
 {
-	cellMap->finalupdate();
-	for (size_t i = 0; i < m_vecDoors.size(); i++)
-		m_vecDoors[i]->finalupdate();
+
 }
 
 void CellMap::render(ID2D1HwndRenderTarget* _pRender)
 {
-	cellMap->render(_pRender);
-	for (size_t i = 0; i < m_vecDoors.size(); i++)
-		m_vecDoors[i]->render(_pRender);
+	
 }

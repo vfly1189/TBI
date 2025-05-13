@@ -21,7 +21,9 @@ private:
 private:
 	float				m_fAlpha;
 
-	float				m_fRatio;
+	float				m_fRatioX;
+	float				m_fRatioY;
+
 
 public:
 	void ScaleCustomizing(Vec2 _vScale, bool _bScaleCustom)
@@ -35,7 +37,10 @@ public:
 	Vec2 GetFinalPos() { return m_vFinalPos; }
 	void SetBitmap(ID2D1Bitmap* _bitmap) { m_pBitmap = _bitmap; }
 	void SetAlpha(float _alpha) { m_fAlpha = _alpha; }
-	void SetRatio(float _ratio) { m_fRatio = _ratio; }
+
+	void SetRatioX(float _ratioX) { m_fRatioX = _ratioX; }
+	void SetRatioY(float _ratioY) { m_fRatioY = _ratioY; }
+
 	void SetOffset(Vec2 _vOffset) { m_vOffSet = _vOffset; }
 
 public:

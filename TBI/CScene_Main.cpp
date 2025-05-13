@@ -22,6 +22,7 @@
 #include "CPlayerMgr.h"
 
 #include "CScene_Main.h"
+#include "CScene_Fight.h"
 
 
 CScene_Main::CScene_Main()
@@ -46,7 +47,16 @@ CScene_Main::~CScene_Main()
 
 void CScene_Main::Enter()
 {
-	pD2DMgr = Direct2DMgr::GetInstance();
+	m_bChangeSceneFlag = false;
+	CSoundMgr::GetInstance()->StopAllSound();
+	m_iCurPage = 0;
+	CCamera::GetInstance()->SetLookAt(Vec2(0.f,0.f));
+	CPlayerMgr::GetInstance()->CreateAndSettingPlayer();
+	m_fAccTime = 0.f;
+	m_fFadeAlpha = 0.f;
+	CItemMgr::GetInstance()->ResetPickUp();
+
+ 	pD2DMgr = Direct2DMgr::GetInstance();
 	Vec2 vResolution = CCore::GetInstance()->GetResolution();
 
 	CreateTitle(vResolution);
@@ -54,8 +64,6 @@ void CScene_Main::Enter()
 	CreateGameMenu(vResolution);
 
 	CreateSelectCharacter(vResolution);
-
-	CreateVeil(vResolution);
 
 	wstring mainTitleBGMKey = L"genesis_retake_light_loop";
 	//처음 시작했을 때, BGM틀기. 
@@ -74,7 +82,7 @@ void CScene_Main::update()
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 
 	ChangePage();
-	
+
 	if (KEY_TAP(KEY::ENTER))
 	{
 		if (m_iCurPage == 2)
@@ -82,7 +90,7 @@ void CScene_Main::update()
 			CreateLoadImage(CCore::GetInstance()->GetResolution());
 
 			CPlayer* player = CPlayerMgr::GetInstance()->GetPlayer();
-			
+
 			player->SetPlayerStat(vecCharacterInfo[m_iCurCharacterIndex].m_stat);
 			float maxVelocity = vecCharacterInfo[m_iCurCharacterIndex].m_stat.m_fMoveSpd;
 			player->GetRigidBody()->SetMaxVelocity(Vec2(maxVelocity, maxVelocity));
@@ -95,6 +103,8 @@ void CScene_Main::update()
 			CSoundMgr::GetInstance()->Play(L"game_start");
 			m_bChangeSceneFlag = true;
 		}
+		else
+			printf("여긴데\n");
 	}
 	if (m_bChangeSceneFlag)
 	{

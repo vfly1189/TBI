@@ -101,6 +101,11 @@ void CFileMgr::ProcessFile(const std::wstring& filePath)
             CSoundMgr::GetInstance()->AddSound(key, relativePath.c_str(), true, true);
             wprintf(L"BGM: %s\n", key.c_str());
         }
+        else if (L"insect swarm" == key)
+        {
+            CSoundMgr::GetInstance()->AddSound(key, relativePath.c_str(), false, true);
+            wprintf(L"SFX: %s\n", key.c_str());
+        }
         else {
             CSoundMgr::GetInstance()->AddSound(key, relativePath.c_str(), false, false);
         }

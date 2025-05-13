@@ -60,6 +60,7 @@ CObject::~CObject() {
 void CObject::update()
 {
 	m_vPrevPos = m_vPos;
+
 }
 
 void CObject::finalupdate()
@@ -79,6 +80,7 @@ void CObject::finalupdate()
 
 void CObject::render(ID2D1HwndRenderTarget* _pRender)
 {
+	/*
 	if (GetImages().empty()) {
 		Vec2 vRenderPos = CCamera::GetInstance()->GetRenderPos(m_vPos);
 
@@ -99,6 +101,7 @@ void CObject::render(ID2D1HwndRenderTarget* _pRender)
 			pBrush->Release();
 		}
 	}
+	*/
 	component_render(_pRender);
 }
 

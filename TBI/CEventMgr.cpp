@@ -4,6 +4,7 @@
 #include "CObject.h"
 #include "CSceneMgr.h"
 #include "CUIMgr.h"
+#include "AI.h"
 #include "CScene.h"
 
 CEventMgr::CEventMgr()
@@ -32,8 +33,13 @@ void CEventMgr::update()
 	//  ===============
 	//    Event Ã³¸®.
 	//  ===============
+	/*
 	for (const auto& event_node : m_vecEvent) {
 		Excute(event_node);
+	}*/
+	for (size_t i = 0; i < m_vecEvent.size(); i++)
+	{
+		Excute(m_vecEvent[i]);
 	}
 
 	m_vecEvent.clear();
@@ -73,7 +79,14 @@ void CEventMgr::Excute(const tEvent& _eve)
 		CUIMgr::GetInstance()->SetFocusedUI(nullptr);
 	}
 	break;
-
+	case EVENT_TYPE::CHANGE_AI_STATE:
+	{
+		// lParam : AI PTR
+		// wParam : Next Type
+		AI* pAI = (AI*)_eve.lParam;
+		MON_STATE eNextState = (MON_STATE)_eve.wParam;
+		pAI->ChangeState(eNextState);
+	}
 	break;
 	}
 }

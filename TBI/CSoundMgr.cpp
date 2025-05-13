@@ -90,6 +90,8 @@ void CSoundMgr::AddSound(wstring _keyName, wstring _fileName, bool _bgm, bool _l
 		return;
 	}
 
+
+
 	SoundInfo* info = new SoundInfo;
 	info->isBGM = _bgm;
 	info->isLoop = _loop;
@@ -133,34 +135,79 @@ void CSoundMgr::Play(wstring _keyName, float _volume)
 	if (soundIter == m_mapSounds.end()) {
 		assert(false);
 	}
+	
+	FMOD::Channel* newChannel = nullptr;
 
+	if (soundIter->second->isBGM) {
+		m_pSystem->playSound(soundIter->second->m_pSound, m_pBGMChannelGroup, false, &newChannel);
+		newChannel->setVolume(_volume);
+	}
+	else {
+		m_pSystem->playSound(soundIter->second->m_pSound, m_pSFXChannelGroup, false, &newChannel);
+		newChannel->setVolume(_volume);
+
+		// 루프 설정
+		if (soundIter->second->isLoop) {
+			newChannel->setLoopCount(-1); // 무한 루프
+		}
+	}
+
+	// 새 채널을 벡터에 추가
+	soundIter->second->m_pChannels.push_back(newChannel);
+
+	/*
 	if (soundIter->second->isBGM) {
 		m_pSystem->playSound(soundIter->second->m_pSound, m_pBGMChannelGroup, false, &soundIter->second->m_pChannel);
 
 		soundIter->second->m_pChannel->setVolume(_volume);
 	}
 	else {
+		if (_keyName.compare(L"insect swarm") == 0)
+		{
+			printf("여기\n");
+		}
 		m_pSystem->playSound(soundIter->second->m_pSound, m_pSFXChannelGroup, false, &soundIter->second->m_pChannel);
 
 		soundIter->second->m_pChannel->setVolume(_volume);
 
+		
 		// [추가] 루프 설정
 		if (soundIter->second->isLoop) {
 			soundIter->second->m_pChannel->setLoopCount(-1); // 무한 루프
 		}
+		
 	}
+*/
 
 }
 
 void CSoundMgr::Stop(wstring _keyName)
 {
+	/*
 	auto soundIter = m_mapSounds.find(_keyName);
 
 	if (soundIter == m_mapSounds.end()) {
 		assert(false);
 	}
-
+	//soundIter->second->m_pChannel->setLoopCount(0);
 	soundIter->second->m_pChannel->stop();
+	*/
+	auto soundIter = m_mapSounds.find(_keyName);
+	if (soundIter == m_mapSounds.end()) {
+		assert(false);
+		return;
+	}
+
+	// 모든 채널 정지
+	for (auto& channel : soundIter->second->m_pChannels) {
+		if (channel) {
+			channel->setLoopCount(0); // 루프 해제
+			channel->stop();
+		}
+	}
+
+	// 채널 목록 비우기
+	soundIter->second->m_pChannels.clear();
 }
 
 void CSoundMgr::Pause(wstring _keyName)
@@ -171,7 +218,17 @@ void CSoundMgr::Pause(wstring _keyName)
 		assert(false);
 	}
 
-	soundIter->second->m_pChannel->setPaused(true);
+	//soundIter->second->m_pChannel->setPaused(true);
+
+	// 모든 채널 정지
+	for (auto& channel : soundIter->second->m_pChannels) {
+		if (channel) {
+			channel->setPaused(true);
+		}
+	}
+
+	// 채널 목록 비우기
+	//soundIter->second->m_pChannels.clear();
 }
 
 void CSoundMgr::Resume(wstring _keyName)
@@ -182,7 +239,28 @@ void CSoundMgr::Resume(wstring _keyName)
 		assert(false);
 	}
 
-	soundIter->second->m_pChannel->setPaused(false);
+	//soundIter->second->m_pChannel->setPaused(false);
+	// 모든 채널 다시재생
+	for (auto& channel : soundIter->second->m_pChannels) {
+		if (channel) {
+			channel->setPaused(false);
+		}
+	}
+}
+
+void CSoundMgr::StopAllSound()
+{
+	unordered_map <wstring, SoundInfo*>::iterator iter;
+	for (iter = m_mapSounds.begin(); iter != m_mapSounds.end(); iter++)
+	{
+		// 모든 채널 정지
+		for (auto& channel : iter->second->m_pChannels) {
+			if (channel) {
+				channel->setLoopCount(0); // 루프 해제
+				channel->stop();
+			}
+		}
+	}
 }
 
 
@@ -196,7 +274,7 @@ bool CSoundMgr::IsPlaySound(wstring& _keyName)
 
 	bool isPlay = false;
 
-	soundIter->second->m_pChannel->isPlaying(&isPlay);
+	//soundIter->second->m_pChannel->isPlaying(&isPlay);
 
 	return isPlay;
 }
@@ -205,4 +283,5 @@ bool CSoundMgr::IsPauseSound(wstring _keyName)
 {
 	return false;
 }
+
 

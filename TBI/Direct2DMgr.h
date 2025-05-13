@@ -34,7 +34,7 @@ public:
 	HRESULT LoadAndStoreBitmap(const wstring& filePath, const wstring& tag, bool split);
 	ID2D1Bitmap* GetStoredBitmap(const wstring& tag);
 	vector<ID2D1Bitmap*> GetSplitBitmaps(const wstring& tag);
-
+	void DeleteBitmap(const wstring& tag);
 
 public:
 	HRESULT StoreBitmapsFromFolder(const std::wstring& folderPath, const std::wstring& tag);
@@ -42,6 +42,9 @@ public:
 public:
 	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag,
 		const D2D1_POINT_2F& leftTop, const D2D1_POINT_2F& rightBottom);
+
+	ID2D1Bitmap* SplitBitmapNoSave(ID2D1Bitmap* bitmap, const D2D1_POINT_2F& leftTop, const D2D1_POINT_2F& rightBottom);
+
 
 public:
 	void Cleanup();
@@ -56,7 +59,8 @@ public:
 		float outlineThickness,
 		int horizontal);
 
-
+public:
+	ID2D1Bitmap* ApplyRedFilter(ID2D1Bitmap* pOriginalBitmap);
 private:
 	HRESULT LoadBitmap(const wstring& filePath, ID2D1Bitmap** ppBitmap);
 	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag);

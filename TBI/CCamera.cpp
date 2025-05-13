@@ -35,9 +35,11 @@ void CCamera::init()
 void CCamera::update()
 {
 	Vec2 vPos = GetLookAt();
+
 	// 이동 속도 조정 (줌 배율 반영)
 	const float BASE_SPEED = 500.f;
 	const float MOVE_SPEED = BASE_SPEED / m_fScale;
+	
 	/*
 	if (KEY_TAP(KEY::UP)) {
 		SetLookAt(vPos - Vec2(0.f, 540.f));
@@ -54,8 +56,8 @@ void CCamera::update()
 	if (KEY_TAP(KEY::LEFT)) {
 		SetLookAt(vPos - Vec2(960.f, 0.f));
 		//m_vLookAt.x -= 500.f * fDT;
-	}
-	*/
+	}*/
+	
 	//m_vLookAt.x = max(m_vMinBounds.x, min(m_vLookAt.x, m_vMaxBounds.x));
 	//m_vLookAt.y = max(m_vMinBounds.y, min(m_vLookAt.y, m_vMaxBounds.y));
 

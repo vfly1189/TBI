@@ -12,15 +12,19 @@
 #include "CCollectiblesItem.h"
 #include "CItem.h"
 #include "CScene.h"
+#include "CellMap.h"
 
 #include "CImage.h"
 
+#include "CItemMgr.h"
 #include "CSceneMgr.h"
 #include "CTimeMgr.h"
 #include "Direct2DMgr.h"
+#include "MapMgr.h"
 #include "CCamera.h"
 #include "CKeyMgr.h"
 #include "CSoundMgr.h"
+#include "CPlayerMgr.h"
 
 CPlayer::CPlayer()
     : m_iBodyDir(2)
@@ -31,17 +35,55 @@ CPlayer::CPlayer()
     , m_ePrevBodyState(PLAYER_STATE::IDLE)
     , m_sCurBodyAnim(L"idle")
     , m_sCurHeadAnim(L"front_idle")
+    , m_fHitDuration(0.8f)
+    , m_fDieDuration(1.f)
 {
     CreateCollider();
     GetCollider()->SetOffsetPos(Vec2(0.f, -5.f));
     GetCollider()->SetScale(Vec2(32.f, 45.f));
-
-    
 }
 
 CPlayer::~CPlayer()
 {
 
+}
+
+
+void CPlayer::update_hit()
+{
+    m_fHitAccTime += fDT;
+
+    if (m_fHitAccTime > m_fHitDuration)
+    {
+        m_fHit = false;
+        
+        // 1. 레이어 정리
+        ResetAnimationLayers();
+
+        // 2. 상태 강제 업데이트
+        m_ePrevBodyState = PLAYER_STATE::HIT; // 의도적인 불일치 생성
+        m_ePrevHeadState = PLAYER_STATE::HIT;
+        
+        // 3. 애니메이션 이름 재설정
+        m_sCurBodyAnim.clear();
+        m_sCurHeadAnim.clear();
+        m_sCurAccessoriesAnim.clear();
+
+        m_eCurBodyState = PLAYER_STATE::IDLE;
+        m_eCurHeadState = PLAYER_STATE::IDLE;
+    }
+}
+
+void CPlayer::update_die()
+{
+    m_fDieAccTime += fDT;
+
+    if (m_fDieAccTime > m_fDieDuration)
+    {
+        printf("삭제\n");
+        CPlayerMgr::GetInstance()->m_bIsAlive = false;
+        DeleteObject(this);
+    }
 }
 
 void CPlayer::ResetAnimationLayers()
@@ -88,6 +130,7 @@ void CPlayer::ObtainItem(Item _obtainItem)
     item_image_tag += L"_" + _obtainItem.m_sItemTag;
 
     m_obtainItem = new CSpriteUI;
+   
     m_obtainItem->SetObjType(GROUP_TYPE::ITEM);
     m_obtainItem->AddImage(Direct2DMgr::GetInstance()->GetStoredBitmap(item_image_tag));
 
@@ -97,7 +140,6 @@ void CPlayer::ObtainItem(Item _obtainItem)
     m_obtainItem->GetAnimator()->Play(L"item_get_effect_starflash", false, 1);
 
     m_obtainItem->SetScale(Vec2(32.f, 32.f) * 2.f);
-
     CSceneMgr::GetInstance()->GetCurScene()->AddObject(m_obtainItem, GROUP_TYPE::ITEM);
     CSoundMgr::GetInstance()->Play(L"power up1", 0.2f);
 }
@@ -105,70 +147,59 @@ void CPlayer::ObtainItem(Item _obtainItem)
 void CPlayer::update()
 {
     m_fAccTimeTear += fDT;
-  
+ 
     if (m_obtainItem != nullptr)
     {
         m_obtainItem->SetPos(GetPos() + Vec2(0.f,-80.f));
     }
 
- 
 	CObject::update();
 
-	update_move();
+    if (m_fDie)
+    {
+        update_die();
+    }
+    else if (m_fHit)
+    {
+        update_hit();
+    }
+    else
+    {  
+        update_body_state();
+        update_body_animation();
+
+        update_head_state();
+        update_head_animation();   
+    }
     
-    update_body_state();
-    update_body_animation();
-
-    update_head_state();
-    update_head_animation();
-
-    update_arrowKey();
-
-    if (KEY_TAP(KEY::Y))
+    if (!m_fDie)
     {
-        m_stPlayerStat.m_fCurHp -= 0.5f;
+        update_move();
+        update_arrowKey();
     }
+  
 
-    if (KEY_TAP(KEY::U))
+    if (KEY_TAP(KEY::L))
     {
-        m_stPlayerStat.m_fAttackDmg += 0.1f;
-    }
+        printf("활성화된 애니메 갯수 : %zd\n", GetAnimator()->GetActiveAnimsCount());
+        printf("머리 : %ls\n", m_sCurHeadAnim.c_str());
+        printf("몸 : %ls\n", m_sCurBodyAnim.c_str());
 
-    if (KEY_TAP(KEY::I))
-    {
-        m_stPlayerStat.m_fAttackSpd -= 0.1f;
-        if (m_stPlayerStat.m_fAttackSpd <= 0.1f)
-        {
-            printf("공속제한!!!\n");
-            m_stPlayerStat.m_fAttackSpd = 0.1f;
-        }
-    }
-
-    if (KEY_TAP(KEY::O))
-    {
-        m_stPlayerStat.m_fMoveSpd += 10.f;
-    }
-
-    if (KEY_TAP(KEY::P))
-    {
-        m_stPlayerStat.m_fAttackRange += 10.f;
     }
 
     if (KEY_TAP(KEY::K))
     {
+        
+        printf("==============================================\n");
         printf("현재 hp : %f\n", m_stPlayerStat.m_fCurHp);
         printf("최대 hp : %f\n", m_stPlayerStat.m_fMaxHp);
-
         printf("현재 공격력 : %f\n", m_stPlayerStat.m_fAttackDmg);
         printf("현재 공격력 계수 : %f\n", m_stPlayerStat.m_fAttackDmgCoef);
         printf("현재 공격속도 : %f\n", m_stPlayerStat.m_fAttackSpd);
         printf("현재 이동속도 : %f\n", m_stPlayerStat.m_fMoveSpd);
         printf("현재 사거리 : %f\n", m_stPlayerStat.m_fAttackRange);
-    }
-
-    if (KEY_TAP(KEY::J))
-    {
-        printf("%f %f\n", GetPos().x, GetPos().y);
+        printf("==============================================\n");
+        
     }
 
     player_sfx();
@@ -293,8 +324,9 @@ void CPlayer::CreateTear()
         vTearPos.y -= GetScale().y / 2.f;
 
         //미사일
-        CTear* pTear = new CTear(GetPos());
-        pTear->SetName(L"Missile_Player");
+        CTear* pTear = new CTear(GetPos(), m_stPlayerStat.m_fAttackRange, false);
+        pTear->SetObjType(GROUP_TYPE::TEAR);
+        pTear->SetName(L"Player_Attack_Tear");
         pTear->SetPos(vTearPos);
         pTear->SetScale(Vec2(32.f, 32.f) * 2.f);
 
@@ -323,17 +355,38 @@ void CPlayer::CreateTear()
     }
 }
 
+void CPlayer::OnCollision(CCollider* _pOther)
+{
+  
+}
+
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {
     if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::DOOR)
     {
-        Vec2 vPos = CCamera::GetInstance()->GetLookAt();
-        int door_dir = dynamic_cast<CDoor*>(_pOther->GetOwner())->GetDoorDir();
+        if (dynamic_cast<CDoor*>(_pOther->GetOwner())->IsDoorOpen())
+        {
+            Vec2 vPos = CCamera::GetInstance()->GetLookAt();
+            int door_dir = dynamic_cast<CDoor*>(_pOther->GetOwner())->GetDoorDir();
 
-        if      (door_dir == 0) SetPos(vPos - Vec2(0.f,540.f) + Vec2(0.f, 200.f));
-        else if (door_dir == 1) SetPos(vPos + Vec2(960.f, 0.f) - Vec2(350.f, 0.f));
-        else if (door_dir == 2) SetPos(vPos + Vec2(0.f, 540.f) - Vec2(0.f, 200.f));
-        else if (door_dir == 3) SetPos(vPos - Vec2(960.f, 0.f) + Vec2(350.f, 0.f));
+            if (door_dir == 0)
+            {
+                SetPos(vPos - Vec2(0.f, 540.f) + Vec2(0.f, 200.f));
+            }
+            else if (door_dir == 1)
+            {
+                SetPos(vPos + Vec2(960.f, 0.f) - Vec2(350.f, 0.f));
+            }
+            else if (door_dir == 2)
+            {
+                SetPos(vPos + Vec2(0.f, 540.f) - Vec2(0.f, 200.f));
+            }
+            else if (door_dir == 3)
+            {
+                SetPos(vPos - Vec2(960.f, 0.f) + Vec2(350.f, 0.f));
+            }
+            MapMgr::GetInstance()->SetCurPos(MapMgr::GetInstance()->GetCurPos() + Vec2(dx4[door_dir], dy4[door_dir]));
+        }
     }
     else if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::ITEM)
     {
@@ -348,6 +401,52 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
         ResetAnimationLayers();
         ObtainItem(getItem);
     }
+    else if ((_pOther->GetOwner()->GetObjType() == GROUP_TYPE::TEAR &&
+        _pOther->GetOwner()->GetName().compare(L"Player_Attack_Tear") != 0) ||
+        _pOther->GetOwner()->GetName().compare(L"Fly_Mon") == 0
+        )
+    {
+        if (m_fHit) return;
+
+        wstring sHitSound = L"hurt grunt ";
+        int rNum = rand() % 3;
+        if (rNum == 1 || rNum == 2) sHitSound += to_wstring(rNum);
+        printf("피격 사운드 : %ls\n", sHitSound.c_str());
+        CSoundMgr::GetInstance()->Play(sHitSound, 0.3f);
+
+        m_fHit = true;
+        m_fHitAccTime = 0.f;
+
+        CPlayerMgr::GetInstance()->PlayerHit(-1);
+
+
+        if (m_stPlayerStat.m_fCurHp <= 0.f)
+        {
+            m_fDieAccTime = 0.f;
+            m_fDie = true;
+            GetAnimator()->PauseAllAnimations();
+            GetAnimator()->Play(L"player_die", false, 1);
+
+            CSoundMgr::GetInstance()->Play(L"isaac dies new 1", 0.3f);
+            return;
+        }
+
+          
+        GetAnimator()->PauseAllAnimations();
+        GetAnimator()->Play(L"player_hit", false, 1);
+
+        vector<CAnimation*>& activeAnims = GetAnimator()->GetActiveAnims();
+        for (size_t i = 0; i < activeAnims.size(); i++)
+        {
+            if (activeAnims[i]->GetName().compare(L"player_hit") == 0)
+                activeAnims[i]->EnableFlicker(true, 0.15f, 30.f);
+        }    
+    }
+}
+
+void CPlayer::OnCollisionExit(CCollider* _pOther)
+{
+
 }
 
 void CPlayer::update_arrowKey()
@@ -368,12 +467,6 @@ void CPlayer::update_arrowKey()
         }
     }
 }
-
-void CPlayer::OnCollisionExit(CCollider* _pOther)
-{
-  
-}
-
 
 void CPlayer::update_direction(bool w, bool s, bool a, bool d, int& newDir, bool& keyPressed)
 {

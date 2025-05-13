@@ -38,9 +38,11 @@ void CSceneMgr::init()
 	m_arrScene[(UINT)SCENE_TYPE::MAIN]->SetName(L"CScene_Main");
 	m_arrScene[(UINT)SCENE_TYPE::MAIN]->SetSceneType(SCENE_TYPE::MAIN);
 
+	
 	m_arrScene[(UINT)SCENE_TYPE::FIGHT] = new CScene_Fight;
 	m_arrScene[(UINT)SCENE_TYPE::FIGHT]->SetName(L"CScene_Fight");
 	m_arrScene[(UINT)SCENE_TYPE::FIGHT]->SetSceneType(SCENE_TYPE::FIGHT);
+	
 
 	//현재 씬 설정
 	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::MAIN];

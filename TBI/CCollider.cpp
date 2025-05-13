@@ -44,6 +44,7 @@ void CCollider::finalupdate()
 void CCollider::render(ID2D1HwndRenderTarget* _pRender)
 {
 	
+
 	// vFinalPos와 m_vScale은 객체의 최종 위치와 스케일 값을 나타냄.
 	Vec2 vRenderPos = CCamera::GetInstance()->GetRenderPos(m_vFinalPos);
 

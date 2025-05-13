@@ -95,7 +95,6 @@ void CAnimator::render(ID2D1HwndRenderTarget* _pRender)
 	{
 		pAnim->render(_pRender);
 	}
-	
 }
 
 CAnimation* CAnimator::FindAnimation(const wstring& _strName)
@@ -109,10 +108,9 @@ CAnimation* CAnimator::FindAnimation(const wstring& _strName)
 
 void CAnimator::Play(const wstring& _animName, bool _bRepeat, int _iPriority)
 {
-	/*
 	m_pCurAnim = FindAnimation(_animName);
 
-	m_bRepeat = _bRepeat;*/
+	//m_bRepeat = _bRepeat;
 
 	CAnimation* pOrigin = FindAnimation(_animName);
 	if (nullptr == pOrigin) return;

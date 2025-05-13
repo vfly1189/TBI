@@ -143,6 +143,81 @@
     <Filter Include="Engine\05. Object\UI\CPanelUI">
       <UniqueIdentifier>{ce46f675-7286-459b-99fc-1567ce8ee73b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Object\Rock">
+      <UniqueIdentifier>{c10df2bf-9f60-4661-ae03-440a07c68675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. SingleTon\EntityMgr">
+      <UniqueIdentifier>{1431b978-d96b-4fab-b8b3-bd946f711ec2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Monster">
+      <UniqueIdentifier>{8ac45f98-ae07-4a3e-9755-988994a47f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI">
+      <UniqueIdentifier>{6213b1f7-3c29-455b-ab51-b752d0a20e00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState">
+      <UniqueIdentifier>{ef08cdf9-f788-4346-b58e-2db1dcf61866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Trace">
+      <UniqueIdentifier>{b968c438-c992-4f44-9df9-c13396240203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Idle">
+      <UniqueIdentifier>{b06a8a4a-6d36-4827-9ece-008c4f4e3fe6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Attack">
+      <UniqueIdentifier>{1f83b0a7-2b0f-429a-8966-9f13f17b2d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\08. Factory\CMonFactory">
+      <UniqueIdentifier>{8d1046f0-9768-481c-a7ef-3ce91f8c3592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Monster\Fly">
+      <UniqueIdentifier>{58769391-76ec-42fd-95a0-f0b3d5e5af09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Monster\Horf">
+      <UniqueIdentifier>{b3259fa5-42e0-4df2-a1af-73f58c022f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Idle\FlyIdle">
+      <UniqueIdentifier>{be169d1f-34f0-4f20-93ad-923252df167a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Idle\HorfIdle">
+      <UniqueIdentifier>{da18a8f9-39ff-4445-9a3b-bd4f9b81e020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Trace\FlyTrace">
+      <UniqueIdentifier>{c404c070-450b-4b5e-b9a1-795b2c8cce87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Dead">
+      <UniqueIdentifier>{53ad0285-660e-4fec-9606-d6d23b7ab2b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Dead\FlyDead">
+      <UniqueIdentifier>{7a3a4d50-a43c-41ec-9e35-79d50f022401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Dead\HorfDead">
+      <UniqueIdentifier>{b9a9f850-6863-4495-b1fb-7c453df61d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Item\PickUpItem">
+      <UniqueIdentifier>{547fc7a2-6059-4c51-890d-7f0cec5ec9b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Monster\Boss">
+      <UniqueIdentifier>{786101df-0e46-4142-98fc-4a5606ca12cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Monster\Boss\BabyPlum">
+      <UniqueIdentifier>{ea4d6ae8-7a2c-4fa1-a2b8-d964b2753951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Idle\BabyPlumIdle">
+      <UniqueIdentifier>{7f88fa2f-ac17-49c7-93f2-dd55817ea497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Trace\BabyPlumTrace">
+      <UniqueIdentifier>{6b50fce4-67d9-4f41-bdd3-febddeb4d64a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Attack\HorfAttack">
+      <UniqueIdentifier>{ca2ec409-1b9f-4dca-9dc3-703cc4f5c438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Attack\BabyPlumAttack">
+      <UniqueIdentifier>{2e2b70a8-fd77-44f2-948e-9cf5815de439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Module\AI\CState\Dead\BabyPlumDead">
+      <UniqueIdentifier>{70e2d0f7-9529-4d5a-a4fe-6cfc326cb29a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -295,6 +370,66 @@
     <ClInclude Include="CPanelUI.h">
       <Filter>Engine\05. Object\UI\CPanelUI</Filter>
     </ClInclude>
+    <ClInclude Include="CRock.h">
+      <Filter>Engine\05. Object\Rock</Filter>
+    </ClInclude>
+    <ClInclude Include="CEntityMgr.h">
+      <Filter>Engine\03. SingleTon\EntityMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonster.h">
+      <Filter>Engine\05. Object\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Engine\07. Module\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>Engine\07. Module\AI\CState</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonFactory.h">
+      <Filter>Engine\08. Factory\CMonFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="CFly_Mon.h">
+      <Filter>Engine\05. Object\Monster\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="CHorf_Mon.h">
+      <Filter>Engine\05. Object\Monster\Horf</Filter>
+    </ClInclude>
+    <ClInclude Include="CHorfIdleState.h">
+      <Filter>Engine\07. Module\AI\CState\Idle\HorfIdle</Filter>
+    </ClInclude>
+    <ClInclude Include="CFlyIdleState.h">
+      <Filter>Engine\07. Module\AI\CState\Idle\FlyIdle</Filter>
+    </ClInclude>
+    <ClInclude Include="CFlyTraceState.h">
+      <Filter>Engine\07. Module\AI\CState\Trace\FlyTrace</Filter>
+    </ClInclude>
+    <ClInclude Include="CFlyDeadState.h">
+      <Filter>Engine\07. Module\AI\CState\Dead\FlyDead</Filter>
+    </ClInclude>
+    <ClInclude Include="CHorfDeadState.h">
+      <Filter>Engine\07. Module\AI\CState\Dead\HorfDead</Filter>
+    </ClInclude>
+    <ClInclude Include="CPickUpItem.h">
+      <Filter>Engine\05. Object\Item\PickUpItem</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaby_Plum.h">
+      <Filter>Engine\05. Object\Monster\Boss\BabyPlum</Filter>
+    </ClInclude>
+    <ClInclude Include="CBabyPlumIdleState.h">
+      <Filter>Engine\07. Module\AI\CState\Idle\BabyPlumIdle</Filter>
+    </ClInclude>
+    <ClInclude Include="CBabyPlumTraceState.h">
+      <Filter>Engine\07. Module\AI\CState\Trace\BabyPlumTrace</Filter>
+    </ClInclude>
+    <ClInclude Include="CHorfAttackState.h">
+      <Filter>Engine\07. Module\AI\CState\Attack\HorfAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="CBabyPlumAttackState.h">
+      <Filter>Engine\07. Module\AI\CState\Attack\BabyPlumAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="CBabyPlumDeadState.h">
+      <Filter>Engine\07. Module\AI\CState\Dead\BabyPlumDead</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -427,6 +562,66 @@
     </ClCompile>
     <ClCompile Include="CPanelUI.cpp">
       <Filter>Engine\05. Object\UI\CPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CRock.cpp">
+      <Filter>Engine\05. Object\Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="CEntityMgr.cpp">
+      <Filter>Engine\03. SingleTon\EntityMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonster.cpp">
+      <Filter>Engine\05. Object\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Engine\07. Module\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>Engine\07. Module\AI\CState</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonFactory.cpp">
+      <Filter>Engine\08. Factory\CMonFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="CFly_Mon.cpp">
+      <Filter>Engine\05. Object\Monster\Fly</Filter>
+    </ClCompile>
+    <ClCompile Include="CHorf_Mon.cpp">
+      <Filter>Engine\05. Object\Monster\Horf</Filter>
+    </ClCompile>
+    <ClCompile Include="CHorfIdleState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Idle\HorfIdle</Filter>
+    </ClCompile>
+    <ClCompile Include="CFlyIdleState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Idle\FlyIdle</Filter>
+    </ClCompile>
+    <ClCompile Include="CFlyTraceState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Trace\FlyTrace</Filter>
+    </ClCompile>
+    <ClCompile Include="CFlyDeadState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Dead\FlyDead</Filter>
+    </ClCompile>
+    <ClCompile Include="CHorfDeadState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Dead\HorfDead</Filter>
+    </ClCompile>
+    <ClCompile Include="CPickUpItem.cpp">
+      <Filter>Engine\05. Object\Item\PickUpItem</Filter>
+    </ClCompile>
+    <ClCompile Include="CBaby_Plum.cpp">
+      <Filter>Engine\05. Object\Monster\Boss\BabyPlum</Filter>
+    </ClCompile>
+    <ClCompile Include="CBabyPlumIdleState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Idle\BabyPlumIdle</Filter>
+    </ClCompile>
+    <ClCompile Include="CBabyPlumTraceState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Trace\BabyPlumTrace</Filter>
+    </ClCompile>
+    <ClCompile Include="CHorfAttackState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Attack\HorfAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="CBabyPlumAttackState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Attack\BabyPlumAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="CBabyPlumDeadState.cpp">
+      <Filter>Engine\07. Module\AI\CState\Dead\BabyPlumDead</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

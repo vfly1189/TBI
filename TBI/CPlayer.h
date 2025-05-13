@@ -1,10 +1,12 @@
 #pragma once
 #include "CObject.h"
+#include "CKeyMgr.h"
 
 enum class PLAYER_STATE {
     IDLE,
     WALK,
     ATTACK,
+    HIT,
     GET_ITEM,
     DEAD,
 };
@@ -24,6 +26,9 @@ typedef struct _PlayerStat
     float		m_fAttackRange;			//공격사거리
 
 }PlayerStat;*/
+
+class CSpriteUI;
+
 
 class CPlayer :
     public CObject
@@ -65,6 +70,16 @@ private:
     bool                    m_bGettingItem = false;
 
 private:
+    float m_fHitAccTime;
+    float m_fHitDuration;
+    bool  m_fHit;
+
+private:
+    float m_fDieAccTime;
+    float m_fDieDuration;
+    bool m_fDie;
+
+private:
     void ResetAnimationLayers();
 
 public:
@@ -96,6 +111,7 @@ public:
     virtual void update();
     virtual void finalupdate();
     virtual void render(ID2D1HwndRenderTarget* _pRender);
+ 
 
 public:
     void update_move();
@@ -111,9 +127,14 @@ public:
     void update_head_animation();
     void update_arrowKey();
 
+    void update_hit();
+    void update_die();
+
 public:
     virtual void OnCollisionEnter(CCollider* _pOther);
     virtual void OnCollisionExit(CCollider* _pOther);
+    virtual void OnCollision(CCollider* _pOther);
+
 
 public:
     CLONE(CPlayer);

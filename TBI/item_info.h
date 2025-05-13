@@ -7,6 +7,14 @@ enum class COLLECTIBLES_ITEM_TYPE
 	FAMILIAR,
 };
 
+enum class PICKUP_ITEM_TYPE
+{
+	HEART,
+	COIN,
+	KEY,
+	BOMB,
+};
+
 typedef struct _Item
 {
 	wstring						m_sItemTag;					//아이템 이름
@@ -22,6 +30,9 @@ typedef struct _Item
 	float						m_fAddMoveSpd;				//+이동속도
 
 	float						m_fAddAttackRange;			//+공격사거리
+	
+	int							m_iCurCharge;				//액티브 아이템의 경우 현재 차지
+	int							m_iMaxCharge;				//액티브 아이템의 경우 최대 차지
 }Item;
 
 vector<wstring> items_tags;
@@ -65,8 +76,8 @@ vector<Item> items = {
 
 		{L"", 31, COLLECTIBLES_ITEM_TYPE::PASSIVE, 0, 0.f, 0.f, 0.f, 50.f, 50.f},
 		{L"", 32, COLLECTIBLES_ITEM_TYPE::PASSIVE, 0, 0.f, 0.f, 0.5f, 0.f, 0.f},
-		{L"", 33, COLLECTIBLES_ITEM_TYPE::ACTIVE, 1, 0.f, 0.f, 0.f, 0.f, 0.f},
-		{L"", 34, COLLECTIBLES_ITEM_TYPE::ACTIVE, 0, 2.f, 1.f, 0.f, 0.f, 0.f},
-		{L"", 35, COLLECTIBLES_ITEM_TYPE::ACTIVE, 0, 0.f, 0.f, 0.f, 0.f, 0.f},
+		{L"", 33, COLLECTIBLES_ITEM_TYPE::ACTIVE, 1, 0.f, 0.f, 0.f, 0.f, 0.f , 3, 3},
+		{L"", 34, COLLECTIBLES_ITEM_TYPE::ACTIVE, 0, 2.f, 1.f, 0.f, 0.f, 0.f , 1, 5},
+		{L"", 35, COLLECTIBLES_ITEM_TYPE::ACTIVE, 0, 0.f, 0.f, 0.f, 0.f, 0.f , 6, 6},
 };
 

@@ -50,18 +50,27 @@ int dy4[4] = { -1,0,1,0 };
 
 enum class GROUP_TYPE {
 	DEFAULT,
-	
-	
+	TILE,
 	IMAGE,
+	ENTITY,
 	DOOR,
-	UI,
 	TEAR,
 	EFFECT,
+	PICKUP_ITEM,
 	ITEM,
 	PLAYER,
 	WALL,
 	TEST,
+	UI,
 	END = 32,
+};
+
+enum class ENTITY_TYPE {
+	EMPTY,
+	FLY,
+	HORF,
+	ROCK,	 // µ¹
+	BONFIRE, // ¸ð´ÚºÒ
 };
 
 enum class SCENE_TYPE {
@@ -88,10 +97,23 @@ enum class EVENT_TYPE {
 	CREATE_OBJECT,
 	DELETE_OBJECT,
 	SCENE_CHANGE,
-
+	CHANGE_AI_STATE,
 	END,
 };
 
+enum class MON_TYPE {
+	FLY,
+	HORF,
+	BABY_PLUM,
+};
+
+enum class MON_STATE 
+{
+	IDLE,
+	TRACE,
+	ATTACK,
+	DEAD,
+};
 
 
 enum class TextUIMode

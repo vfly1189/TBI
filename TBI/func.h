@@ -10,14 +10,17 @@ void DeleteObject(CObject* _pObj);
 //한 프레임은 작업을 마무리하고, Scene을 업데이트 해야만 함. 
 //여기서 해줄 건 이벤트 등록. 다음 프레임부터 다음 씬으로 가도록 이벤트를 넣어준다. 
 void ChangeScene(SCENE_TYPE _eNext);
+void ChangeAIState(AI* _pAI, MON_STATE _eNextState);
 
 D2D1::ColorF ColorNormalize(int r, int g, int b);
 
 
-ID2D1Bitmap* FlipBitamp(ID2D1Bitmap* original, bool x, bool y);
+ID2D1Bitmap* FlipBitmap(ID2D1Bitmap* original, bool x, bool y);
 
 ID2D1Bitmap* CombineBitmaps2X2(vector<ID2D1Bitmap*>& bitmaps);
 ID2D1Bitmap* CombineBitmapsX(vector<ID2D1Bitmap*>& bitmaps);
+
+float ChargeBarRatio(int _curCharge, int _maxCharge);
 
 template<typename T>
 void Safe_Delete_Vec(vector<T>& _vec);

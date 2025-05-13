@@ -47,6 +47,8 @@ using std::queue;
 using std::string;
 using std::wstring;
 
+#include <array>
+
 #include <random>
 std::random_device random_generator;
 std::uniform_int_distribution<int> random_distribution(0, 100);
@@ -58,6 +60,9 @@ std::uniform_int_distribution<int> random_distribution(0, 100);
 
 #include <codecvt>
 #include <locale>
+ 
+#include <sstream>
+#include <iomanip>
 
 #include "fmod.hpp"
 #include "fmod_errors.h"

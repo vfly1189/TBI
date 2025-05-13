@@ -7,9 +7,12 @@ class CObject;
 class CScene
 {
 	static bool isPause;
-private:
+
+protected:
 	vector<CObject*> m_arrObj[(UINT)GROUP_TYPE::END];		//벡터 안에 모든 오브젝트 집어 넣겠다. 이런 특성(요소)를 가진만큼 나눠주기.
 	//달리말하면 그룹 갯수만큼 나눠주기.
+
+private:
 
 	SCENE_TYPE		m_eType;
 	wstring			m_strName; //Scene 이름

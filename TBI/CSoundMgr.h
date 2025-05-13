@@ -14,7 +14,8 @@ float		   fWalkElapsed = 0.f;
 
 struct SoundInfo {
 	FMOD::Sound* m_pSound = nullptr;
-	FMOD::Channel* m_pChannel = nullptr;
+	//FMOD::Channel* m_pChannel = nullptr;
+	std::vector<FMOD::Channel*> m_pChannels; // 채널을 벡터로 관리
 	bool			isBGM = false;
 	bool isLoop = false;
 };
@@ -55,6 +56,9 @@ public:
 	void Stop(wstring _keyName);
 	void Pause(wstring _keyName);
 	void Resume(wstring _keyName);
+
+	void StopAllSound();
+
 
 	bool IsPlaySound(wstring& _keyName);
 	bool IsPauseSound(wstring _keyName);

@@ -15,11 +15,14 @@
 #include "CSoundMgr.h"
 #include "CCore.h"
 
-CTear::CTear(Vec2 _vStartPos)
+CTear::CTear(Vec2 _vStartPos, float _fRange, bool _bPlayerCollision)
 	: m_vDir(Vec2(1.f, 1.f))
-	, m_fSpeed(600.f)
+	, m_fSpeed(300.f)
 {
 	m_vStartPos = _vStartPos;
+	m_fRange = _fRange;
+	m_bPlayerCollision = _bPlayerCollision;
+
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(32.f, 32.f));
@@ -56,10 +59,11 @@ void CTear::update()
 	Vec2 vCameraLookAt = CCamera::GetInstance()->GetLookAt();
 	Vec2 vPos = GetPos();
 
-
-	if ((m_vStartPos - vPos).Length() >= CPlayerMgr::GetInstance()->GetPlayer()->GetPlayerStat().m_fAttackRange
+	//printf("´«¹°½ÃÀÛÀ§Ä¡ : %f %f\n ´«¹°ÇöÀçÀ§Ä¡ : %f %f\n\n", m_vStartPos.x, m_vStartPos.y, vPos.x, vPos.y);
+	if ((m_vStartPos - vPos).Length() >= m_fRange
 		&& !m_bDestroy)
 	{
+		//printf("´«¹°Ãæµ¹\n");
 		CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
 		DeleteImages();
 		GetAnimator()->Play(L"tear_explode_anim", false, 1);
@@ -122,6 +126,71 @@ void CTear::OnCollisionEnter(CCollider* _pOther)
 		m_bDestroy = true;
 		m_fAccTime = 0.f;
 		m_fSpeed = 0.f;
+	}
+	else if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::ENTITY)
+	{
+		if (_pOther->GetOwner()->GetName().compare(L"Rock") == 0)
+		{
+			CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
+			DeleteImages();
+			GetAnimator()->Play(L"tear_explode_anim", false, 1);
+			m_bStop = true;
+			m_bDestroy = true;
+			m_fAccTime = 0.f;
+			m_fSpeed = 0.f;
+		}
+		else if (_pOther->GetOwner()->GetName().compare(L"Horf_Mon") == 0)
+		{
+			if (GetName().compare(L"Player_Attack_Tear") == 0)
+			{
+				CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
+				DeleteImages();
+				GetAnimator()->Play(L"tear_explode_anim", false, 1);
+				m_bStop = true;
+				m_bDestroy = true;
+				m_fAccTime = 0.f;
+				m_fSpeed = 0.f;
+			}
+		}
+		else if (_pOther->GetOwner()->GetName().compare(L"Fly_Mon") == 0)
+		{
+			if (GetName().compare(L"Player_Attack_Tear") == 0)
+			{
+				CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
+				DeleteImages();
+				GetAnimator()->Play(L"tear_explode_anim", false, 1);
+				m_bStop = true;
+				m_bDestroy = true;
+				m_fAccTime = 0.f;
+				m_fSpeed = 0.f;
+			}
+		}
+		else if (_pOther->GetOwner()->GetName().compare(L"Baby_Plum_Boss") == 0)
+		{
+			if (GetName().compare(L"Player_Attack_Tear") == 0)
+			{
+				CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
+				DeleteImages();
+				GetAnimator()->Play(L"tear_explode_anim", false, 1);
+				m_bStop = true;
+				m_bDestroy = true;
+				m_fAccTime = 0.f;
+				m_fSpeed = 0.f;
+			}
+		}
+	}
+	else if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::PLAYER)
+	{
+		if (m_bPlayerCollision)
+		{
+			CSoundMgr::GetInstance()->Play(L"tear block", 0.2f);
+			DeleteImages();
+			GetAnimator()->Play(L"tear_explode_anim", false, 1);
+			m_bStop = true;
+			m_bDestroy = true;
+			m_fAccTime = 0.f;
+			m_fSpeed = 0.f;
+		}
 	}
 }
 

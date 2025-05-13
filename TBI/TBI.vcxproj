@@ -148,8 +148,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
+    <ClInclude Include="CBabyPlumAttackState.h" />
+    <ClInclude Include="CBabyPlumDeadState.h" />
+    <ClInclude Include="CBabyPlumIdleState.h" />
+    <ClInclude Include="CBabyPlumTraceState.h" />
+    <ClInclude Include="CBaby_Plum.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollectiblesItem.h" />
     <ClInclude Include="CCollider.h" />
@@ -157,20 +163,33 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CDoor.h" />
     <ClInclude Include="CellMap.h" />
+    <ClInclude Include="CEntityMgr.h" />
     <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CFileMgr.h" />
+    <ClInclude Include="CFlyDeadState.h" />
+    <ClInclude Include="CFlyIdleState.h" />
+    <ClInclude Include="CFlyTraceState.h" />
+    <ClInclude Include="CFly_Mon.h" />
     <ClInclude Include="CFontMgr.h" />
     <ClInclude Include="character_stats.h" />
+    <ClInclude Include="CHorfAttackState.h" />
+    <ClInclude Include="CHorfDeadState.h" />
+    <ClInclude Include="CHorfIdleState.h" />
+    <ClInclude Include="CHorf_Mon.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CItem.h" />
     <ClInclude Include="CItemMgr.h" />
     <ClInclude Include="CKeyMgr.h" />
+    <ClInclude Include="CMonFactory.h" />
+    <ClInclude Include="CMonster.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathMgr.h" />
+    <ClInclude Include="CPickUpItem.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CPlayerMgr.h" />
     <ClInclude Include="CRigidBody.h" />
+    <ClInclude Include="CRock.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneMgr.h" />
     <ClInclude Include="CScene_Fight.h" />
@@ -178,6 +197,7 @@
     <ClInclude Include="CScene_Test.h" />
     <ClInclude Include="CSoundMgr.h" />
     <ClInclude Include="CSpriteUI.h" />
+    <ClInclude Include="CState.h" />
     <ClInclude Include="CTear.h" />
     <ClInclude Include="CTextUI.h" />
     <ClInclude Include="CTimeMgr.h" />
@@ -200,8 +220,14 @@
     <ClInclude Include="TBI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
+    <ClCompile Include="CBabyPlumAttackState.cpp" />
+    <ClCompile Include="CBabyPlumDeadState.cpp" />
+    <ClCompile Include="CBabyPlumIdleState.cpp" />
+    <ClCompile Include="CBabyPlumTraceState.cpp" />
+    <ClCompile Include="CBaby_Plum.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollectiblesItem.cpp" />
     <ClCompile Include="CCollider.cpp" />
@@ -209,19 +235,32 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDoor.cpp" />
     <ClCompile Include="CellMap.cpp" />
+    <ClCompile Include="CEntityMgr.cpp" />
     <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CFileMgr.cpp" />
+    <ClCompile Include="CFlyDeadState.cpp" />
+    <ClCompile Include="CFlyIdleState.cpp" />
+    <ClCompile Include="CFlyTraceState.cpp" />
+    <ClCompile Include="CFly_Mon.cpp" />
     <ClCompile Include="CFontMgr.cpp" />
+    <ClCompile Include="CHorfAttackState.cpp" />
+    <ClCompile Include="CHorfDeadState.cpp" />
+    <ClCompile Include="CHorfIdleState.cpp" />
+    <ClCompile Include="CHorf_Mon.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CItem.cpp" />
     <ClCompile Include="CItemMgr.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
+    <ClCompile Include="CMonFactory.cpp" />
+    <ClCompile Include="CMonster.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
+    <ClCompile Include="CPickUpItem.cpp" />
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CPlayerMgr.cpp" />
     <ClCompile Include="CRigidBody.cpp" />
+    <ClCompile Include="CRock.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneMgr.cpp" />
     <ClCompile Include="CScene_Fight.cpp" />
@@ -229,6 +268,7 @@
     <ClCompile Include="CScene_Test.cpp" />
     <ClCompile Include="CSoundMgr.cpp" />
     <ClCompile Include="CSpriteUI.cpp" />
+    <ClCompile Include="CState.cpp" />
     <ClCompile Include="CTear.cpp" />
     <ClCompile Include="CTextUI.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />

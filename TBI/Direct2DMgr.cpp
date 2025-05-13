@@ -33,7 +33,9 @@ HRESULT Direct2DMgr::init(HWND hwnd)
     D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
 
     hr = pD2DFactory->CreateHwndRenderTarget(
-        D2D1::RenderTargetProperties(),
+        D2D1::RenderTargetProperties(
+            
+        ),
         D2D1::HwndRenderTargetProperties(hwnd, size, D2D1_PRESENT_OPTIONS_IMMEDIATELY),
         &pRenderTarget
     );
@@ -107,8 +109,10 @@ vector<ID2D1Bitmap*> Direct2DMgr::GetSplitBitmaps(const wstring& tag) {
     return {}; // 없음
 }
 
-
-
+void Direct2DMgr::DeleteBitmap(const wstring& tag)
+{
+    bitmapMap.erase(tag);
+}
 
 
 HRESULT Direct2DMgr::LoadBitmap(const std::wstring& filePath, ID2D1Bitmap** ppBitmap) {
@@ -305,6 +309,67 @@ HRESULT Direct2DMgr::SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag,
     return S_OK;
 }
 
+ID2D1Bitmap* Direct2DMgr::SplitBitmapNoSave(ID2D1Bitmap* bitmap, const D2D1_POINT_2F& leftTop, const D2D1_POINT_2F& rightBottom)
+{
+    if (!bitmap || !pRenderTarget) return nullptr;
+
+    // 입력 값 유효성 검사
+    D2D1_SIZE_F bitmapSize = bitmap->GetSize();
+    if (leftTop.x >= rightBottom.x || leftTop.y >= rightBottom.y ||
+        rightBottom.x > bitmapSize.width || rightBottom.y > bitmapSize.height)
+    {
+        MessageBox(nullptr, L"잘못된 영역 좌표 입력!", L"오류", MB_OK);
+        return nullptr;
+    }
+
+    // 추출 영역 계산
+    const float width = rightBottom.x - leftTop.x;
+    const float height = rightBottom.y - leftTop.y;
+
+
+    // 호환 렌더 타겟 생성
+    ID2D1BitmapRenderTarget* compatibleRenderTarget = nullptr;
+    HRESULT hr = pRenderTarget->CreateCompatibleRenderTarget(
+        D2D1::SizeF(width, height),
+        &compatibleRenderTarget
+    );
+
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"호환 렌더 타겟 생성 실패!", L"오류", MB_OK);
+        return nullptr;
+    }
+
+    // 원본에서 특정 영역 추출
+    compatibleRenderTarget->BeginDraw();
+    compatibleRenderTarget->DrawBitmap(
+        bitmap,
+        D2D1::RectF(0, 0, width, height),  // 대상 영역(전체 채움)
+        1.0f,
+        D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+        D2D1::RectF(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y)  // 원본 영역
+    );
+
+    hr = compatibleRenderTarget->EndDraw();
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"비트맵 추출 실패!", L"오류", MB_OK);
+        compatibleRenderTarget->Release();
+        return nullptr;
+    }
+
+    // 결과 비트맵 저장
+    ID2D1Bitmap* subBitmap = nullptr;
+    hr = compatibleRenderTarget->GetBitmap(&subBitmap);
+    compatibleRenderTarget->Release();
+
+    
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"비트맵 가져오기 실패!", L"오류", MB_OK);
+        return nullptr;
+    }
+
+    return subBitmap;
+}
+
 HRESULT Direct2DMgr::StoreCreateMap(ID2D1Bitmap* bitmap, const wstring& tag)
 {
     // 이미 로드된 비트맵이 있다면 그 맵 삭제.
@@ -372,7 +437,7 @@ void Direct2DMgr::RenderTextWithOutline(
 {
     if (!pRenderTarget) return;
 
-    IDWriteTextFormat* pTextFormat = CFontMgr::GetInstance()->GetTextFormat(L"HY견명조", fontSize);
+    IDWriteTextFormat* pTextFormat = CFontMgr::GetInstance()->GetTextFormat(L"Ink Free", fontSize);
 
     // 텍스트 정렬 설정
     if (horizontal == 0)
@@ -437,3 +502,67 @@ void Direct2DMgr::RenderTextWithOutline(
     pTextFormat->Release();
 }
 
+ID2D1Bitmap* Direct2DMgr::ApplyRedFilter(ID2D1Bitmap* pOriginalBitmap)
+{
+    if (!pOriginalBitmap || !pRenderTarget) {
+        MessageBox(nullptr, L"비트맵 또는 렌더 타겟이 유효하지 않습니다!", L"오류", MB_OK);
+        return nullptr;
+    }
+
+    // 1. 원본 비트맵 크기 가져오기
+    D2D1_SIZE_F bitmapSize = pOriginalBitmap->GetSize();
+
+    // 2. 호환 렌더 타겟 생성
+    ID2D1BitmapRenderTarget* pCompatibleRT = nullptr;
+    HRESULT hr = pRenderTarget->CreateCompatibleRenderTarget(
+        D2D1::SizeF(bitmapSize.width, bitmapSize.height),
+        &pCompatibleRT
+    );
+
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"호환 렌더 타겟 생성 실패!", L"오류", MB_OK);
+        return nullptr;
+    }
+
+    // 3. 렌더링 시작
+    pCompatibleRT->BeginDraw();
+
+    // 4. 원본 비트맵 그리기
+    pCompatibleRT->DrawBitmap(
+        pOriginalBitmap,
+        D2D1::RectF(0, 0, bitmapSize.width, bitmapSize.height),
+        1.0f,
+        D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+    );
+
+    // 5. 빨간색 반투명 브러시 생성
+    ID2D1SolidColorBrush* pRedBrush = nullptr;
+    hr = pCompatibleRT->CreateSolidColorBrush(
+        D2D1::ColorF(D2D1::ColorF::Red, 0.5f), // Alpha값 0.5 (50% 투명도)
+        &pRedBrush
+    );
+
+    if (SUCCEEDED(hr)) {
+        // 6. 전체 영역에 빨간색 레이어 덮기
+        pCompatibleRT->FillRectangle(
+            D2D1::RectF(0, 0, bitmapSize.width, bitmapSize.height),
+            pRedBrush
+        );
+        pRedBrush->Release();
+    }
+
+    // 7. 렌더링 완료
+    hr = pCompatibleRT->EndDraw();
+    if (FAILED(hr)) {
+        MessageBox(nullptr, L"필터 적용 실패!", L"오류", MB_OK);
+        pCompatibleRT->Release();
+        return nullptr;
+    }
+
+    // 8. 결과 비트맵 추출
+    ID2D1Bitmap* pFilteredBitmap = nullptr;
+    hr = pCompatibleRT->GetBitmap(&pFilteredBitmap);
+    pCompatibleRT->Release();
+
+    return pFilteredBitmap;
+}

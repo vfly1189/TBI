@@ -17,6 +17,7 @@
 #include "CPlayerMgr.h"
 #include "MapMgr.h"
 #include "CItemMgr.h"
+#include "CEntityMgr.h"
 
 CCore::CCore()
 	: m_hWnd(0)
@@ -53,6 +54,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CFontMgr::GetInstance()->init();
 	CItemMgr::GetInstance()->init();
 	
+	CEntityMgr::GetInstance()->init();
 	CPlayerMgr::GetInstance()->init();
 	MapMgr::GetInstance()->init();
 	CSceneMgr::GetInstance()->init();
@@ -71,6 +73,7 @@ void CCore::progress()
 	CKeyMgr::GetInstance()->update();
 	CCamera::GetInstance()->update();	
 	CSoundMgr::GetInstance()->update();
+	CItemMgr::GetInstance()->update();
 
 
 	CSceneMgr::GetInstance()->update();

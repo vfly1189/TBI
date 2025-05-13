@@ -37,6 +37,12 @@ private:
 private:
 	float m_fAlpha;
 
+private:
+	bool m_bFlicker = false;      // ±ôºıÀÓ È°¼ºÈ­ ÇÃ·¡±×
+	float m_fFlickerFreq = 0.1f;  // ±ôºıÀÓ ÁÖ±â(ÃÊ)
+	float m_fFlickerTimer = 0;    // ±ôºıÀÓ Å¸ÀÌ¸Ó
+	float m_fFlickerSpeed = 5.0f; // ±ôºıÀÓ ¼Óµµ Á¶Àı
+
 public:
 	void SetName(const wstring& _name) { m_pAnimName = _name; }
 	void SetOffset(Vec2 _vOffset) { m_vOffSet = _vOffset; }
@@ -50,6 +56,13 @@ public:
 			m_vecFrm[i].fDuration = _duration;
 	}
 
+public:
+	void EnableFlicker(bool enable, float freq = 0.1f, float speed = 5.0f) {
+		m_bFlicker = enable;
+		m_fFlickerFreq = freq;
+		m_fFlickerSpeed = speed;
+		m_fAlpha = 1.0f; // ÃÊ±âÈ­
+	}
 	
 
 public:
@@ -59,6 +72,7 @@ public:
 		return m_iRenderPriority;
 	}
 	wstring GetName() { return m_pAnimName; }
+	vector< tAnimFrm>& GetAllFrame() { return m_vecFrm; }
 
 public:
 	void Create(ID2D1Bitmap* _bitmap, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep

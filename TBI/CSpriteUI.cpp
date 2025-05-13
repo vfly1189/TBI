@@ -30,7 +30,7 @@ CSpriteUI::CSpriteUI()
 
 CSpriteUI::~CSpriteUI()
 {
-
+    
 }
 
 void CSpriteUI::finalupdate()

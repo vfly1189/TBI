@@ -23,6 +23,8 @@ public:
 	CObject* GetObj() { return m_pOwner; }
 	size_t GetActiveAnimsCount() { return m_vecActiveAnims.size(); }
 	vector<CAnimation*>& GetActiveAnims() { return m_vecActiveAnims; }
+	CAnimation* GetCurrentAnim() { return m_pCurAnim; }
+	CAnimation* GetAnim(wstring tag) { return m_mapAnim[tag]; }
 
 public:
 	void CreateAnimation(const wstring& _animName, ID2D1Bitmap* _bitmap, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _Step

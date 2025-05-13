@@ -53,6 +53,13 @@ void CAnimation::update()
 {
 	if (m_bFinish || m_bPaused) return;  // pause 상태일 때 업데이트 중지
 
+
+	// 깜빡임 효과 처리
+	if (m_bFlicker) {
+		m_fFlickerTimer += fDT * m_fFlickerSpeed;
+		m_fAlpha = (sin(m_fFlickerTimer) + 1.0f) * 0.5f; // 0~1 사이 진동
+	}
+
 	m_fAccTime += fDT;
 	//프레임이 계속 돌아가는데, 만약 내가 한 번 재생만 원한다면?
 	if (m_vecFrm[m_iCurFrm].fDuration < m_fAccTime) {

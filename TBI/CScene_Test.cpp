@@ -40,42 +40,18 @@ void CScene_Test::Enter()
 	pD2DMgr = Direct2DMgr::GetInstance();
 	Vec2 vResolution = CCore::GetInstance()->GetResolution();
 
-	MapMgr::GetInstance()->MapGenerate();
-	MapMgr::GetInstance()->ShowMap();
-
-
-
+	// 원본 비트맵 로드
 	
-	//CreateMain(vResolution);
-/*
-	MapMgr::GetInstance()->MapGenerate();
-	MapMgr::GetInstance()->ShowMap();
-	
-	CPlayer* player = CPlayerMgr::GetInstance()->GetPlayer();
-	player->SetPos(Vec2(0.f, 0.f));
-	player->SetName(L"Player");
-	player->SetObjType(GROUP_TYPE::PLAYER);
-	player->SetScale(Vec2(32.f,32.f));
-	player->SetRenderScale(player->GetScale() * 2.f);
-	AddObject(player, GROUP_TYPE::PLAYER);
-	//player->AddImage(pD2DMgr->GetStoredBitmap(L"01_basement"));
-	//player->GetAnimator()->Play(L"left_walking", true);
-	
-	
-	CreateDoor(vResolution);
+	// 필터 적용
+	//ID2D1Bitmap* pFiltered = pD2DMgr->ApplyRedFilterToNonTransparent(pOriginal);
 
-	//CreateWall(vResolution);
 	/*
-	///////////////////////뒷 배경/////////////////////////
-	CSpriteUI* MainPanel = new CSpriteUI;
-	MainPanel->SetObjType(GROUP_TYPE::IMAGE);
-	MainPanel->SetName(L"player_animation_sprite");
-	MainPanel->AddImage(pD2DMgr->GetStoredBitmap(L"test"));
-	MainPanel->SetPos(Vec2(0.f, 0.f));
-	MainPanel->SetScale(Vec2(32.f,32.f));
-	AddObject(MainPanel, GROUP_TYPE::IMAGE);
-	///////////////////////뒷 배경/////////////////////////
-	*/
+	CSpriteUI* test = new CSpriteUI;
+	test->SetScale(Vec2(100.f, 100.f));
+	test->SetPos(Vec2(100.f, 100.f));
+	test->AddImage(pFiltered);*/
+
+	//AddObject(test, GROUP_TYPE::IMAGE);
 
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::WALL);
 	wstring mainTitleBGMKey = L"genesis_retake_light_loop";
@@ -94,28 +70,20 @@ void CScene_Test::Exit()
 void CScene_Test::update()
 {
 	CScene::update();
-	MapMgr::GetInstance()->update();
-	//CPlayerMgr::GetInstance()->GetPlayer()->update();
-	if (KEY_TAP(KEY::ENTER))
-	{
-		MapMgr::GetInstance()->MapGenerate();
-		MapMgr::GetInstance()->ShowMap();
-	}
+	
 }
 
 void CScene_Test::finalupdate()
 {
 
 	CScene::finalupdate();
-	MapMgr::GetInstance()->finalupdate();
-	//CPlayerMgr::GetInstance()->GetPlayer()->finalupdate();
+	
 }
 
 void CScene_Test::render(ID2D1HwndRenderTarget* _pRender)
 {
 	CScene::render(_pRender);
-	MapMgr::GetInstance()->render(_pRender);
-	//CPlayerMgr::GetInstance()->GetPlayer()->render(_pRender);
+	
 }
 
 
@@ -126,9 +94,9 @@ void CScene_Test::CreateMain(Vec2 _vResolution)
 
 	ID2D1Bitmap* originalBitmap = pD2DMgr->GetStoredBitmap(L"basement1");
 	
-	ID2D1Bitmap* xFlip = FlipBitamp(originalBitmap, true, false);
-	ID2D1Bitmap* yFlip = FlipBitamp(originalBitmap, false, true);
-	ID2D1Bitmap * xyFlip = FlipBitamp(originalBitmap, true, true);
+	ID2D1Bitmap* xFlip = FlipBitmap(originalBitmap, true, false);
+	ID2D1Bitmap* yFlip = FlipBitmap(originalBitmap, false, true);
+	ID2D1Bitmap * xyFlip = FlipBitmap(originalBitmap, true, true);
 
 	vector<ID2D1Bitmap*> bitmaps;
 	bitmaps.push_back(originalBitmap);

@@ -4,9 +4,11 @@
 #include "CellMap.h"
 
 #include "Direct2DMgr.h"
+#include "CCamera.h"
 
 MapMgr::MapMgr()
 	: m_iCurLevel(1)
+	, m_vCurPos{4,3}
 {
 
 }
@@ -18,13 +20,15 @@ MapMgr::~MapMgr()
 
 void MapMgr::MapGenerate()
 {
-	m_vecCellMaps.clear();
+	//m_vecCellMaps.clear();
 
 	int max_room = 8 + int(m_iCurLevel * 2.3);
 	int min_room = 10;
 
-	startx = std::rand() % m_iMapMaxWidth;
-	starty = std::rand() % m_iMapMaxHeight;
+	//startx = std::rand() % m_iMapMaxWidth;
+	//starty = std::rand() % m_iMapMaxHeight;
+	startx = 4;
+	starty = 3;
 	int room_count = 1;
 
 	do
@@ -89,7 +93,10 @@ void MapMgr::MapGenerate()
 			, Vec2((curPos.second - startx) * 960.f, (curPos.first - starty) * 540.f)
 			, Vec2(curPos.second, curPos.first)
 			, (ROOM_INFO)gridMap[curPos.first][curPos.second]);
-		m_vecCellMaps.push_back(room);
+		m_vecCellMaps[curPos.first][curPos.second] = room;
+		//m_vecCellMaps.push_back(room);
+		//m_vecCellMaps[make_pair(curPos.first, curPos.second)] = room;
+		//m_vecCellMaps[Vec2(curPos.first, curPos.second)] = room;
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -142,9 +149,9 @@ void MapMgr::MapCutting()
 			D2D1::Point2F(0.f, 0.f), D2D1::Point2F(234.f, 156.f));
 
 		originalBitmap = pD2DMgr->GetStoredBitmap(cellmap_base_sprite_tag[i]);
-		xFlip = FlipBitamp(originalBitmap, true, false);
-		yFlip = FlipBitamp(originalBitmap, false, true);
-		xyFlip = FlipBitamp(originalBitmap, true, true);
+		xFlip = FlipBitmap(originalBitmap, true, false);
+		yFlip = FlipBitmap(originalBitmap, false, true);
+		xyFlip = FlipBitmap(originalBitmap, true, true);
 
 		bitmaps.push_back(originalBitmap);
 		bitmaps.push_back(xFlip);
@@ -152,6 +159,7 @@ void MapMgr::MapCutting()
 		bitmaps.push_back(xyFlip);
 
 		combinedBitmap = CombineBitmaps2X2(bitmaps);
+		pD2DMgr->DeleteBitmap(cellmap_base_sprite_tag[i]);
 		pD2DMgr->StoreCreateMap(combinedBitmap, cellmap_base_sprite_tag[i]);
 	}
 }
@@ -160,21 +168,39 @@ void MapMgr::DoorCutting()
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 
+	//pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door",
+	//	D2D1::Point2F(9.f, 10.f), D2D1::Point2F(9.f + 49.f, 10.f + 33.f));
+
 	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door",
-		D2D1::Point2F(9.f, 10.f), D2D1::Point2F(9.f + 49.f, 10.f + 33.f));
-
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(64.f, 48.f));
 	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_open",
-		D2D1::Point2F(65.f, 0.f), D2D1::Point2F(130.f, 51.f));
-
+		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(64 * 2.f, 48.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_close_left",
+		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_close_right",
+		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(64.f * 2.f, 96.f));
 
 
 	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(0.f + 65.f, 00.f + 49.f));
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(64.f, 48.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_open",
+		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(128.f, 48.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_close_left",
+		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_close_right",
+		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(128.f, 96.f));
+
 
 
 
 	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(0.f + 65.f, 00.f + 49.f));
+		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(0.f + 64.f, 00.f + 48.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_open",
+		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(64 * 2.f, 48.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_close_left",
+		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
+	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_close_right",
+		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(64.f * 2.f, 96.f));
 
 }
 
@@ -189,6 +215,75 @@ void MapMgr::ShowMap()
 		}
 		printf("\n");
 	}
+}
+
+void MapMgr::MakeMapLayOut()
+{
+	////////////////////////////1번구조/////////////////////////////////
+	m_vecCellMapLayOuts[0][0][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[0][6][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[0][0][12] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[0][6][12] = (UINT)ENTITY_TYPE::ROCK;
+
+	m_vecCellMapLayOuts[0][2][6] = (UINT)ENTITY_TYPE::FLY;
+	m_vecCellMapLayOuts[0][4][6] = (UINT)ENTITY_TYPE::FLY;
+	m_vecCellMapLayOuts[0][3][5] = (UINT)ENTITY_TYPE::FLY;
+	m_vecCellMapLayOuts[0][3][7] = (UINT)ENTITY_TYPE::FLY;
+	////////////////////////////1번구조/////////////////////////////////
+
+	////////////////////////////2번구조/////////////////////////////////
+	m_vecCellMapLayOuts[1][0][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][1][1] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][2][2] = (UINT)ENTITY_TYPE::ROCK;
+
+
+	m_vecCellMapLayOuts[1][6][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][5][1] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][4][2] = (UINT)ENTITY_TYPE::ROCK;
+
+
+	m_vecCellMapLayOuts[1][0][12] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][1][11] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][2][10] = (UINT)ENTITY_TYPE::ROCK;
+						
+
+	m_vecCellMapLayOuts[1][6][12] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][5][11] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][4][10] = (UINT)ENTITY_TYPE::ROCK;
+
+	m_vecCellMapLayOuts[1][1][6] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][3][6] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[1][5][6] = (UINT)ENTITY_TYPE::ROCK;
+
+	m_vecCellMapLayOuts[1][2][6] = (UINT)ENTITY_TYPE::HORF;
+	m_vecCellMapLayOuts[1][4][6] = (UINT)ENTITY_TYPE::HORF;
+	////////////////////////////2번구조/////////////////////////////////
+
+	////////////////////////////3번구조/////////////////////////////////
+	m_vecCellMapLayOuts[2][0][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][0][2] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][1][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][1][2] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][2][0] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][2][2] = (UINT)ENTITY_TYPE::ROCK;
+						
+	m_vecCellMapLayOuts[2][4][10] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][4][12] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][5][10] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][5][12] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][6][10] = (UINT)ENTITY_TYPE::ROCK;
+	m_vecCellMapLayOuts[2][6][12] = (UINT)ENTITY_TYPE::ROCK;
+
+	m_vecCellMapLayOuts[2][0][1] = (UINT)ENTITY_TYPE::HORF;
+	m_vecCellMapLayOuts[2][6][11] = (UINT)ENTITY_TYPE::HORF;
+	////////////////////////////3번구조/////////////////////////////////
+}
+
+
+void MapMgr::SetEntities(vector<vector<UINT>>& _cellmap)
+{
+	int randRoom = rand() % 1;
+	_cellmap = m_vecCellMapLayOuts[randRoom];
 }
 
 void MapMgr::GenerateBossRoom()
@@ -210,6 +305,7 @@ void MapMgr::GenerateBossRoom()
 		}
 	}
 	gridMap[bossRoom.second][bossRoom.first] = (UINT)ROOM_INFO::BOSS; // 보스방 표시
+	m_vBossPos = Vec2(bossRoom.first, bossRoom.second);
 }
 
 void MapMgr::GenerateTreasureRoom()
@@ -236,9 +332,23 @@ void MapMgr::GenerateTreasureRoom()
 
 void MapMgr::init()
 {
+	m_vecCellMapLayOuts.resize(3);
+	for (size_t i = 0; i < 3; i++)
+	{
+		m_vecCellMapLayOuts[i].resize(7);
+		for (size_t j = 0; j < 7; j++)
+			m_vecCellMapLayOuts[i][j].resize(13);
+	}
+	MakeMapLayOut();
+
 	gridMap.resize(m_iMapMaxHeight);
+	m_vecCellMaps.resize(m_iMapMaxHeight);
 	for (size_t i = 0; i < m_iMapMaxHeight; i++)
+	{
 		gridMap[i].resize(m_iMapMaxWidth);
+		m_vecCellMaps[i].resize(m_iMapMaxWidth);
+	}
+
 
 	clear();
 
@@ -258,34 +368,51 @@ void MapMgr::clear()
 		for (size_t j = 0; j < m_iMapMaxWidth; j++)
 		{
 			gridMap[i][j] = 0;
+			m_vecCellMaps[i][j] = nullptr;
 		}
 	}
 }
 
 void MapMgr::render(ID2D1HwndRenderTarget* _pRender)
 {
-	
+	/*
 	for (size_t i = 0; i < m_vecCellMaps.size(); ++i)
 	{
-		//printf("i : %d\n",i);
 		m_vecCellMaps[i]->render(_pRender);
 	}
+	*/
+}
+
+void MapMgr::reset()
+{
+	for (size_t i = 0; i < m_iMapMaxHeight; i++)
+	{
+		for (size_t j = 0; j < m_iMapMaxWidth; j++)
+		{
+			gridMap[i][j] = 0;
+			delete m_vecCellMaps[i][j];
+		}
+	}
+
+	m_vCurPos = Vec2(4, 3);
 }
 
 void MapMgr::update()
 {
+	/*
 	for (size_t i = 0; i < m_vecCellMaps.size(); ++i)
 	{
-		//printf("i : %d\n",i);
 		m_vecCellMaps[i]->update();
-	}
+	}*/
 }
 
 void MapMgr::finalupdate()
 {
+	/*
 	for (size_t i = 0; i < m_vecCellMaps.size(); ++i)
 	{
 		//printf("i : %d\n",i);
 		m_vecCellMaps[i]->finalupdate();
 	}
+	*/
 }

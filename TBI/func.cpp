@@ -32,13 +32,23 @@ void ChangeScene(SCENE_TYPE _eNext)
 	CEventMgr::GetInstance()->AddEvent(changeEvn);
 }
 
+void ChangeAIState(AI* _pAI, MON_STATE _eNextState)
+{
+	tEvent changeEvn = {};
+	changeEvn.eEven = EVENT_TYPE::CHANGE_AI_STATE;
+	changeEvn.lParam = (DWORD_PTR)_pAI;
+	changeEvn.wParam = (DWORD_PTR)_eNextState;
+
+	CEventMgr::GetInstance()->AddEvent(changeEvn);
+}
+
 //0~255값을 -> 0~1로 정규화
 D2D1::ColorF ColorNormalize(int r, int g, int b)
 {
 	return D2D1::ColorF(r / 255.f, g / 255.f, b / 255.f);
 }
 
-ID2D1Bitmap* FlipBitamp(ID2D1Bitmap* original, bool x, bool y)
+ID2D1Bitmap* FlipBitmap(ID2D1Bitmap* original, bool x, bool y)
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 	ID2D1Bitmap* result;
@@ -214,4 +224,22 @@ ID2D1Bitmap* CombineBitmapsX(vector<ID2D1Bitmap*>& bitmaps)
 	pBitmapRT->GetBitmap(&pCompositeBitmap);
 
 	return pCompositeBitmap;
+}
+
+float ChargeBarRatio(int _curCharge, int _maxCharge)
+{
+	vector<vector<int>> pixel =
+	{
+		{},
+		{0,32},
+		{0,17,32},
+		{0,13,21,32},
+		{0,11,17,23,32},
+		{0,10,15,20,25,32},
+		{0,9,13,17,21,25,32},
+		{},
+		{0,8,11,14,17,20,23,26,32}
+	};
+
+	return (float)pixel[_maxCharge][_curCharge] / 32.f;
 }

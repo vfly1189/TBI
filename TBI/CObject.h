@@ -48,6 +48,7 @@ public:
 	void SetObjType(GROUP_TYPE _eType) { m_ObjType = _eType; }
 	void SetName(const wstring& _strName) { m_ObjName = _strName; }
 	void SetRenderScale(Vec2 _vScale) { m_vRenderScale = _vScale; }
+	void SetEnable(bool _enable) { m_bEnable = _enable; }
 	
 public:
 	GROUP_TYPE GetObjType() { return m_ObjType; }
@@ -63,6 +64,11 @@ public:
 public:
 	bool IsDead() {
 		return !m_bAlive;
+	}
+
+	bool IsEnable()
+	{
+		return m_bEnable;
 	}
 
 public:

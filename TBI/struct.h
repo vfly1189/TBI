@@ -92,6 +92,16 @@ public:
 		return Vec2(x / _fValue, y / _fValue);
 	}
 
+	bool operator != (Vec2 _vOther) {
+		if (x == _vOther.x && y == _vOther.y) return false;
+		else return true;
+	}
+
+	bool operator == (Vec2 _vOther) {
+		if (x == _vOther.x && y == _vOther.y) return true;
+		else return false;
+	}
+
 public:
 	Vec2()
 		: x(0.f)
