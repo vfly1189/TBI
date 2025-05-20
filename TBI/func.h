@@ -20,6 +20,8 @@ ID2D1Bitmap* FlipBitmap(ID2D1Bitmap* original, bool x, bool y);
 ID2D1Bitmap* CombineBitmaps2X2(vector<ID2D1Bitmap*>& bitmaps);
 ID2D1Bitmap* CombineBitmapsX(vector<ID2D1Bitmap*>& bitmaps);
 
+
+
 float ChargeBarRatio(int _curCharge, int _maxCharge);
 
 template<typename T>

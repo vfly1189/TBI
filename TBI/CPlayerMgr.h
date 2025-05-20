@@ -60,6 +60,7 @@ public:
 
 public:
 	void PlayerHit(float _dmg);
+	void PlayerHeal(float _value);
 
 public:
 	void CreateWalkingAnimation();

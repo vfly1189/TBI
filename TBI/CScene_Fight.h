@@ -51,7 +51,7 @@ private:
     CPanelUI* hpPanel;
     vector<CSpriteUI*> m_vecHearts;
 
-private:
+protected:
     CPanelUI* activeItemPanel;
     CSpriteUI* chargeBar;
 
@@ -119,5 +119,7 @@ public:
 public:
     CScene_Fight();
     ~CScene_Fight();
+
+    friend class CPlayer;
 };
 

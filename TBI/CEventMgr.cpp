@@ -33,10 +33,7 @@ void CEventMgr::update()
 	//  ===============
 	//    Event Ã³¸®.
 	//  ===============
-	/*
-	for (const auto& event_node : m_vecEvent) {
-		Excute(event_node);
-	}*/
+	
 	for (size_t i = 0; i < m_vecEvent.size(); i++)
 	{
 		Excute(m_vecEvent[i]);

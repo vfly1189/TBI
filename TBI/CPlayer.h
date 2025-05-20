@@ -135,6 +135,9 @@ public:
     virtual void OnCollisionExit(CCollider* _pOther);
     virtual void OnCollision(CCollider* _pOther);
 
+public:
+    void UsingActiveItem();
+
 
 public:
     CLONE(CPlayer);

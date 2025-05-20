@@ -1,4 +1,5 @@
 #pragma once
+
 class CEntityMgr
 {
 	SINGLE(CEntityMgr);
@@ -12,14 +13,22 @@ public:
 	ID2D1Bitmap* GetTearImage(int _idx) { return m_vMonTears[_idx]; }
 
 public:
-	void EntityImageCutting();
-	void EntityBossBabyPlumCutting();
-	void EntityAttackTear();
-	void BossHpBar();
+	void ProcessRockImages();
+	void ProcessFlyImages();
+	void ProcessHorfImages();
+	void ProcessTearImages();
+	void ProcessDeathAnimations();
+	void ProcessBossImages();
+
+	void ProcessBabyPlumImages();
+	void ProcessBabyPlumBackBounceImages();
+	void ProcessBabyPlumDeathImages();
+
+	void ProcessBossHpBar();
 
 public:
-	void EntityFlyDeadImage();
-	void EntityNormalDeadImage();
+	void EntityImageCutting();
+
 
 public:
 	void init();

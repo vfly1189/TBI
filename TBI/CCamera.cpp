@@ -23,47 +23,13 @@ CCamera::~CCamera() {
 
 void CCamera::init()
 {
-	Vec2 vResolution = CCore::GetInstance()->GetResolution();
-	
 
-
-	//m_pVeilTex = CResMgr::GetInstance()->CreateTexture(L"cameraVeil", (UINT)vResolution.x, (UINT)vResolution.y);
-	//m_vMinBounds = Vec2(vResolution.x / 2.f, vResolution.y / 2.f);
-	//m_vMaxBounds = Vec2(18.f * TILE_SIZE - vResolution.x / 2.f, 18.f * TILE_SIZE - vResolution.y / 2.f);
 }
 
 void CCamera::update()
 {
-	Vec2 vPos = GetLookAt();
-
-	// 이동 속도 조정 (줌 배율 반영)
-	const float BASE_SPEED = 500.f;
-	const float MOVE_SPEED = BASE_SPEED / m_fScale;
-	
-	/*
-	if (KEY_TAP(KEY::UP)) {
-		SetLookAt(vPos - Vec2(0.f, 540.f));
-		//m_vLookAt.y -= 500.f * fDT;
-	}
-	if (KEY_TAP(KEY::DOWN)) {
-		SetLookAt(vPos + Vec2(0.f, 540.f));
-		//m_vLookAt.y += 500.f * fDT;
-	}
-	if (KEY_TAP(KEY::RIGHT)) {
-		SetLookAt(vPos + Vec2(960.f, 0.f));
-		//m_vLookAt.x += 500.f * fDT;
-	}
-	if (KEY_TAP(KEY::LEFT)) {
-		SetLookAt(vPos - Vec2(960.f, 0.f));
-		//m_vLookAt.x -= 500.f * fDT;
-	}*/
-	
-	//m_vLookAt.x = max(m_vMinBounds.x, min(m_vLookAt.x, m_vMaxBounds.x));
-	//m_vLookAt.y = max(m_vMinBounds.y, min(m_vLookAt.y, m_vMaxBounds.y));
-
 	//화면 중앙좌표와 카메라 LootAt 좌표간의 차이 값. 
 	CalDiff();
-	//printf("%.2f , %.2f\n", m_vLookAt.x, m_vLookAt.y);
 }
 
 void CCamera::CalDiff()

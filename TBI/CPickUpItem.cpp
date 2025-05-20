@@ -105,7 +105,7 @@ void CPickUpItem::OnCollisionEnter(CCollider* _pOther)
 	}
 	else if (m_ePickupType == PICKUP_ITEM_TYPE::HEART)
 	{
-		CPlayerMgr::GetInstance()->PlayerHit(1); //1 È¸º¹
+		CPlayerMgr::GetInstance()->PlayerHeal(1);
 		CSoundMgr::GetInstance()->Play(L"heart drop", 0.5f);
 	}
 	else if (m_ePickupType == PICKUP_ITEM_TYPE::KEY)
@@ -114,12 +114,14 @@ void CPickUpItem::OnCollisionEnter(CCollider* _pOther)
 		CItemMgr::GetInstance()->GetPickUpItem().m_iKey++;
 	}
 
+	
+
 	DeleteObject(this);
 }
 
 void CPickUpItem::OnCollision(CCollider* _pOther)
 {
-
+	
 }
 
 void CPickUpItem::OnCollisionExit(CCollider* _pOther)

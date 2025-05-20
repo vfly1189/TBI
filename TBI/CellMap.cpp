@@ -5,6 +5,7 @@
 #include "Direct2DMgr.h"
 #include "CPlayerMgr.h"
 #include "CSoundMgr.h"
+#include "CItemMgr.h"
 
 #include "CPlayer.h"
 #include "CCollectiblesItem.h"
@@ -29,6 +30,37 @@ Vec2 doorPosVec[4] = {
 	Vec2(0.f, 235.f),
 	Vec2(-395.f, 0.f),
 };
+
+// Constant door positions to avoid recalculation
+const Vec2 DOOR_POSITIONS[4] = {
+	Vec2(0.f, -235.f),
+	Vec2(395.f, 0.f),
+	Vec2(0.f, 235.f),
+	Vec2(-395.f, 0.f)
+};
+
+// Wall positions and sizes for optimization
+struct WallConfig {
+	Vec2 position;
+	Vec2 scale;
+};
+
+// Pre-calculated wall configurations for each direction
+const WallConfig WALL_CONFIGS[4] = {
+	{ Vec2(0.f, -230.f), Vec2(700.f, 20.f) },    // Up
+	{ Vec2(375.f, 0.f), Vec2(20.f, 400.f) },     // Right
+	{ Vec2(0.f, 225.f), Vec2(700.f, 20.f) },     // Down
+	{ Vec2(-375.f, 0.f), Vec2(20.f, 400.f) }     // Left
+};
+
+// Pre-calculated wall configurations when doors exist
+const WallConfig WALL_WITH_DOOR_CONFIGS[4][2] = {
+	{ { Vec2(-195.f, -230.f), Vec2(340.f, 20.f) }, { Vec2(195.f, -230.f), Vec2(340.f, 20.f) } },      // Up
+	{ { Vec2(375.f, 120.f), Vec2(20.f, 180.f) }, { Vec2(375.f, -120.f), Vec2(20.f, 180.f) } },         // Right
+	{ { Vec2(-195.f, 225.f), Vec2(340.f, 20.f) }, { Vec2(195.f, 225.f), Vec2(340.f, 20.f) } },        // Down
+	{ { Vec2(-375.f, 120.f), Vec2(20.f, 180.f) }, { Vec2(-375.f, -120.f), Vec2(20.f, 180.f) } }       // Left
+};
+
 	
 CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM_INFO _eRoomType)
 	: m_bIsClear(false)
@@ -192,11 +224,11 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 
 			if (i == 0)
 			{
-				wall_1->SetPos(_vRealPos + Vec2(-185.f, -230.f));
-				wall_1->SetScale(Vec2(320.f, 20.f));
+				wall_1->SetPos(_vRealPos + Vec2(-195.f, -230.f));
+				wall_1->SetScale(Vec2(340.f, 20.f));
 
-				wall_2->SetPos(_vRealPos + Vec2(185.f, -230.f));
-				wall_2->SetScale(Vec2(320.f, 20.f));
+				wall_2->SetPos(_vRealPos + Vec2(195.f, -230.f));
+				wall_2->SetScale(Vec2(340.f, 20.f));
 			}
 
 			else if (i == 1)
@@ -210,11 +242,11 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 
 			else if (i == 2)
 			{
-				wall_1->SetPos(_vRealPos + Vec2(-185.f, 225.f));
-				wall_1->SetScale(Vec2(320.f, 20.f));
+				wall_1->SetPos(_vRealPos + Vec2(-195.f, 225.f));
+				wall_1->SetScale(Vec2(340.f, 20.f));
 
-				wall_2->SetPos(_vRealPos + Vec2(185.f, 225.f));
-				wall_2->SetScale(Vec2(320.f, 20.f));
+				wall_2->SetPos(_vRealPos + Vec2(195.f, 225.f));
+				wall_2->SetScale(Vec2(340.f, 20.f));
 			}
 
 			else if (i == 3)
@@ -230,7 +262,7 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 
 	if (m_eRoomType == ROOM_INFO::TREASURE)
 	{
-		int randNum = rand() % 35;
+		int randNum = rand() % 32 + 1;
 
 		wstring item_image_tag = L"collectibles_";
 		wstring item_number;
@@ -245,6 +277,7 @@ CellMap::CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM
 		item_image_tag += item_number + items_tags[randNum - 1];
 
 		CCollectiblesItem* newItem = new CCollectiblesItem(m_vMapPos, randNum);
+
 		newItem->SetObjType(GROUP_TYPE::ITEM);
 		newItem->SetScale(Vec2(100.f, 100.f));
 
@@ -439,6 +472,7 @@ void CellMap::update()
 		{
 			m_bIsClear = true;
 			CSoundMgr::GetInstance()->Play(L"door heavy open", 0.5f);
+			CItemMgr::GetInstance()->SetActiveItemCharge(1);
 		}
 	}
 
@@ -448,6 +482,8 @@ void CellMap::update()
 	{
 		m_bIsChecked = true;
 	}
+
+
 }
 
 void CellMap::finalupdate()

@@ -59,8 +59,6 @@ public:
 		float outlineThickness,
 		int horizontal);
 
-public:
-	ID2D1Bitmap* ApplyRedFilter(ID2D1Bitmap* pOriginalBitmap);
 private:
 	HRESULT LoadBitmap(const wstring& filePath, ID2D1Bitmap** ppBitmap);
 	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag);

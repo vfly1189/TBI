@@ -5,6 +5,12 @@
 
 #include "Direct2DMgr.h"
 #include "CCamera.h"
+#include "CPathMgr.h"
+
+#include <stack>
+
+#include <limits>
+
 
 MapMgr::MapMgr()
 	: m_iCurLevel(1)
@@ -15,7 +21,7 @@ MapMgr::MapMgr()
 
 MapMgr::~MapMgr()
 {
-
+	reset();
 }
 
 void MapMgr::MapGenerate()
@@ -25,109 +31,126 @@ void MapMgr::MapGenerate()
 	int max_room = 8 + int(m_iCurLevel * 2.3);
 	int min_room = 10;
 
-	//startx = std::rand() % m_iMapMaxWidth;
-	//starty = std::rand() % m_iMapMaxHeight;
-	startx = 4;
-	starty = 3;
-	int room_count = 1;
+	// Generate start position once
+	std::uniform_int_distribution<int> dist_x(0, m_iMapMaxWidth - 1);
+	std::uniform_int_distribution<int> dist_y(0, m_iMapMaxHeight - 1);
+	startx = dist_x(rng);
+	starty = dist_y(rng);
+	m_vCurPos = Vec2(startx, starty);
 
-	do
-	{
+	// Main map generation loop
+	int room_count;
+	do {
 		clear();
 		room_count = 1;
-		queue<std::pair<int, int>> cellQueue;
 
-		gridMap[starty][startx] = (UINT)ROOM_INFO::START;
+		// Create a queue for BFS map generation
+		queue<std::pair<int, int>> cellQueue;
+		gridMap[starty][startx] = static_cast<UINT>(ROOM_INFO::START);
 		cellQueue.push({ starty, startx });
 
-		while (!cellQueue.empty() && room_count < max_room)
-		{
+		// Static directions array
+		const std::pair<int, int> directions[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+		std::vector<int> dir_indices = { 0, 1, 2, 3 };
+
+		while (!cellQueue.empty() && room_count < max_room) {
 			std::pair<int, int> cur = cellQueue.front();
 			cellQueue.pop();
 
-			// 상하좌우 방향
-			vector<std::pair<int, int>> directions = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-			std::shuffle(directions.begin(), directions.end(), std::mt19937{ std::random_device{}() });
+			// Randomize direction order using the static RNG
+			std::shuffle(dir_indices.begin(), dir_indices.end(), rng);
 
-			for (int i = 0; i < 4; i++)
-			{
-				int nx = cur.second + directions[i].second;
-				int ny = cur.first + directions[i].first;
+			for (int i = 0; i < 4; i++) {
+				const auto& dir = directions[dir_indices[i]];
+				int nx = cur.second + dir.second;
+				int ny = cur.first + dir.first;
 
-				if (nx < 0 || ny < 0 || nx >= (int)m_iMapMaxWidth || ny >= (int)m_iMapMaxHeight) continue;
-				if (gridMap[ny][nx] != (UINT)ROOM_INFO::EMPTY) continue;
+				// Bounds and validity checks
+				if (nx < 0 || ny < 0 || nx >= static_cast<int>(m_iMapMaxWidth) ||
+					ny >= static_cast<int>(m_iMapMaxHeight) ||
+					gridMap[ny][nx] != static_cast<UINT>(ROOM_INFO::EMPTY)) {
+					continue;
+				}
 
-				// 인접 방 개수 제한
-				int neighborCount = countNeighbors(nx, ny);
-				if (neighborCount > 1) continue;
+				// Enforce single-connected room constraint
+				if (countNeighbors(nx, ny) > 1) continue;
 
-				// 확률적으로 방 생성
-				if (std::rand() % 2 == 0 && room_count > min_room) continue;
-
-				// 새로운 방 생성
-				gridMap[ny][nx] = (UINT)ROOM_INFO::NORMAL;
+				// Create new room
+				gridMap[ny][nx] = static_cast<UINT>(ROOM_INFO::NORMAL);
 				room_count++;
 				cellQueue.push({ ny, nx });
 			}
 		}
 	} while (room_count < min_room);
 
+	// Generate special rooms
 	GenerateBossRoom();
 	GenerateTreasureRoom();
 
+	// Determine map base theme based on level
 	int map_base_number = 0;
-	if (m_iCurLevel == 1 || m_iCurLevel == 2) map_base_number = rand() % 2;
-	else if (m_iCurLevel == 3 || m_iCurLevel == 4) map_base_number = rand() % 2 + 2;
-	else if (m_iCurLevel == 5 || m_iCurLevel == 6) map_base_number = rand() % 2 + 4;
+	if (m_iCurLevel <= 2) map_base_number = rng() % 2;
+	else if (m_iCurLevel <= 4) map_base_number = rng() % 2 + 2;
+	else if (m_iCurLevel <= 6) map_base_number = rng() % 2 + 4;
 
-	vector<vector<bool>> m_vecCheck(m_iMapMaxHeight, vector<bool>(m_iMapMaxWidth, false));
+	// Create cell maps using BFS to ensure all rooms are processed
+	std::vector<std::vector<bool>> visited(m_iMapMaxHeight, std::vector<bool>(m_iMapMaxWidth, false));
 	queue<pii> checkQueue;
 	checkQueue.push({ starty, startx });
-	m_vecCheck[starty][startx] = true;
-	
-	while (!checkQueue.empty())
-	{
-		pii curPos = checkQueue.front(); checkQueue.pop();
+	visited[starty][startx] = true;
 
-		CellMap* room = new CellMap(cellmap_base_sprite_tag[map_base_number]
-			, Vec2((curPos.second - startx) * 960.f, (curPos.first - starty) * 540.f)
-			, Vec2(curPos.second, curPos.first)
-			, (ROOM_INFO)gridMap[curPos.first][curPos.second]);
-		m_vecCellMaps[curPos.first][curPos.second] = room;
-		//m_vecCellMaps.push_back(room);
-		//m_vecCellMaps[make_pair(curPos.first, curPos.second)] = room;
-		//m_vecCellMaps[Vec2(curPos.first, curPos.second)] = room;
+	// Static direction arrays for room connectivity
+	static const int dy4[4] = { -1, 1, 0, 0 };
+	static const int dx4[4] = { 0, 0, -1, 1 };
 
-		for (int i = 0; i < 4; i++)
-		{
+	while (!checkQueue.empty()) {
+		pii curPos = checkQueue.front();
+		checkQueue.pop();
+
+		// Create cell map instance
+		ROOM_INFO roomType = static_cast<ROOM_INFO>(gridMap[curPos.first][curPos.second]);
+		Vec2 roomPos = Vec2((curPos.second - startx) * 960.f, (curPos.first - starty) * 540.f);
+		Vec2 gridPos = Vec2(curPos.second, curPos.first);
+
+		m_vecCellMaps[curPos.first][curPos.second] =
+			new CellMap(cellmap_base_sprite_tag[map_base_number], roomPos, gridPos, roomType);
+
+		// Visit connected rooms
+		for (int i = 0; i < 4; i++) {
 			int ny = curPos.first + dy4[i];
 			int nx = curPos.second + dx4[i];
 
-			if (ny < 0 || nx < 0 || ny >= (int)m_iMapMaxHeight || nx >= (int)m_iMapMaxWidth) continue;
-			if (gridMap[ny][nx] == (UINT)ROOM_INFO::EMPTY) continue;
-			if (m_vecCheck[ny][nx]) continue;
+			// Check bounds and validity
+			if (ny < 0 || nx < 0 || ny >= static_cast<int>(m_iMapMaxHeight) ||
+				nx >= static_cast<int>(m_iMapMaxWidth) ||
+				gridMap[ny][nx] == static_cast<UINT>(ROOM_INFO::EMPTY) ||
+				visited[ny][nx]) {
+				continue;
+			}
 
-			m_vecCheck[ny][nx] = true;
-			checkQueue.push({ ny,nx });
+			visited[ny][nx] = true;
+			checkQueue.push({ ny, nx });
 		}
 	}
 }
-
 int MapMgr::countNeighbors(int x, int y)
 {
-	int neighbors_count = 0;
-	
-	// 상하좌우 방향
-	vector<std::pair<int, int>> directions = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	// Static directions to check adjacent cells
+	static const std::pair<int, int> directions[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-	for (int i = 0; i < 4; i++)
-	{
+	int neighbors_count = 0;
+	for (int i = 0; i < 4; i++) {
 		int nx = x + directions[i].first;
 		int ny = y + directions[i].second;
 
-		if (nx < 0 || ny < 0 || nx >= (int)m_iMapMaxWidth || ny >= (int)m_iMapMaxHeight) continue;
-		
-		if (gridMap[ny][nx] != (UINT)ROOM_INFO::EMPTY) neighbors_count++;
+		if (nx < 0 || ny < 0 || nx >= static_cast<int>(m_iMapMaxWidth) ||
+			ny >= static_cast<int>(m_iMapMaxHeight)) {
+			continue;
+		}
+
+		if (gridMap[ny][nx] != static_cast<UINT>(ROOM_INFO::EMPTY)) {
+			neighbors_count++;
+		}
 	}
 
 	return neighbors_count;
@@ -136,29 +159,29 @@ int MapMgr::countNeighbors(int x, int y)
 void MapMgr::MapCutting()
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
-	ID2D1Bitmap* originalBitmap;
-	ID2D1Bitmap* xFlip;
-	ID2D1Bitmap* yFlip;
-	ID2D1Bitmap* xyFlip;
-	ID2D1Bitmap* combinedBitmap;
-	vector<ID2D1Bitmap*> bitmaps;
-	for (size_t i = 0; i < cellmap_base_sprite.size(); ++i)
-	{
-		bitmaps.clear();
-		pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(cellmap_base_sprite[i]), cellmap_base_sprite_tag[i],
-			D2D1::Point2F(0.f, 0.f), D2D1::Point2F(234.f, 156.f));
 
-		originalBitmap = pD2DMgr->GetStoredBitmap(cellmap_base_sprite_tag[i]);
-		xFlip = FlipBitmap(originalBitmap, true, false);
-		yFlip = FlipBitmap(originalBitmap, false, true);
-		xyFlip = FlipBitmap(originalBitmap, true, true);
+	for (size_t i = 0; i < cellmap_base_sprite.size(); ++i) {
+		// Get original bitmap and create flipped versions
+		pD2DMgr->SplitBitmap(
+			pD2DMgr->GetStoredBitmap(cellmap_base_sprite[i]),
+			cellmap_base_sprite_tag[i],
+			D2D1::Point2F(0.f, 0.f),
+			D2D1::Point2F(234.f, 156.f)
+		);
+
+		ID2D1Bitmap* originalBitmap = pD2DMgr->GetStoredBitmap(cellmap_base_sprite_tag[i]);
+
+		// Create flipped variants
+		std::vector<ID2D1Bitmap*> bitmaps;
+		bitmaps.reserve(4); // Pre-allocate for performance
 
 		bitmaps.push_back(originalBitmap);
-		bitmaps.push_back(xFlip);
-		bitmaps.push_back(yFlip);
-		bitmaps.push_back(xyFlip);
+		bitmaps.push_back(FlipBitmap(originalBitmap, true, false));  // x-flip
+		bitmaps.push_back(FlipBitmap(originalBitmap, false, true));  // y-flip
+		bitmaps.push_back(FlipBitmap(originalBitmap, true, true));   // xy-flip
 
-		combinedBitmap = CombineBitmaps2X2(bitmaps);
+		// Combine flipped bitmaps
+		ID2D1Bitmap* combinedBitmap = CombineBitmaps2X2(bitmaps);
 		pD2DMgr->DeleteBitmap(cellmap_base_sprite_tag[i]);
 		pD2DMgr->StoreCreateMap(combinedBitmap, cellmap_base_sprite_tag[i]);
 	}
@@ -168,40 +191,44 @@ void MapMgr::DoorCutting()
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 
-	//pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door",
-	//	D2D1::Point2F(9.f, 10.f), D2D1::Point2F(9.f + 49.f, 10.f + 33.f));
+	// Structure to define door cutting parameters
+	struct DoorCutInfo {
+		std::wstring sourceName;
+		std::wstring targetPrefix;
+	};
 
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(64.f, 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_open",
-		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(64 * 2.f, 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_close_left",
-		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_01_normaldoor"), L"normal_door_close_right",
-		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(64.f * 2.f, 96.f));
+	// Define door types to process
+	const DoorCutInfo doorTypes[] = {
+		{L"door_01_normaldoor", L"normal_door"},
+		{L"door_10_bossroomdoor", L"bossroom_door"},
+		{L"door_02_treasureroomdoor", L"treasureroom_door"}
+	};
 
+	// Standard door frame positions
+	const float frameWidth = 64.0f;
+	const float frameHeight = 48.0f;
 
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(64.f, 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_open",
-		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(128.f, 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_close_left",
-		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_10_bossroomdoor"), L"bossroom_door_close_right",
-		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(128.f, 96.f));
+	// Process each door type
+	for (const auto& doorInfo : doorTypes) {
+		ID2D1Bitmap* doorBitmap = pD2DMgr->GetStoredBitmap(doorInfo.sourceName);
 
+		// Cut the different door states
+		pD2DMgr->SplitBitmap(doorBitmap, doorInfo.targetPrefix,
+			D2D1::Point2F(0.0f, 0.0f),
+			D2D1::Point2F(frameWidth, frameHeight));
 
+		pD2DMgr->SplitBitmap(doorBitmap, doorInfo.targetPrefix + L"_open",
+			D2D1::Point2F(frameWidth, 0.0f),
+			D2D1::Point2F(frameWidth * 2.0f, frameHeight));
 
+		pD2DMgr->SplitBitmap(doorBitmap, doorInfo.targetPrefix + L"_close_left",
+			D2D1::Point2F(0.0f, frameHeight),
+			D2D1::Point2F(frameWidth, frameHeight * 2.0f));
 
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door",
-		D2D1::Point2F(0.f, 0.f), D2D1::Point2F(0.f + 64.f, 00.f + 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_open",
-		D2D1::Point2F(64.f, 0.f), D2D1::Point2F(64 * 2.f, 48.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_close_left",
-		D2D1::Point2F(0.f, 48.f), D2D1::Point2F(64.f, 96.f));
-	pD2DMgr->SplitBitmap(pD2DMgr->GetStoredBitmap(L"door_02_treasureroomdoor"), L"treasureroom_door_close_right",
-		D2D1::Point2F(64.f, 48.f), D2D1::Point2F(64.f * 2.f, 96.f));
-
+		pD2DMgr->SplitBitmap(doorBitmap, doorInfo.targetPrefix + L"_close_right",
+			D2D1::Point2F(frameWidth, frameHeight),
+			D2D1::Point2F(frameWidth * 2.0f, frameHeight * 2.0f));
+	}
 }
 
 void MapMgr::ShowMap()
@@ -217,85 +244,24 @@ void MapMgr::ShowMap()
 	}
 }
 
-void MapMgr::MakeMapLayOut()
-{
-	////////////////////////////1번구조/////////////////////////////////
-	m_vecCellMapLayOuts[0][0][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[0][6][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[0][0][12] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[0][6][12] = (UINT)ENTITY_TYPE::ROCK;
-
-	m_vecCellMapLayOuts[0][2][6] = (UINT)ENTITY_TYPE::FLY;
-	m_vecCellMapLayOuts[0][4][6] = (UINT)ENTITY_TYPE::FLY;
-	m_vecCellMapLayOuts[0][3][5] = (UINT)ENTITY_TYPE::FLY;
-	m_vecCellMapLayOuts[0][3][7] = (UINT)ENTITY_TYPE::FLY;
-	////////////////////////////1번구조/////////////////////////////////
-
-	////////////////////////////2번구조/////////////////////////////////
-	m_vecCellMapLayOuts[1][0][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][1][1] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][2][2] = (UINT)ENTITY_TYPE::ROCK;
-
-
-	m_vecCellMapLayOuts[1][6][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][5][1] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][4][2] = (UINT)ENTITY_TYPE::ROCK;
-
-
-	m_vecCellMapLayOuts[1][0][12] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][1][11] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][2][10] = (UINT)ENTITY_TYPE::ROCK;
-						
-
-	m_vecCellMapLayOuts[1][6][12] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][5][11] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][4][10] = (UINT)ENTITY_TYPE::ROCK;
-
-	m_vecCellMapLayOuts[1][1][6] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][3][6] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[1][5][6] = (UINT)ENTITY_TYPE::ROCK;
-
-	m_vecCellMapLayOuts[1][2][6] = (UINT)ENTITY_TYPE::HORF;
-	m_vecCellMapLayOuts[1][4][6] = (UINT)ENTITY_TYPE::HORF;
-	////////////////////////////2번구조/////////////////////////////////
-
-	////////////////////////////3번구조/////////////////////////////////
-	m_vecCellMapLayOuts[2][0][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][0][2] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][1][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][1][2] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][2][0] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][2][2] = (UINT)ENTITY_TYPE::ROCK;
-						
-	m_vecCellMapLayOuts[2][4][10] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][4][12] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][5][10] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][5][12] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][6][10] = (UINT)ENTITY_TYPE::ROCK;
-	m_vecCellMapLayOuts[2][6][12] = (UINT)ENTITY_TYPE::ROCK;
-
-	m_vecCellMapLayOuts[2][0][1] = (UINT)ENTITY_TYPE::HORF;
-	m_vecCellMapLayOuts[2][6][11] = (UINT)ENTITY_TYPE::HORF;
-	////////////////////////////3번구조/////////////////////////////////
-}
-
-
 void MapMgr::SetEntities(vector<vector<UINT>>& _cellmap)
 {
-	int randRoom = rand() % 1;
+	// Select a random room layout from available templates
+	int randRoom = rand() % m_vecCellMapLayOuts.size();
 	_cellmap = m_vecCellMapLayOuts[randRoom];
 }
 
 void MapMgr::GenerateBossRoom()
 {
+	// Find the furthest end room from the start to place the boss
 	std::pair<int, int> bossRoom;
 	int maxDistance = -1;
 
-	for (int y = 0; y < (int)m_iMapMaxHeight; ++y) 
-	{
-		for (int x = 0; x < (int)m_iMapMaxWidth; ++x) 
-		{
-			if (gridMap[y][x] != (UINT)ROOM_INFO::EMPTY && IsEndRoom(x, y)) {
+	for (int y = 0; y < static_cast<int>(m_iMapMaxHeight); ++y) {
+		for (int x = 0; x < static_cast<int>(m_iMapMaxWidth); ++x) {
+			// Check if this is a valid end room
+			if (gridMap[y][x] != static_cast<UINT>(ROOM_INFO::EMPTY) && IsEndRoom(x, y)) {
+				// Calculate Manhattan distance from start
 				int distance = std::abs(x - startx) + std::abs(y - starty);
 				if (distance > maxDistance) {
 					maxDistance = distance;
@@ -304,21 +270,23 @@ void MapMgr::GenerateBossRoom()
 			}
 		}
 	}
-	gridMap[bossRoom.second][bossRoom.first] = (UINT)ROOM_INFO::BOSS; // 보스방 표시
+
+	// Mark the selected room as the boss room
+	gridMap[bossRoom.second][bossRoom.first] = static_cast<UINT>(ROOM_INFO::BOSS);
 	m_vBossPos = Vec2(bossRoom.first, bossRoom.second);
 }
 
 void MapMgr::GenerateTreasureRoom()
 {	
+	// Find the closest end room to the start for the treasure
 	std::pair<int, int> treasureRoom;
-	int minDistance = 9999999;
+	int minDistance = INT_MAX; // 수정: std::numeric_limits<int>::max() 대신 INT_MAX 사용
 
-	for (int y = 0; y < (int)m_iMapMaxHeight; ++y) 
-	{
-		for (int x = 0; x < (int)m_iMapMaxWidth; ++x) 
-		{
-			if (gridMap[y][x] != (UINT)ROOM_INFO::EMPTY && IsEndRoom(x, y) && gridMap[y][x] == (UINT)ROOM_INFO::NORMAL)
-			{
+	for (int y = 0; y < static_cast<int>(m_iMapMaxHeight); ++y) {
+		for (int x = 0; x < static_cast<int>(m_iMapMaxWidth); ++x) {
+			// Check if this is a valid normal end room
+			if (gridMap[y][x] == static_cast<UINT>(ROOM_INFO::NORMAL) && IsEndRoom(x, y)) {
+				// Calculate Manhattan distance from start
 				int distance = std::abs(x - startx) + std::abs(y - starty);
 				if (distance < minDistance) {
 					minDistance = distance;
@@ -327,31 +295,30 @@ void MapMgr::GenerateTreasureRoom()
 			}
 		}
 	}
-	gridMap[treasureRoom.second][treasureRoom.first] = (UINT)ROOM_INFO::TREASURE; // 보스방 표시
+
+	// Mark the selected room as a treasure room
+	gridMap[treasureRoom.second][treasureRoom.first] = static_cast<UINT>(ROOM_INFO::TREASURE);
 }
 
 void MapMgr::init()
 {
-	m_vecCellMapLayOuts.resize(3);
-	for (size_t i = 0; i < 3; i++)
-	{
-		m_vecCellMapLayOuts[i].resize(7);
-		for (size_t j = 0; j < 7; j++)
-			m_vecCellMapLayOuts[i][j].resize(13);
+	// Initialize the grid map and cell maps containers
+	gridMap.resize(m_iMapMaxHeight, std::vector<UINT>(m_iMapMaxWidth, 0));
+	m_vecCellMaps.resize(m_iMapMaxHeight, std::vector<CellMap*>(m_iMapMaxWidth, nullptr));
+
+	// Load map layouts from JSON
+	wstring contentPath = CPathMgr::GetInstance()->GetContentPath();
+	wstring jsonFilePath = contentPath + L"\\json\\map_layout.json";
+
+	std::string jsonString = LoadJsonFileInternal(jsonFilePath);
+	if (!jsonString.empty()) {
+		json jsonData = ParseJsonStringInternal(jsonString);
+		if (!jsonData.is_null()) {
+			LoadMapLayoutsFromJSON(jsonData);
+		}
 	}
-	MakeMapLayOut();
 
-	gridMap.resize(m_iMapMaxHeight);
-	m_vecCellMaps.resize(m_iMapMaxHeight);
-	for (size_t i = 0; i < m_iMapMaxHeight; i++)
-	{
-		gridMap[i].resize(m_iMapMaxWidth);
-		m_vecCellMaps[i].resize(m_iMapMaxWidth);
-	}
-
-
-	clear();
-
+	// Prepare sprite resources
 	MapCutting();
 	DoorCutting();
 }
@@ -363,12 +330,16 @@ bool MapMgr::IsEndRoom(int x, int y)
 
 void MapMgr::clear()
 {
-	for (size_t i = 0; i < m_iMapMaxHeight; i++)
-	{
-		for (size_t j = 0; j < m_iMapMaxWidth; j++)
-		{
-			gridMap[i][j] = 0;
-			m_vecCellMaps[i][j] = nullptr;
+	// Clear all cells in the grid map
+	for (size_t i = 0; i < m_iMapMaxHeight; i++) {
+		for (size_t j = 0; j < m_iMapMaxWidth; j++) {
+			gridMap[i][j] = static_cast<UINT>(ROOM_INFO::EMPTY);
+
+			// Delete any existing cell maps to prevent memory leaks
+			if (m_vecCellMaps[i][j] != nullptr) {
+				delete m_vecCellMaps[i][j];
+				m_vecCellMaps[i][j] = nullptr;
+			}
 		}
 	}
 }
@@ -385,15 +356,18 @@ void MapMgr::render(ID2D1HwndRenderTarget* _pRender)
 
 void MapMgr::reset()
 {
-	for (size_t i = 0; i < m_iMapMaxHeight; i++)
-	{
-		for (size_t j = 0; j < m_iMapMaxWidth; j++)
-		{
-			gridMap[i][j] = 0;
+	// Free allocated memory and reset state
+	for (size_t i = 0; i < m_iMapMaxHeight; i++) {
+		for (size_t j = 0; j < m_iMapMaxWidth; j++) {
+			gridMap[i][j] = static_cast<UINT>(ROOM_INFO::EMPTY);
+
+			// Clean up allocated cell maps
 			delete m_vecCellMaps[i][j];
+			m_vecCellMaps[i][j] = nullptr;
 		}
 	}
 
+	// Reset position to default
 	m_vCurPos = Vec2(4, 3);
 }
 
@@ -415,4 +389,67 @@ void MapMgr::finalupdate()
 		m_vecCellMaps[i]->finalupdate();
 	}
 	*/
+}
+
+
+std::string MapMgr::LoadJsonFileInternal(const std::wstring& filePath) {
+	std::ifstream file(filePath);
+	if (file.is_open()) {
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		return buffer.str();
+	}
+	else {
+		MessageBox(nullptr, L"JSON 파일 로드 실패!", L"오류", MB_OK | MB_ICONERROR);
+		return "";
+	}
+}
+
+json MapMgr::ParseJsonStringInternal(const std::string& jsonString) {
+	try {
+		return json::parse(jsonString);
+	}
+	catch (const json::parse_error& e) {
+		std::wstring errorMessage = L"JSON 파싱 오류: ";
+		errorMessage += std::wstring(e.what(), e.what() + strlen(e.what()));
+		MessageBox(nullptr, errorMessage.c_str(), L"오류", MB_OK | MB_ICONERROR);
+		return json();
+	}
+}
+
+void MapMgr::LoadMapLayoutsFromJSON(const json& jsonData)
+{
+	if (jsonData.is_array()) {
+		m_vecCellMapLayOuts.resize(jsonData.size());
+		for (size_t i = 0; i < jsonData.size(); ++i) {
+			if (jsonData[i].is_object()) {
+				int width = jsonData[i].value("width", 0);
+				int height = jsonData[i].value("height", 0);
+				m_vecCellMapLayOuts[i].resize(height);
+				printf("width : %d, height : %d\n", width, height);
+				for (size_t y = 0; y < height; ++y) {
+					m_vecCellMapLayOuts[i][y].resize(width, 0);
+				}
+
+				if (jsonData[i].contains("entities") && jsonData[i]["entities"].is_array()) {
+					for (const auto& entity : jsonData[i]["entities"]) {
+						if (entity.is_object()) {
+							int x = entity.value("x", 0);
+							int y = entity.value("y", 0);
+							std::string typeStr = entity.value("type", "");
+							ENTITY_TYPE type = ENTITY_TYPE::EMPTY;
+							if (typeStr == "ROCK") type = ENTITY_TYPE::ROCK;
+							else if (typeStr == "FLY") type = ENTITY_TYPE::FLY;
+							else if (typeStr == "HORF") type = ENTITY_TYPE::HORF;
+							// 필요에 따라 다른 엔티티 타입 처리 추가
+
+							if (y < height && x < width) {
+								m_vecCellMapLayOuts[i][y][x] = static_cast<UINT>(type);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

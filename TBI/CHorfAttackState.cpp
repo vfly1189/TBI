@@ -18,7 +18,7 @@
 
 CHorfAttackState::CHorfAttackState()
 	:CState(MON_STATE::ATTACK)
-	, m_fShootDuration(2.f)
+	, m_fShootDuration(0.8f)
 {
 
 }

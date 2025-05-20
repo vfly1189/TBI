@@ -337,6 +337,18 @@ void CPlayerMgr::PlayerHit(float _dmg) {
     }
 }
 
+void CPlayerMgr::PlayerHeal(float _value)
+{
+    if (m_Player) {
+        m_Player->AddCurHp(_value);
+
+        if (m_Player->GetPlayerStat().m_fCurHp > m_Player->GetPlayerStat().m_fMaxHp)
+        {
+            m_Player->GetPlayerStat().m_fCurHp = m_Player->GetPlayerStat().m_fMaxHp;
+        }
+    }
+}
+
 void CPlayerMgr::CreateWalkingAnimation() {
     if (!m_Player || !m_Player->GetAnimator()) {
         return;

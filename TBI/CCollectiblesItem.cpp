@@ -2,16 +2,19 @@
 
 #include "CObject.h"
 #include "CSpriteUI.h"
+
 #include "CCollectiblesItem.h"
 
 #include "CCollider.h"
 
 #include "Direct2DMgr.h"
+#include "CItemMgr.h"
 
 CCollectiblesItem::CCollectiblesItem(Vec2 _vPos, int _iNum)
 {
 	SetPos(_vPos);
 	m_stItemInfo = items[_iNum - 1];
+	m_eItemType = m_stItemInfo.m_eItemType;
 
 	CreateCollider();
 	GetCollider()->SetScale(Vec2(25.f, 25.f) * 2.f);
@@ -37,7 +40,7 @@ void CCollectiblesItem::start()
 	item_shadow->SetScale(Vec2(13.5f, 5.f) * 2.f);
 
 
-	CSpriteUI* selectedItem = pedestal->AddChild<CSpriteUI>(Vec2(0.f, -45.f));
+	selectedItem = pedestal->AddChild<CSpriteUI>(Vec2(0.f, -45.f));
 	
 	wstring item_image_tag = L"collectibles_";
 	if (m_stItemInfo.m_iNumber < 10)
@@ -78,11 +81,14 @@ void CCollectiblesItem::render(ID2D1HwndRenderTarget* _pRender)
 
 void CCollectiblesItem::OnCollisionEnter(CCollider* _pOther)
 {
+	if (m_eItemType == COLLECTIBLES_ITEM_TYPE::PASSIVE)
+		DeleteObject(this);
 }
 
 void CCollectiblesItem::OnCollision(CCollider* _pOther)
 {
-	DeleteObject(this);
+	
+	
 }
 
 void CCollectiblesItem::OnCollisionExit(CCollider* _pOther)

@@ -1,5 +1,7 @@
 #include "global.h"
 
+
+
 #include "Direct2DMgr.h"
 #include "CCore.h"
 #include "MapMgr.h"
@@ -27,6 +29,7 @@
 #include "CTextUI.h"
 
 
+
 void CScene_Fight::Setup()
 {
 	pD2DMgr = Direct2DMgr::GetInstance();
@@ -51,6 +54,8 @@ CScene_Fight::~CScene_Fight()
 
 void CScene_Fight::Enter()
 {
+	
+
 	printf("SCENE_FIGHT\n");
 	
 	Vec2 vResolution = CCore::GetInstance()->GetResolution();
@@ -88,31 +93,26 @@ void CScene_Fight::Enter()
 	player->SetRenderScale(player->GetScale() * 2.f);
 	AddObject(player, GROUP_TYPE::PLAYER);
 
-	CSpriteUI* test = new CSpriteUI;
-	test->SetPos(Vec2(0.f, 0.f));
-	test->SetScale(Vec2(1305.f, 100.f) /2.f);
-	test->SetObjType(GROUP_TYPE::IMAGE);
-	test->CreateAnimator();
-	test->GetAnimator()->CreateAnimation(L"dead_explosion", Direct2DMgr::GetInstance()->GetStoredBitmap(L"dead_explosion")
-		, Vec2(0.f, 0.f), Vec2(145.f, 100.f), Vec2(145.f, 0.f), 0.1f, 9, true, Vec2(0.f, 0.f));
-	test->GetAnimator()->Play(L"dead_explosion", true, 1);
-	//test->AddImage(pD2DMgr->GetStoredBitmap(L"dead_explosion"));
-
-	AddObject(test, GROUP_TYPE::IMAGE);
 	
-
+	
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::ITEM);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::DOOR);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::WALL);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::TEAR);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::ENTITY);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::PICKUP_ITEM);
+	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::TROPHY);
+
 
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::TEAR, GROUP_TYPE::WALL);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::TEAR, GROUP_TYPE::DOOR);
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::TEAR, GROUP_TYPE::ENTITY);
 
 	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::ENTITY, GROUP_TYPE::WALL);
+;
+
+	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::BOMB, GROUP_TYPE::ENTITY);
+	CCollisionMgr::GetInstance()->CheckGroup(GROUP_TYPE::BOMB, GROUP_TYPE::PLAYER);
 
 
 
@@ -197,6 +197,11 @@ void CScene_Fight::update()
 	UpdatePickUpUI();
 	UpdateMiniMap();
 	UpdateBossHpBar();
+
+	Vec2 vCurGridPos = MapMgr::GetInstance()->GetCurPos();
+	//printf("À§Ä¡ : %f %f\n", vCurGridPos.x, vCurGridPos.y);
+	CellMap* curCellMap = MapMgr::GetInstance()->GetCellMap(vCurGridPos);
+	curCellMap->update();
 }
 
 void CScene_Fight::finalupdate()
@@ -249,9 +254,7 @@ void CScene_Fight::render(ID2D1HwndRenderTarget* _pRender)
 	}
 	
 
-	Vec2 vCurGridPos = MapMgr::GetInstance()->GetCurPos();	
-	CellMap* curCellMap = MapMgr::GetInstance()->GetCellMap(vCurGridPos);
-	curCellMap->update();
+	
 
 
 	//CScene::render(_pRender);
@@ -659,8 +662,8 @@ void CScene_Fight::CreateMiniMapOriginal()
 	vector<vector<CellMap*>>& cellMaps = MapMgr::GetInstance()->GetAllCellMaps();
 
 
-	const UINT rows = gridMap.size();
-	const UINT cols = rows > 0 ? gridMap[0].size() : 0;
+	const UINT rows = (UINT)gridMap.size();
+	const UINT cols = rows > 0 ? (UINT)gridMap[0].size() : 0;
 
 	
 	// 1. ºñÆ®¸Ê ·»´õ Å¸°Ù »ý¼º

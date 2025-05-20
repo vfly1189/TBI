@@ -38,6 +38,12 @@ private:
 private:
 	int m_iCurLevel;
 
+
+private:
+	std::string LoadJsonFileInternal(const std::wstring& filePath);
+	json ParseJsonStringInternal(const std::string& jsonString);
+	void LoadMapLayoutsFromJSON(const json& jsonData);
+
 public:
 	void GenerateBossRoom();
 	void GenerateTreasureRoom();
@@ -52,7 +58,7 @@ public:
 	int GetLevel() { return m_iCurLevel; }
 	vector<vector<UINT>>& GetGridMap() { return gridMap; }
 	//vector<CellMap*>& GetCellMaps() { return m_vecCellMaps; }
-	CellMap* GetCellMap(Vec2 _vGridPos) { return m_vecCellMaps[_vGridPos.y][_vGridPos.x]; }
+	CellMap* GetCellMap(Vec2 _vGridPos) { return m_vecCellMaps[(UINT)_vGridPos.y][(UINT)_vGridPos.x]; }
 	vector<vector<CellMap*>>& GetAllCellMaps() { return m_vecCellMaps; }
 	Vec2 GetStartPoint() { return { startx, starty }; }
 	UINT GetMapMaxHeight() { return m_iMapMaxHeight; }

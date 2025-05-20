@@ -11,6 +11,7 @@
 #include <wincodec.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
@@ -85,6 +86,12 @@ using namespace Gdiplus;
 #include "names_string.h"
 #include "character_stats.h"
 #include "item_info.h"
+
+#include "json.hpp"
+using json = nlohmann::json;
+
+#include <fstream>
+#include <sstream>
 
 std::random_device rd;
 std::mt19937 rng(rd());

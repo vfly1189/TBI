@@ -75,9 +75,6 @@ void CDoor::update()
 			AddImage(Direct2DMgr::GetInstance()->GetStoredBitmap(L"bossroom_door_open"));
 			AddImage(Direct2DMgr::GetInstance()->GetStoredBitmap(L"bossroom_door"));
 		}
-
-
-		//CSoundMgr::GetInstance()->Play(L"door heavy open", 0.5f);
 	}
 }
 

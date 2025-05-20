@@ -16,7 +16,7 @@
 
 CBabyPlumTraceState::CBabyPlumTraceState()
 	: CState(MON_STATE::TRACE)
-	, m_fAttackDuration(5.f)
+	, m_fAttackDuration(3.f)
 {
 }
 
@@ -79,6 +79,9 @@ void CBabyPlumTraceState::update()
 
 void CBabyPlumTraceState::Enter()
 {
+	GetMonster()->GetAnimator()->PauseAllAnimations();
+	GetMonster()->GetAnimator()->Play(L"babyplum_idle", true, 1);
+
 	m_fAccTime = 0.f;
 }
 

@@ -1,15 +1,23 @@
 #include "global.h"
 #include "CBabyPlumDeadState.h"
 
+#include "CTrophy.h"
+
 #include "CMonster.h"
 #include "CAnimation.h"
 #include "CAnimator.h"
 
+#include "CCollider.h"
+
 #include "CTimeMgr.h"
+#include "CCamera.h"
 
 #include "CTear.h"
+#include "CSpriteUI.h"
 #include "CEntityMgr.h"
+#include "Direct2DMgr.h"
 #include "CPlayerMgr.h"
+#include "CSoundMgr.h"
 #include "CPlayer.h"
 
 CBabyPlumDeadState::CBabyPlumDeadState()
@@ -33,11 +41,13 @@ void CBabyPlumDeadState::update()
 
 		CreateDeadTear();
 
+		CSoundMgr::GetInstance()->Play(L"death_burst_large_0");
+
 		DeleteObject(GetMonster());
 
+		CreateTrophy();
 		return;
-	}
-	
+	}	
 }
 
 void CBabyPlumDeadState::Enter()
@@ -52,6 +62,7 @@ void CBabyPlumDeadState::Enter()
 
 void CBabyPlumDeadState::Exit()
 {
+
 }
 
 void CBabyPlumDeadState::CreateDeadTear()
@@ -94,4 +105,18 @@ void CBabyPlumDeadState::CreateDeadTear()
 		attackTear->AddImage(CEntityMgr::GetInstance()->GetTearImage(5));
 		CreateObject(attackTear, GROUP_TYPE::TEAR);
 	}
+}
+
+void CBabyPlumDeadState::CreateTrophy()
+{
+	Vec2 vLookAt = CCamera::GetInstance()->GetLookAt();
+
+	CTrophy* trophy = new CTrophy;
+	trophy->SetObjType(GROUP_TYPE::TROPHY);
+	trophy->SetScale(Vec2(32.f, 64.f) * 2.f);
+	trophy->CreateCollider();
+	trophy->GetCollider()->SetScale(Vec2(32.f, 40.f) * 2.f);
+	trophy->SetPos(vLookAt);
+	trophy->AddImage(Direct2DMgr::GetInstance()->GetStoredBitmap(L"trophy"));
+	CreateObject(trophy, GROUP_TYPE::TROPHY);
 }

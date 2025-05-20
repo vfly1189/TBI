@@ -243,3 +243,4 @@ float ChargeBarRatio(int _curCharge, int _maxCharge)
 
 	return (float)pixel[_maxCharge][_curCharge] / 32.f;
 }
+

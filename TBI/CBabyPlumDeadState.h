@@ -17,7 +17,7 @@ public:
 
 public:
     void CreateDeadTear();
-
+    void CreateTrophy();
 
 public:
     CBabyPlumDeadState();

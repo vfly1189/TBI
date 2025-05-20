@@ -1,7 +1,7 @@
 #include "global.h"
 #include "CHorfDeadState.h"
 
-#include "CMonster.h";
+#include "CMonster.h"
 #include "CAnimation.h"
 #include "CAnimator.h"
 #include "CTimeMgr.h"

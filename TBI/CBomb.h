@@ -1,23 +1,27 @@
 #pragma once
 #include "CItem.h"
 
-class CSpriteUI;
-class CObject;
+enum class BOMB_STATE
+{
+    IGNITE,
+    EXPLODE,
+};
 
-
-class CCollectiblesItem :
+class CBomb :
     public CItem
 {
 private:
-    COLLECTIBLES_ITEM_TYPE  m_eItemType;
-    Item                    m_stItemInfo;
+    float m_fAccTime;
+    float m_fExplosionDuration = 3.f;
+    float m_fAfterExplosionDuration = 0.6f;
 
-    CSpriteUI*              selectedItem;
+    BOMB_STATE m_eState;
 
-    vector<CObject*>        m_vecObjects;
+    bool m_bAnimationStopFlag = false;
+
 
 public:
-    Item GetItemInfo() { return m_stItemInfo; }
+    BOMB_STATE GetBombState() { return m_eState; }
 
 public:
     virtual void start();
@@ -32,10 +36,13 @@ public:
     virtual void OnCollisionExit(CCollider* _pOther);
 
 public:
-    CLONE(CCollectiblesItem);
+    void UpdateRenderScale();
 
 public:
-    CCollectiblesItem(Vec2 _vPos, int _iNum);
-    ~CCollectiblesItem();
+    CLONE(CBomb);
+
+public:
+    CBomb();
+    ~CBomb();
 };
 

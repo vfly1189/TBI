@@ -44,6 +44,156 @@ CScene_Main::~CScene_Main()
 
 }
 
+void CScene_Main::HandlePageChange()
+{
+	bool keyAction = KEY_TAP(KEY::ENTER) || KEY_TAP(KEY::SPACE);
+	bool keyRelease = KEY_AWAY(KEY::ENTER) || KEY_AWAY(KEY::SPACE);
+
+	// 키 해제 처리
+	if (keyRelease)
+	{
+		m_bPageControl = false;
+		return;
+	}
+
+	if (KEY_AWAY(KEY::ESC))
+	{
+		m_bPageControl = false;
+		return;
+	}
+
+	// 키 입력 처리 (페이지 제어가 잠겨있지 않을 때만)
+	if (!m_bPageControl)
+	{
+		if (keyAction)
+		{
+			// 페이지 1에서의 특별 처리
+			if (m_iCurPage == 1)
+			{
+				if (m_iCursorPos == 0)
+				{
+					m_iCurPage = 2;
+					PlayPageChangeSound();
+					UpdateCameraPosition();
+				}
+				m_bPageControl = true;
+			}
+			else if (m_iCurPage == 0) // 페이지 2가 아닐 때만 증가 (페이지 2에서는 캐릭터 선택 로직 분리)
+			{
+				// 페이지 증가
+				m_iCurPage = min(m_iCurPage + 1, 2);
+				PlayPageChangeSound();
+				UpdateCameraPosition();
+				m_bPageControl = true;
+			}
+			
+		}
+		else if (KEY_TAP(KEY::ESC))
+		{
+			// 페이지 감소
+			m_iCurPage = max(m_iCurPage - 1, 0);
+			PlayPageChangeSound();
+			UpdateCameraPosition();
+			m_bPageControl = true;
+		}
+	}
+}
+
+void CScene_Main::PlayPageChangeSound()
+{
+	CSoundMgr::GetInstance()->Play(L"book page turn");
+}
+
+void CScene_Main::UpdateCameraPosition()
+{
+	CCamera::GetInstance()->SetLookAt(MainCameraPos[m_iCurPage]);
+}
+
+void CScene_Main::CheckForSceneChange()
+{
+	// 페이지가 2이고 엔터/스페이스 키가 눌렸을 때 - 그리고 페이지 컨트롤이 잠겨있지 않을 때만 처리
+	// (이렇게 하면 페이지 1에서 엔터를 눌러 2로 전환된 직후에는 m_bPageControl이 true라 실행 안됨)
+	bool test = (KEY_TAP(KEY::ENTER) || KEY_TAP(KEY::SPACE));
+
+	//printf("페이지 : %d, flag : %d , flag2 : %d\n", m_iCurPage, (KEY_TAP(KEY::ENTER) || KEY_TAP(KEY::SPACE)), !m_bPageControl);
+
+	if (m_iCurPage == 2 && (KEY_TAP(KEY::ENTER) || KEY_TAP(KEY::SPACE)) && !m_bPageControl)
+	{
+		CreateLoadImage(CCore::GetInstance()->GetResolution());
+		InitializePlayerForGameStart();
+
+		CSoundMgr::GetInstance()->Stop(L"genesis_retake_light_loop");
+		CSoundMgr::GetInstance()->Play(L"game_start");
+		m_bChangeSceneFlag = true;
+	}
+}
+
+void CScene_Main::InitializePlayerForGameStart()
+{
+	CPlayer* player = CPlayerMgr::GetInstance()->GetPlayer();
+	player->SetPlayerStat(vecCharacterInfo[m_iCurCharacterIndex].m_stat);
+
+	float maxVelocity = vecCharacterInfo[m_iCurCharacterIndex].m_stat.m_fMoveSpd;
+	player->GetRigidBody()->SetMaxVelocity(Vec2(maxVelocity, maxVelocity));
+
+	player->SetCharacterName(vecCharacterInfo[m_iCurCharacterIndex].m_characterName);
+	player->SetCharacterIdx(m_iCurCharacterIndex);
+
+	CPlayerMgr::GetInstance()->SettingImageAndAnimations(m_iCurCharacterIndex);
+}
+
+
+void CScene_Main::HandleInputs()
+{
+	if (m_iCurPage == 1)
+	{
+		// 커서 이동
+		if (KEY_TAP(KEY::UP))
+			MoveCursor(-1);
+		else if (KEY_TAP(KEY::DOWN))
+			MoveCursor(1);
+	}
+	else if (m_iCurPage == 2)
+	{
+		// 캐릭터 변경
+		if (KEY_TAP(KEY::LEFT))
+			ChangeCharacter(-1);
+		else if (KEY_TAP(KEY::RIGHT))
+			ChangeCharacter(1);
+	}
+}
+
+void CScene_Main::HandleSceneTransition()
+{
+	if (!m_bChangeSceneFlag)
+		return;
+
+	m_fAccTime += fDT;
+
+	// Fade 효과 계산
+	float fDelta = (m_fAccTime < 1.f) ? 1.f : -1.f;
+	m_fFadeAlpha += (1.f / m_fFadeDuration) * fDelta * fDT;
+	m_fFadeAlpha = max(0.f, min(m_fFadeAlpha, 1.f));
+
+	// Fade 효과 적용
+	UpdateFadeEffect();
+
+	// 장면 전환 조건 확인
+	if (m_fAccTime > 1.f)
+	{
+		ChangeScene(SCENE_TYPE::FIGHT);
+	}
+}
+
+void CScene_Main::UpdateFadeEffect()
+{
+	D2D1::ColorF fadeColor(0.f, 0.f, 0.f, m_fFadeAlpha);
+	veil->SetBackGroundColor(fadeColor, fadeColor, fadeColor, fadeColor);
+
+	CSpriteUI* child = (CSpriteUI*)veil->GetChildsUI()[0];
+	child->GetAnimator()->FindAnimation(L"loadImage")->SetAlpha(m_fFadeAlpha);
+}
+
 
 void CScene_Main::Enter()
 {
@@ -55,6 +205,7 @@ void CScene_Main::Enter()
 	m_fAccTime = 0.f;
 	m_fFadeAlpha = 0.f;
 	CItemMgr::GetInstance()->ResetPickUp();
+	m_iCurCharacterIndex = 0;
 
  	pD2DMgr = Direct2DMgr::GetInstance();
 	Vec2 vResolution = CCore::GetInstance()->GetResolution();
@@ -80,7 +231,24 @@ void CScene_Main::Exit()
 void CScene_Main::update()
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
+	// 장면 업데이트 로직
+	CScene::update();
 
+
+
+	// 페이지 변경 처리
+	HandlePageChange();
+
+	// 캐릭터 및 커서 이동 처리
+	HandleInputs();
+
+	// 캐릭터 선택 처리 (엔터 키가 풀린 상태에서만 가능)
+	CheckForSceneChange();
+
+	// 장면 전환 효과 처리
+	HandleSceneTransition();
+
+	/*
 	ChangePage();
 
 	if (KEY_TAP(KEY::ENTER))
@@ -151,8 +319,8 @@ void CScene_Main::update()
 		ChangeCharacter(1);
 	}
 
-
-	CScene::update();
+	*/
+	
 }
 
 void CScene_Main::finalupdate()

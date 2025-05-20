@@ -67,6 +67,18 @@ public:
 
 
 public:
+    void HandlePageChange();
+    void HandleInputs();
+    void HandleSceneTransition();
+
+    void PlayPageChangeSound();
+    void UpdateCameraPosition();
+    void CheckForSceneChange();
+
+    void InitializePlayerForGameStart();
+    void UpdateFadeEffect();
+
+public:
     CScene_Main();
     ~CScene_Main();
 };

@@ -218,6 +218,12 @@
     <Filter Include="Engine\07. Module\AI\CState\Dead\BabyPlumDead">
       <UniqueIdentifier>{70e2d0f7-9529-4d5a-a4fe-6cfc326cb29a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Object\Item\Bomb">
+      <UniqueIdentifier>{cb7a470e-7c8a-4ef6-a3ce-581ee884f558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\05. Object\Trophy">
+      <UniqueIdentifier>{d46df425-d7a5-4ff4-8087-f3c214524b2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="global.h">
@@ -430,6 +436,12 @@
     <ClInclude Include="CBabyPlumDeadState.h">
       <Filter>Engine\07. Module\AI\CState\Dead\BabyPlumDead</Filter>
     </ClInclude>
+    <ClInclude Include="CBomb.h">
+      <Filter>Engine\05. Object\Item\Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrophy.h">
+      <Filter>Engine\05. Object\Trophy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TBI.rc">
@@ -622,6 +634,12 @@
     </ClCompile>
     <ClCompile Include="CBabyPlumDeadState.cpp">
       <Filter>Engine\07. Module\AI\CState\Dead\BabyPlumDead</Filter>
+    </ClCompile>
+    <ClCompile Include="CBomb.cpp">
+      <Filter>Engine\05. Object\Item\Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrophy.cpp">
+      <Filter>Engine\05. Object\Trophy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

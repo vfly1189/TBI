@@ -156,6 +156,7 @@
     <ClInclude Include="CBabyPlumIdleState.h" />
     <ClInclude Include="CBabyPlumTraceState.h" />
     <ClInclude Include="CBaby_Plum.h" />
+    <ClInclude Include="CBomb.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollectiblesItem.h" />
     <ClInclude Include="CCollider.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="CTear.h" />
     <ClInclude Include="CTextUI.h" />
     <ClInclude Include="CTimeMgr.h" />
+    <ClInclude Include="CTrophy.h" />
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CUIMgr.h" />
     <ClInclude Include="CWall.h" />
@@ -228,6 +230,7 @@
     <ClCompile Include="CBabyPlumIdleState.cpp" />
     <ClCompile Include="CBabyPlumTraceState.cpp" />
     <ClCompile Include="CBaby_Plum.cpp" />
+    <ClCompile Include="CBomb.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollectiblesItem.cpp" />
     <ClCompile Include="CCollider.cpp" />
@@ -272,6 +275,7 @@
     <ClCompile Include="CTear.cpp" />
     <ClCompile Include="CTextUI.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
+    <ClCompile Include="CTrophy.cpp" />
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CUIMgr.cpp" />
     <ClCompile Include="CWall.cpp" />

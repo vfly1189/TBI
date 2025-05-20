@@ -17,6 +17,7 @@ private:
 	vector<CDoor*>		m_vecDoors;
 	vector<bool>		m_vecDoorExist;
 
+
 	vector<CWall*>		m_vecWalls;
 
 

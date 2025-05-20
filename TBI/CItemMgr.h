@@ -24,7 +24,12 @@ private:
 	vector<ID2D1Bitmap*> tmp_vector;
 
 public:
+	void InitializeGraphics();
+
+public:
 	void SetActiveItemCharge(int _value);
+	void UseActiveItem();
+	void SetPossessedActiveItem(int _iItemNum);
 
 public:
 	Item* GetPossessedActiveItem() { return m_possessedActiveItem; }
@@ -48,5 +53,9 @@ public:
 	void CuttingItemStarFlash();
 	void CuttingActiveItemChargeBar();
 	void CuttingPickUpImage();
+	void CuttingBombSpark();
+
+	void CuttingExplosion();
+
 };
 

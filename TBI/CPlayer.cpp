@@ -12,12 +12,16 @@
 #include "CCollectiblesItem.h"
 #include "CItem.h"
 #include "CScene.h"
+#include "CBomb.h"
 #include "CellMap.h"
 
 #include "CImage.h"
 
 #include "CItemMgr.h"
+
 #include "CSceneMgr.h"
+#include "CScene_Fight.h"
+
 #include "CTimeMgr.h"
 #include "Direct2DMgr.h"
 #include "MapMgr.h"
@@ -179,12 +183,44 @@ void CPlayer::update()
     }
   
 
-    if (KEY_TAP(KEY::L))
+    if (KEY_TAP(KEY::E))
     {
-        printf("활성화된 애니메 갯수 : %zd\n", GetAnimator()->GetActiveAnimsCount());
-        printf("머리 : %ls\n", m_sCurHeadAnim.c_str());
-        printf("몸 : %ls\n", m_sCurBodyAnim.c_str());
+        int bombCount = CItemMgr::GetInstance()->GetPickUpItem().m_iBomb;
 
+        if (bombCount > 0)
+        {
+            CItemMgr::GetInstance()->GetPickUpItem().m_iBomb--;
+            CBomb* newBomb = new CBomb;
+            newBomb->SetObjType(GROUP_TYPE::BOMB);
+            newBomb->SetScale(Vec2(32.f, 32.f) * 2.f);
+            newBomb->SetRenderScale(newBomb->GetScale() * 2.f);
+
+            newBomb->SetPos(GetPos());
+
+            newBomb->GetAnimator()->CreateAnimation(L"bomb_spark", Direct2DMgr::GetInstance()->GetStoredBitmap(L"bomb_spark")
+                , Vec2(0.f, 0.f), Vec2(32.f, 32.f), Vec2(32.f, 0.f), 0.1f, 4, true, Vec2(-20.f, -20.f));
+            newBomb->GetAnimator()->CreateAnimation(L"pickup_drop_bomb", Direct2DMgr::GetInstance()->GetStoredBitmap(L"pickup_drop_bomb")
+                , Vec2(0.f, 0.f), Vec2(32.f, 32.f), Vec2(32.f, 0.f), 0.1f, 1, true, Vec2(0.f, 0.f));
+            newBomb->GetAnimator()->CreateAnimation(L"explosion", Direct2DMgr::GetInstance()->GetStoredBitmap(L"explosion")
+                , Vec2(0.f, 0.f), Vec2(96.f, 96.f), Vec2(96.f, 0.f), 0.05f, 12, true, Vec2(0.f, -20.f));
+
+            newBomb->GetAnimator()->Play(L"bomb_spark", true, 2);
+            newBomb->GetAnimator()->Play(L"pickup_drop_bomb", true, 1);
+
+
+            CreateObject(newBomb, GROUP_TYPE::BOMB);
+        }
+    }
+
+    if (KEY_TAP(KEY::SPACE))
+    {
+        Item* possessedActiveItem = CItemMgr::GetInstance()->GetPossessedActiveItem();
+        if (possessedActiveItem->m_iCurCharge == possessedActiveItem->m_iMaxCharge)
+        {
+            printf("액티브사용\n");
+            CItemMgr::GetInstance()->UseActiveItem();
+            UsingActiveItem();
+        }
     }
 
     if (KEY_TAP(KEY::K))
@@ -360,6 +396,27 @@ void CPlayer::OnCollision(CCollider* _pOther)
   
 }
 
+void CPlayer::UsingActiveItem()
+{
+    Item* possessedActiveItem = CItemMgr::GetInstance()->GetPossessedActiveItem();
+
+    //bible
+    if (possessedActiveItem->m_iNumber == 33)
+    {
+        m_stPlayerStat.m_fAttackSpd -= 0.2f;
+    }
+    //belial
+    else if (possessedActiveItem->m_iNumber == 34)
+    {
+        m_stPlayerStat.m_fAttackDmg += 2.f;
+    }
+    //necronomicon
+    else  if (possessedActiveItem->m_iNumber == 35)
+    {
+        CItemMgr::GetInstance()->GetPickUpItem().m_iBomb += 10;
+    }
+}
+
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {
     if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::DOOR)
@@ -441,6 +498,49 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
             if (activeAnims[i]->GetName().compare(L"player_hit") == 0)
                 activeAnims[i]->EnableFlicker(true, 0.15f, 30.f);
         }    
+    }
+    else if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::BOMB)
+    {
+        CBomb* bomb = (CBomb*)(_pOther->GetOwner());
+        
+        if (bomb->GetBombState() == BOMB_STATE::EXPLODE)
+        {
+            if (m_fHit) return;
+
+            wstring sHitSound = L"hurt grunt ";
+            int rNum = rand() % 3;
+            if (rNum == 1 || rNum == 2) sHitSound += to_wstring(rNum);
+            printf("피격 사운드 : %ls\n", sHitSound.c_str());
+            CSoundMgr::GetInstance()->Play(sHitSound, 0.3f);
+
+            m_fHit = true;
+            m_fHitAccTime = 0.f;
+
+            CPlayerMgr::GetInstance()->PlayerHit(-1);
+
+
+            if (m_stPlayerStat.m_fCurHp <= 0.f)
+            {
+                m_fDieAccTime = 0.f;
+                m_fDie = true;
+                GetAnimator()->PauseAllAnimations();
+                GetAnimator()->Play(L"player_die", false, 1);
+
+                CSoundMgr::GetInstance()->Play(L"isaac dies new 1", 0.3f);
+                return;
+            }
+
+
+            GetAnimator()->PauseAllAnimations();
+            GetAnimator()->Play(L"player_hit", false, 1);
+
+            vector<CAnimation*>& activeAnims = GetAnimator()->GetActiveAnims();
+            for (size_t i = 0; i < activeAnims.size(); i++)
+            {
+                if (activeAnims[i]->GetName().compare(L"player_hit") == 0)
+                    activeAnims[i]->EnableFlicker(true, 0.15f, 30.f);
+            }
+        }
     }
 }
 

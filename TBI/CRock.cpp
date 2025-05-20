@@ -1,7 +1,9 @@
 #include "global.h"
 #include "CRock.h"
 
+#include "CBomb.h"
 #include "CCollider.h"
+#include "CSoundMgr.h"
 
 CRock::CRock()
 {
@@ -95,6 +97,24 @@ void CRock::OnCollision(CCollider* _pOther)
 			vObjPos = pOtherObj->GetPos();
 			vObjPos.x -= (fInterpolValue);
 			pOtherObj->SetPos(vObjPos);
+		}
+	}
+	else if (_pOther->GetOwner()->GetObjType() == GROUP_TYPE::BOMB)
+	{
+		CBomb* bomb = (CBomb*)(_pOther->GetOwner());
+
+		if (bomb->GetBombState() == BOMB_STATE::EXPLODE)
+		{
+			int rockCrumbleSound = rand() % 3;
+
+			if (rockCrumbleSound == 0) CSoundMgr::GetInstance()->Play(L"rock crumble 0", 0.5f);
+			else if (rockCrumbleSound == 1) CSoundMgr::GetInstance()->Play(L"rock crumble 2", 0.5f);
+			else if (rockCrumbleSound == 2) CSoundMgr::GetInstance()->Play(L"rock crumble 3", 0.5f);
+
+
+
+
+			DeleteObject(this);
 		}
 	}
 }

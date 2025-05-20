@@ -55,7 +55,7 @@ void CBabyPlumAttackState::update()
 		Vec2 vMonDir = m_vPlayerPos - m_vMonsterPos;
 		vMonDir.Normalize();
 
-		m_vMonsterPos += vMonDir * 500.f * fDT;
+		m_vMonsterPos += vMonDir * 700.f * fDT;
 		GetMonster()->SetPos(m_vMonsterPos);
 
 
@@ -95,10 +95,8 @@ void CBabyPlumAttackState::update()
 		}
 
 		// Calculate dynamic speed(200->800 over 7 seconds)
-		float speed = 100.f + (800.f - 100.f) * (m_fAccTime / 7.f);
-		if (speed > 800.f) speed = 800.f;  // Clamp maximum speed
-
-		printf("speed : %f\n", speed);
+		float speed = 100.f + (1200.f - 100.f) * (m_fAccTime / 7.f);
+		if (speed > 1200.f) speed = 1200.f;  // Clamp maximum speed
 		m_vMonsterPos += vCurDir * speed * fDT;
 
 
