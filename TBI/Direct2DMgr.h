@@ -1,10 +1,6 @@
 #pragma once
 
-struct ScrollArea {
-	D2D1_RECT_F viewRect;     // 화면에 표시되는 영역
-	D2D1_RECT_F contentRect;  // 전체 콘텐츠 영역
-	D2D1_POINT_2F scrollPos;  // 현재 스크롤 위치
-};
+
 
 class Direct2DMgr
 {
@@ -62,6 +58,5 @@ public:
 private:
 	HRESULT LoadBitmap(const wstring& filePath, ID2D1Bitmap** ppBitmap);
 	HRESULT SplitBitmap(ID2D1Bitmap* bitmap, const wstring& tag);
-
 };
 

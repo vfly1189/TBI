@@ -24,7 +24,7 @@ typedef struct _CharacterInfo
 
 PlayerStat isaac_stat = {
 	2.5, 8,
-	5.f, 1.f, 0.5f,
+	5.f, 1.f, 0.1f,
 	300.f,
 	300.f
 };

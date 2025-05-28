@@ -6,11 +6,6 @@ class CObject;
 
 #define SOUNDBUFFERSIZE 64
 
-//최적화를 위한 뭔가 깔끔하지 않은 방법. 
-static wstring walkSoundKey[4] = { L"Step1", L"Step2",L"Step3",L"Step4" };
-const float	   fWalkDuration = 0.3f;
-float		   fWalkElapsed = 0.f;
-
 
 struct SoundInfo {
 	FMOD::Sound* m_pSound = nullptr;

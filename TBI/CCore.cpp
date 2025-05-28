@@ -52,7 +52,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CFileMgr::GetInstance()->init(CPathMgr::GetInstance()->GetContentPath());CCamera::GetInstance()->init();
 	
 	CFontMgr::GetInstance()->init();
-	CItemMgr::GetInstance()->init();
+	
 	
 	CEntityMgr::GetInstance()->init();
 	CPlayerMgr::GetInstance()->init();

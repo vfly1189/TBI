@@ -65,6 +65,9 @@ public:
 	void CreateEntities();
 	void CreateBoss(Vec2 _vSpawnPos);
 
+	void CreateDoors();
+	void CreateWalls();
+	void CreateTreasureItem();
 
 public:
 	CellMap(wstring _strMapBaseSprite, Vec2 _vRealPos, Vec2 _vGridPos, ROOM_INFO _eRoomType);

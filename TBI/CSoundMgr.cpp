@@ -91,7 +91,6 @@ void CSoundMgr::AddSound(wstring _keyName, wstring _fileName, bool _bgm, bool _l
 	}
 
 
-
 	SoundInfo* info = new SoundInfo;
 	info->isBGM = _bgm;
 	info->isLoop = _loop;
@@ -154,44 +153,10 @@ void CSoundMgr::Play(wstring _keyName, float _volume)
 
 	// 새 채널을 벡터에 추가
 	soundIter->second->m_pChannels.push_back(newChannel);
-
-	/*
-	if (soundIter->second->isBGM) {
-		m_pSystem->playSound(soundIter->second->m_pSound, m_pBGMChannelGroup, false, &soundIter->second->m_pChannel);
-
-		soundIter->second->m_pChannel->setVolume(_volume);
-	}
-	else {
-		if (_keyName.compare(L"insect swarm") == 0)
-		{
-			printf("여기\n");
-		}
-		m_pSystem->playSound(soundIter->second->m_pSound, m_pSFXChannelGroup, false, &soundIter->second->m_pChannel);
-
-		soundIter->second->m_pChannel->setVolume(_volume);
-
-		
-		// [추가] 루프 설정
-		if (soundIter->second->isLoop) {
-			soundIter->second->m_pChannel->setLoopCount(-1); // 무한 루프
-		}
-		
-	}
-*/
-
 }
 
 void CSoundMgr::Stop(wstring _keyName)
 {
-	/*
-	auto soundIter = m_mapSounds.find(_keyName);
-
-	if (soundIter == m_mapSounds.end()) {
-		assert(false);
-	}
-	//soundIter->second->m_pChannel->setLoopCount(0);
-	soundIter->second->m_pChannel->stop();
-	*/
 	auto soundIter = m_mapSounds.find(_keyName);
 	if (soundIter == m_mapSounds.end()) {
 		assert(false);
@@ -218,17 +183,12 @@ void CSoundMgr::Pause(wstring _keyName)
 		assert(false);
 	}
 
-	//soundIter->second->m_pChannel->setPaused(true);
-
 	// 모든 채널 정지
 	for (auto& channel : soundIter->second->m_pChannels) {
 		if (channel) {
 			channel->setPaused(true);
 		}
 	}
-
-	// 채널 목록 비우기
-	//soundIter->second->m_pChannels.clear();
 }
 
 void CSoundMgr::Resume(wstring _keyName)
@@ -239,7 +199,6 @@ void CSoundMgr::Resume(wstring _keyName)
 		assert(false);
 	}
 
-	//soundIter->second->m_pChannel->setPaused(false);
 	// 모든 채널 다시재생
 	for (auto& channel : soundIter->second->m_pChannels) {
 		if (channel) {
@@ -273,8 +232,6 @@ bool CSoundMgr::IsPlaySound(wstring& _keyName)
 	}
 
 	bool isPlay = false;
-
-	//soundIter->second->m_pChannel->isPlaying(&isPlay);
 
 	return isPlay;
 }
