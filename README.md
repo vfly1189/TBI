@@ -28,7 +28,7 @@ The Binding of Isaac을 Win32 API와 Direct2D로 구현한 로그라이크 게�
 - **Module 시스템**: 몬스터 AI 관리 모듈화
 
 ### Factory Pattern 구현
-- **[CMonFactory](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.h)**: 몬스터 생성 팩토리 클래스
+- **[CMonFactory](https://github.com/vfly1189/TBI/blob/master/TBI/CMonFactory.cpp)**: 몬스터 생성 팩토리 클래스
   - [CreateMonster() 메서드](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.cpp#L10-L25): 타입별 몬스터 생성
   - [타입별 전용 생성 함수](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.cpp#L30-L50)
 
