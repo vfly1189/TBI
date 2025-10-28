@@ -27,6 +27,12 @@ The Binding of Isaac을 Win32 API와 Direct2D로 구현한 로그라이크 게�
 - **다양한 몬스터 타입**: 각기 다른 행동 패턴과 AI
 - **Module 시스템**: 몬스터 AI 관리 모듈화
 
+### Factory Pattern 구현
+- **[CMonFactory](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.h)**: 몬스터 생성 팩토리 클래스
+  - [CreateMonster() 메서드](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.cpp#L10-L25): 타입별 몬스터 생성
+  - [타입별 전용 생성 함수](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.cpp#L30-L50)
+
+
 #### 아이템 시스템
 - **픽업 아이템**: 동전, 폭탄, 열쇠
 - **장비 아이템**: 황금 방에서 획득 가능한 영구 효과 아이템 + 사용 효과가 있는 액티브 아이템
@@ -79,14 +85,25 @@ TBI/
 
 ### 메인 화면 (CScene_Main)
 1. **타이틀 화면**: Enter/Space로 진행
+    
+   ![screenshot](https://github.com/user-attachments/assets/8b99f754-0cdc-47fc-9efd-1f41b3591b5a)
+
 2. **메뉴 선택**: 방향키 상/하로 메뉴 선택 (현재 '새도전'만 구현)
+    
+    ![screenshot](https://github.com/user-attachments/assets/34bef77a-e261-45d6-bc24-7407b87890ed)
+
 3. **캐릭터 선택**: 방향키 좌/우로 4명의 캐릭터 중 선택
+    
+    ![screenshot](https://github.com/user-attachments/assets/043db3d2-a13b-4765-93c6-5317b141071b)
 
 ### 전투 화면 (CScene_Fight)
 - **스탯 패널**: 플레이어 능력치 표시
 - **체력 UI**: 하트 기반 체력 시스템
 - **아이템 슬롯**: 활성 아이템 및 픽업 아이템 정보
 - **미니맵**: 던전 전체 구조 표시
+  
+ ![screenshot](https://github.com/user-attachments/assets/f892e92a-d453-4fe6-9be2-93d65623d33b)
+
 
 ## 🏗️ 핵심 클래스 구조
 
