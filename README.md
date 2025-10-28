@@ -18,7 +18,7 @@ The Binding of Isaac을 Win32 API와 Direct2D로 구현한 로그라이크 게�
 - **다중 애니메이션 시스템**: 여러 애니메이션 동시 재생 지원 (걷기 + 공격 + 이펙트)
 
 #### 맵 생성 시스템
-- **절차적 던전 생성**: 매 플레이마다 다른 레이아웃의 던전 자동 생성
+- **[절차적 던전 생성](https://github.com/vfly1189/TBI/blob/master/TBI/CMonFactory.cpp#L27-L135)**: 매 플레이마다 다른 레이아웃의 던전 자동 생성
 - **다양한 방 타입**: 일반 방, 황금 방, 보스 방, 상점, 보물 방
 - **그리드 기반 맵**: 셀 단위로 구성된 체계적인 맵 구조
 
@@ -30,8 +30,6 @@ The Binding of Isaac을 Win32 API와 Direct2D로 구현한 로그라이크 게�
 ### Factory Pattern 구현
 - **[CMonFactory](https://github.com/vfly1189/TBI/blob/master/TBI/CMonFactory.cpp)**: 몬스터 생성 팩토리 클래스
   - [CreateMonster() 메서드](https://github.com/vfly1189/TBI/blob/7fcbb1196d5ab851c9b13af4ffee79ed69c04c01/TBI/CMonFactory.cpp#L47-L69): 타입별 몬스터 생성
-  - [타입별 전용 생성 함수](https://github.com/vfly1189/TBI/blob/main/Engine/08.Factory/CMonFactory.cpp#L30-L50)
-
 
 #### 아이템 시스템
 - **픽업 아이템**: 동전, 폭탄, 열쇠
