@@ -31,25 +31,24 @@ void MapMgr::MapGenerate()
 	int max_room = 8 + int(m_iCurLevel * 2.3);
 	int min_room = 10;
 
-	// Generate start position once
+	// 시작지점 임의 생성
 	std::uniform_int_distribution<int> dist_x(0, m_iMapMaxWidth - 1);
 	std::uniform_int_distribution<int> dist_y(0, m_iMapMaxHeight - 1);
 	startx = dist_x(rng);
 	starty = dist_y(rng);
 	m_vCurPos = Vec2(startx, starty);
 
-	// Main map generation loop
+	// 맵 생성 루프
 	int room_count;
 	do {
 		clear();
 		room_count = 1;
 
-		// Create a queue for BFS map generation
 		queue<std::pair<int, int>> cellQueue;
 		gridMap[starty][startx] = static_cast<UINT>(ROOM_INFO::START);
 		cellQueue.push({ starty, startx });
 
-		// Static directions array
+		// 방향성
 		const std::pair<int, int> directions[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 		std::vector<int> dir_indices = { 0, 1, 2, 3 };
 
@@ -57,7 +56,7 @@ void MapMgr::MapGenerate()
 			std::pair<int, int> cur = cellQueue.front();
 			cellQueue.pop();
 
-			// Randomize direction order using the static RNG
+			// 방향 정보 랜덤하게 섞음
 			std::shuffle(dir_indices.begin(), dir_indices.end(), rng);
 
 			for (int i = 0; i < 4; i++) {
@@ -65,17 +64,17 @@ void MapMgr::MapGenerate()
 				int nx = cur.second + dir.second;
 				int ny = cur.first + dir.first;
 
-				// Bounds and validity checks
+				// 유효성 검사
 				if (nx < 0 || ny < 0 || nx >= static_cast<int>(m_iMapMaxWidth) ||
 					ny >= static_cast<int>(m_iMapMaxHeight) ||
 					gridMap[ny][nx] != static_cast<UINT>(ROOM_INFO::EMPTY)) {
 					continue;
 				}
 
-				// Enforce single-connected room constraint
+				// 강제로 이웃방의 갯수가 1개이하로 만듬
 				if (countNeighbors(nx, ny) > 1) continue;
 
-				// Create new room
+				
 				gridMap[ny][nx] = static_cast<UINT>(ROOM_INFO::NORMAL);
 				room_count++;
 				cellQueue.push({ ny, nx });
@@ -83,23 +82,22 @@ void MapMgr::MapGenerate()
 		}
 	} while (room_count < min_room);
 
-	// Generate special rooms
+	//특수방 생성
 	GenerateBossRoom();
 	GenerateTreasureRoom();
 
-	// Determine map base theme based on level
+	// 레벨에 따라 맵 배경 결정
 	int map_base_number = 0;
 	if (m_iCurLevel <= 2) map_base_number = rng() % 2;
 	else if (m_iCurLevel <= 4) map_base_number = rng() % 2 + 2;
 	else if (m_iCurLevel <= 6) map_base_number = rng() % 2 + 4;
 
-	// Create cell maps using BFS to ensure all rooms are processed
+	// BFS로 만든걸 이제 객체 생성
 	std::vector<std::vector<bool>> visited(m_iMapMaxHeight, std::vector<bool>(m_iMapMaxWidth, false));
 	queue<pii> checkQueue;
 	checkQueue.push({ starty, startx });
 	visited[starty][startx] = true;
 
-	// Static direction arrays for room connectivity
 	static const int dy4[4] = { -1, 1, 0, 0 };
 	static const int dx4[4] = { 0, 0, -1, 1 };
 
@@ -107,7 +105,6 @@ void MapMgr::MapGenerate()
 		pii curPos = checkQueue.front();
 		checkQueue.pop();
 
-		// Create cell map instance
 		ROOM_INFO roomType = static_cast<ROOM_INFO>(gridMap[curPos.first][curPos.second]);
 		Vec2 roomPos = Vec2((curPos.second - startx) * 960.f, (curPos.first - starty) * 540.f);
 		Vec2 gridPos = Vec2(curPos.second, curPos.first);
@@ -115,12 +112,10 @@ void MapMgr::MapGenerate()
 		m_vecCellMaps[curPos.first][curPos.second] =
 			new CellMap(cellmap_base_sprite_tag[map_base_number], roomPos, gridPos, roomType);
 
-		// Visit connected rooms
 		for (int i = 0; i < 4; i++) {
 			int ny = curPos.first + dy4[i];
 			int nx = curPos.second + dx4[i];
 
-			// Check bounds and validity
 			if (ny < 0 || nx < 0 || ny >= static_cast<int>(m_iMapMaxHeight) ||
 				nx >= static_cast<int>(m_iMapMaxWidth) ||
 				gridMap[ny][nx] == static_cast<UINT>(ROOM_INFO::EMPTY) ||
@@ -135,7 +130,6 @@ void MapMgr::MapGenerate()
 }
 int MapMgr::countNeighbors(int x, int y)
 {
-	// Static directions to check adjacent cells
 	static const std::pair<int, int> directions[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
 	int neighbors_count = 0;
@@ -161,7 +155,7 @@ void MapMgr::MapCutting()
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 
 	for (size_t i = 0; i < cellmap_base_sprite.size(); ++i) {
-		// Get original bitmap and create flipped versions
+	
 		pD2DMgr->SplitBitmap(
 			pD2DMgr->GetStoredBitmap(cellmap_base_sprite[i]),
 			cellmap_base_sprite_tag[i],
@@ -171,7 +165,7 @@ void MapMgr::MapCutting()
 
 		ID2D1Bitmap* originalBitmap = pD2DMgr->GetStoredBitmap(cellmap_base_sprite_tag[i]);
 
-		// Create flipped variants
+		
 		std::vector<ID2D1Bitmap*> bitmaps;
 		bitmaps.reserve(4); // Pre-allocate for performance
 
@@ -180,7 +174,6 @@ void MapMgr::MapCutting()
 		bitmaps.push_back(FlipBitmap(originalBitmap, false, true));  // y-flip
 		bitmaps.push_back(FlipBitmap(originalBitmap, true, true));   // xy-flip
 
-		// Combine flipped bitmaps
 		ID2D1Bitmap* combinedBitmap = CombineBitmaps2X2(bitmaps);
 		pD2DMgr->DeleteBitmap(cellmap_base_sprite_tag[i]);
 		pD2DMgr->StoreCreateMap(combinedBitmap, cellmap_base_sprite_tag[i]);
@@ -191,28 +184,28 @@ void MapMgr::DoorCutting()
 {
 	Direct2DMgr* pD2DMgr = Direct2DMgr::GetInstance();
 
-	// Structure to define door cutting parameters
+	
 	struct DoorCutInfo {
 		std::wstring sourceName;
 		std::wstring targetPrefix;
 	};
 
-	// Define door types to process
+
 	const DoorCutInfo doorTypes[] = {
 		{L"door_01_normaldoor", L"normal_door"},
 		{L"door_10_bossroomdoor", L"bossroom_door"},
 		{L"door_02_treasureroomdoor", L"treasureroom_door"}
 	};
 
-	// Standard door frame positions
+	
 	const float frameWidth = 64.0f;
 	const float frameHeight = 48.0f;
 
-	// Process each door type
+
 	for (const auto& doorInfo : doorTypes) {
 		ID2D1Bitmap* doorBitmap = pD2DMgr->GetStoredBitmap(doorInfo.sourceName);
 
-		// Cut the different door states
+
 		pD2DMgr->SplitBitmap(doorBitmap, doorInfo.targetPrefix,
 			D2D1::Point2F(0.0f, 0.0f),
 			D2D1::Point2F(frameWidth, frameHeight));
@@ -246,22 +239,22 @@ void MapMgr::ShowMap()
 
 void MapMgr::SetEntities(vector<vector<UINT>>& _cellmap)
 {
-	// Select a random room layout from available templates
+	
 	int randRoom = rand() % m_vecCellMapLayOuts.size();
 	_cellmap = m_vecCellMapLayOuts[randRoom];
 }
 
 void MapMgr::GenerateBossRoom()
 {
-	// Find the furthest end room from the start to place the boss
+
 	std::pair<int, int> bossRoom;
 	int maxDistance = -1;
 
 	for (int y = 0; y < static_cast<int>(m_iMapMaxHeight); ++y) {
 		for (int x = 0; x < static_cast<int>(m_iMapMaxWidth); ++x) {
-			// Check if this is a valid end room
+			
 			if (gridMap[y][x] != static_cast<UINT>(ROOM_INFO::EMPTY) && IsEndRoom(x, y)) {
-				// Calculate Manhattan distance from start
+	
 				int distance = std::abs(x - startx) + std::abs(y - starty);
 				if (distance > maxDistance) {
 					maxDistance = distance;
@@ -271,22 +264,22 @@ void MapMgr::GenerateBossRoom()
 		}
 	}
 
-	// Mark the selected room as the boss room
+	
 	gridMap[bossRoom.second][bossRoom.first] = static_cast<UINT>(ROOM_INFO::BOSS);
 	m_vBossPos = Vec2(bossRoom.first, bossRoom.second);
 }
 
 void MapMgr::GenerateTreasureRoom()
 {	
-	// Find the closest end room to the start for the treasure
+
 	std::pair<int, int> treasureRoom;
 	int minDistance = INT_MAX; // 수정: std::numeric_limits<int>::max() 대신 INT_MAX 사용
 
 	for (int y = 0; y < static_cast<int>(m_iMapMaxHeight); ++y) {
 		for (int x = 0; x < static_cast<int>(m_iMapMaxWidth); ++x) {
-			// Check if this is a valid normal end room
+			
 			if (gridMap[y][x] == static_cast<UINT>(ROOM_INFO::NORMAL) && IsEndRoom(x, y)) {
-				// Calculate Manhattan distance from start
+		
 				int distance = std::abs(x - startx) + std::abs(y - starty);
 				if (distance < minDistance) {
 					minDistance = distance;
@@ -296,17 +289,17 @@ void MapMgr::GenerateTreasureRoom()
 		}
 	}
 
-	// Mark the selected room as a treasure room
+	
 	gridMap[treasureRoom.second][treasureRoom.first] = static_cast<UINT>(ROOM_INFO::TREASURE);
 }
 
 void MapMgr::init()
 {
-	// Initialize the grid map and cell maps containers
+
 	gridMap.resize(m_iMapMaxHeight, std::vector<UINT>(m_iMapMaxWidth, 0));
 	m_vecCellMaps.resize(m_iMapMaxHeight, std::vector<CellMap*>(m_iMapMaxWidth, nullptr));
 
-	// Load map layouts from JSON
+	
 	wstring contentPath = CPathMgr::GetInstance()->GetContentPath();
 	wstring jsonFilePath = contentPath + L"\\json\\map_layout.json";
 
@@ -318,7 +311,6 @@ void MapMgr::init()
 		}
 	}
 
-	// Prepare sprite resources
 	MapCutting();
 	DoorCutting();
 }
@@ -330,12 +322,12 @@ bool MapMgr::IsEndRoom(int x, int y)
 
 void MapMgr::clear()
 {
-	// Clear all cells in the grid map
+
 	for (size_t i = 0; i < m_iMapMaxHeight; i++) {
 		for (size_t j = 0; j < m_iMapMaxWidth; j++) {
 			gridMap[i][j] = static_cast<UINT>(ROOM_INFO::EMPTY);
 
-			// Delete any existing cell maps to prevent memory leaks
+			
 			if (m_vecCellMaps[i][j] != nullptr) {
 				delete m_vecCellMaps[i][j];
 				m_vecCellMaps[i][j] = nullptr;
@@ -356,18 +348,18 @@ void MapMgr::render(ID2D1HwndRenderTarget* _pRender)
 
 void MapMgr::reset()
 {
-	// Free allocated memory and reset state
+	
 	for (size_t i = 0; i < m_iMapMaxHeight; i++) {
 		for (size_t j = 0; j < m_iMapMaxWidth; j++) {
 			gridMap[i][j] = static_cast<UINT>(ROOM_INFO::EMPTY);
 
-			// Clean up allocated cell maps
+
 			delete m_vecCellMaps[i][j];
 			m_vecCellMaps[i][j] = nullptr;
 		}
 	}
 
-	// Reset position to default
+	
 	m_vCurPos = Vec2(4, 3);
 }
 
